@@ -70,7 +70,7 @@ repos:
         # `exclude: <regex>` to allow committing specific files
     - id: devtools::check
       name: devtools::check
-      entry: Rscript -e 'devtools::check()'
+      entry: Rscript -e 'if(!require(devtools)){install.packages("devtools")}; devtools::check()'
       language: r
       stages:
         - "pre-push"
