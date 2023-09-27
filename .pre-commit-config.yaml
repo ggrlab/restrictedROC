@@ -69,10 +69,11 @@ repos:
         files: '\.(Rhistory|RData|Rds|rds)$'
         # `exclude: <regex>` to allow committing specific files
     - id: devtools::check
-      name: devtools::check
+      name: devtools::check (Takes long first time installing devtools)
       entry: Rscript -e 'if(!require(devtools)){install.packages("devtools")}; devtools::check()'
       language: r
       stages:
         - "pre-push"
+
 # ci:
 #     autoupdate_schedule: monthly
