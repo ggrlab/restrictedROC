@@ -4,9 +4,9 @@
 \name{restrictedROC-package}
 \alias{restrictedROC}
 \alias{restrictedROC-package}
-\title{restrictedROC: What the Package Does (One Line, Title Case)}
+\title{restrictedROC: Calculate restricted ROC curves}
 \description{
-What the package does (one paragraph).
+Calculate restricted ROC-curves, AUCs and permutation p-values.
 }
 \seealso{
 Useful links:

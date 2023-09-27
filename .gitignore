@@ -5,3 +5,14 @@
 .DS_Store
 .quarto
 docs
+inst/doc
+**removeme*
+/doc/
+/Meta/
+# only highest-hierarchy pdf ignore
+*.pdf  
+vignettes/*.html
+vignettes/*.R
+gifs/
+res/paper/*.txt
+docs

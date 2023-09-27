@@ -1,10 +1,10 @@
 Package: restrictedROC
-Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9000
+Title: Calculate restricted ROC curves
+Version: 3.0.0
 Authors@R: 
     person("Gunther", "Glehr", , "gunthergl@gmx.net", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-1495-9162"))
-Description: What the package does (one paragraph).
+Description: Calculate restricted ROC-curves, AUCs and permutation p-values.
 License: MIT + file LICENSE
 Suggests: 
     testthat (>= 3.0.0)
@@ -14,5 +14,15 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 URL: https://ggrlab.github.io/restrictedROC/
 Imports: 
-    devtools,
-    lifecycle
+    dplyr,
+    future.apply,
+    ggplot2,
+    ggpubr,
+    labeling,
+    lifecycle,
+    patchwork,
+    pROC,
+    statmod,
+    stats,
+    tibble,
+    tidyr

@@ -142,10 +142,20 @@ precommit::use_precommit()
 ```
 Before committing: ``pre-commit install --hook-type pre-push``, then commit. 
 
-Before pushing: Need devtools as dependency
+Used packages:
+```r
+usethis::use_package("ggplot2")
+usethis::use_package("patchwork")
+usethis::use_package("pROC")
+usethis::use_package("ggpubr")
+usethis::use_package("stats")
+usethis::use_package("tibble")
+usethis::use_package("dplyr")
+usethis::use_package("labeling")
+usethis::use_package("tidyr")
+usethis::use_package("statmod")
+usethis::use_package("future.apply")
+precommit::snippet_generate('additional-deps-roxygenize')
 
-```r
-usethis::use_package("devtools")
-usethis::use_git_hook("pre-push", script = "devtools::check()")
-```r
+
 ```
