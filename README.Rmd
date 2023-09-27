@@ -6,10 +6,10 @@ output: github_document
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  fig.path = "man/figures/README-",
-  out.width = "100%"
+    collapse = TRUE,
+    comment = "#>",
+    fig.path = "man/figures/README-",
+    out.width = "100%"
 )
 ```
 
@@ -113,3 +113,15 @@ usethis::use_tidy_github_labels()
 usethis::use_pkgdown_github_pages()
 ```
 
+
+Additional information: 
+```r
+usethis::use_author(
+    given="Gunther", 
+    family="Glehr", 
+    email="gunthergl@gmx.net", 
+    role=c("aut", "cre"), 
+    comment = c("ORCID"="0000-0002-1495-9162")
+    )
+usethis::use_lifecycle()
+```
