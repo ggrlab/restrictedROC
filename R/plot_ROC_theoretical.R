@@ -24,7 +24,7 @@ plot_ROC_theoretical <- function(pnorm_positive, qnorm_negative, length.out = 50
     # Gneiting, Vogel (Machine Learning 2022)
     # 	Receiver operating characteristic (ROC) curves:
     # 	equivalences, beta model, and minimum distance estimation
-    # R(p) = 1-F_1(F_0^-1(1-p))
+    # :Math:  R(p) = 1-F_1(F_0^-1(1-p))
     df <- data.frame(
         "tpr" = 1 - pnorm_positive(qnorm_negative(1 - fpr)),
         "fpr" = fpr

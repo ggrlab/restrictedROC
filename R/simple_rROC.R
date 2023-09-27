@@ -181,12 +181,12 @@ simple_rROC <- function(response,
             message(paste0("Positive label not given, setting to max(response): ", positive_label))
         }
     }
-    # response_levels <- unique(response)
     response <- response == positive_label
     true_pred_df <- data.frame("true" = response, "pred" = predictor)
     if (direction != "<") {
         stop("NotImplemented, please use direction='<'")
     }
+    # nolint start
     # if (direction == "auto") {
     #     # ">":
     #     #   if the predictor values for the control group are higher than the values of the
@@ -206,6 +206,7 @@ simple_rROC <- function(response,
     #         positive_label
     #     ))
     # }
+    # nolint end
 
     full_roc <- pROC::roc(
         response = true_pred_df[["true"]],
@@ -270,7 +271,13 @@ simple_rROC <- function(response,
 }
 
 
-get_all_aucs <- function(true_pred_df, thresholds, direction, high_low = "high", return_proc = FALSE, do_parallel = FALSE, ...) {
+get_all_aucs <- function(true_pred_df,
+                         thresholds,
+                         direction,
+                         high_low = "high",
+                         return_proc = FALSE,
+                         do_parallel = FALSE,
+                         ...) {
     if (do_parallel) {
         stop("Applying parallel seems to be _slower_ for whatever reason, do not do this here.")
         if (!"future" %in% .packages()) {
@@ -314,6 +321,7 @@ get_all_aucs <- function(true_pred_df, thresholds, direction, high_low = "high",
                     "positives" = sum(part_df[["true"]]),
                     "negatives" = sum(!part_df[["true"]])
                 )
+                return(one_threshold_auc)
             }
         )
         return(list("part_roc" = part_roc, "one_threshold_auc" = one_threshold_auc))
@@ -343,8 +351,10 @@ get_all_aucs_norecalculation <- function(full_roc, high_low = "high", check_posi
             coords[["high_negatives"]] <- vapply(full_roc[["thresholds"]], function(th) {
                 with(full_roc, sum(!original.response[original.predictor > th]))
             }, FUN.VALUE = numeric(1))
-            if (!all.equal(coords[["high_positives"]], coords[["positives"]]) |
-                !all.equal(coords[["high_negatives"]], coords[["negatives"]])) {
+            if (
+                !all.equal(coords[["high_positives"]], coords[["positives"]]) ||
+                    !all.equal(coords[["high_negatives"]], coords[["negatives"]])
+            ) {
                 stop("Counting of high positives/negatives went wrong")
             }
         }
@@ -358,8 +368,9 @@ get_all_aucs_norecalculation <- function(full_roc, high_low = "high", check_posi
             coords[["low_negatives"]] <- vapply(full_roc[["thresholds"]], function(th) {
                 with(full_roc, sum(!original.response[original.predictor <= th]))
             }, FUN.VALUE = numeric(1))
-            if (!all.equal(coords[["low_positives"]], coords[["positives"]]) |
-                !all.equal(coords[["low_negatives"]], coords[["negatives"]])) {
+            if (
+                !all.equal(coords[["low_positives"]], coords[["positives"]]) ||
+                    !all.equal(coords[["low_negatives"]], coords[["negatives"]])) {
                 stop("Counting of high positives/negatives went wrong")
             }
         }
@@ -380,6 +391,7 @@ get_all_aucs_norecalculation <- function(full_roc, high_low = "high", check_posi
                 )
             )
         }, FUN.VALUE = numeric(1))
+        # nolint start
         # ##### Do the following plot to _see_ what area is calculated
         # fpr <- coords[50, ][["fpr"]]
         # pdf("removeme.pdf")
@@ -391,6 +403,7 @@ get_all_aucs_norecalculation <- function(full_roc, high_low = "high", check_posi
         #     legacy.axes = TRUE
         # )
         # dev.off()
+        # nolint end
 
         # Denominator is the area of the bottom-left part of the ROC curve corresponding to samples
         # with high values:
@@ -409,6 +422,7 @@ get_all_aucs_norecalculation <- function(full_roc, high_low = "high", check_posi
                 )
             )
         }, FUN.VALUE = numeric(1))
+        # nolint start
         ##### Do the following plot to _see_ what area is calculated
         # tpr <- coords[50, ][["sensitivity"]]
         # pdf("removeme.pdf")
@@ -421,6 +435,7 @@ get_all_aucs_norecalculation <- function(full_roc, high_low = "high", check_posi
         #     legacy.axes = TRUE
         # )
         # dev.off()
+        # nolint end
 
 
         # Denominator is the area of the top-right part of the ROC curve corresponding to samples
@@ -460,9 +475,8 @@ calc_rzAUC <- function(full_df) {
     # 199 0.984633215        NA         2         0
     # 200 0.987881852        NA         1         0
     # 201         Inf        NA         0         0
-    full_df[["auc_var_H0"]] <-
-        (full_df[["positives"]] + full_df[["negatives"]] + 1.) /
-            (12 * full_df[["positives"]] * full_df[["negatives"]])
+    full_df[["auc_var_H0"]] <- (full_df[["positives"]] + full_df[["negatives"]] + 1.) /
+        (12 * full_df[["positives"]] * full_df[["negatives"]])
     full_df[["rzAUC"]] <- (full_df[["auc"]] - .5) / sqrt(full_df[["auc_var_H0"]])
     # onesided, bigger
     full_df[["pval_asym_onesided"]] <- 1 - stats::pnorm(full_df[["rzAUC"]])

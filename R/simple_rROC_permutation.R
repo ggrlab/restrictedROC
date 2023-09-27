@@ -102,8 +102,10 @@ simple_rROC_permutation <- function(response,
     perm_global_bound <- do.call(rbind, lapply(permutation_res, function(x) x[["global"]]))
 
     # Proportion of values above the actually observed MAXIMUM value from all permutations
+    # nolint start
     # n_perm_above_observed <- sum(permutation_res_bound[["rzAUC"]] > res[["max_total"]][["rzAUC"]])
     # n_perm_below_observed <- sum(permutation_res_bound[["rzAUC"]] < res[["max_total"]][["rzAUC"]])
+    # nolint end
     n_perm_twosided_max <- sum(abs(perm_max_bound[["rzAUC"]]) >= abs(res[["max_total"]][["rzAUC"]]))
     n_perm_twosided_global <- sum(abs(perm_global_bound[["rzAUC"]]) >= abs(res[["global"]][["rzAUC"]]))
 

@@ -99,13 +99,13 @@ perf_ROC <- function(response, predictor, how = "pROC", positive_label = NULL, .
     # https://journals.sagepub.com/doi/full/10.1177/0962280212452199
     true_table <- table(response)
     auc_variance <- (sum(true_table) + 1) / (12. * prod(true_table))
-    rzAUC <- (auc_tpr_fpr[["auc"]] - .5) / sqrt(auc_variance)
+    restricted_standardized_auc <- (auc_tpr_fpr[["auc"]] - .5) / sqrt(auc_variance)
     return(
         c(
             auc_tpr_fpr,
             list(
                 "auc_variance" = auc_variance,
-                "rzAUC" = rzAUC
+                "rzAUC" = restricted_standardized_auc
             )
         )
     )

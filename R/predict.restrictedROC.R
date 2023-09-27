@@ -113,15 +113,20 @@ predict.restrictedROC <- function(object,
                                   pred_low_label = 0,
                                   original.response = NA,
                                   original.predictor = NA,
-                                  ...
                                   #   do_caret = TRUE  # when doing caret, S3 seems to break.
-) {
+                                  ...) {
     single_rroc_result <- object
     restriction <- single_rroc_result[["max_total"]][["threshold"]]
     restriction_part <- single_rroc_result[["max_total"]][["part"]]
     if (!"pROC_full" %in% names(single_rroc_result)) {
         if (all(is.na(original.response)) || all(is.na(original.predictor))) {
-            stop("You need to have calculated pROC_full such that original response and predictor can be extracted, OR given original.response AND original.predictor")
+            stop(
+                paste0(
+                    "You need to have calculated pROC_full such that original response",
+                    " and predictor can be extracted, OR given original.response AND ",
+                    "original.predictor"
+                )
+            )
         }
         original.response <- original.response == pred_high_label
     } else {
@@ -238,10 +243,12 @@ predict.restrictedROC <- function(object,
     tab_restricted <- with(pred_df[pred_df$keep, ], table(prediction, response))
 
     res <- list("table_full" = tab_full, "table_restricted" = tab_restricted, "pred" = pred_df)
+    # nolint start
     # if (do_caret) {
     #     res[["table_full_caret"]] <- caret::confusionMatrix(tab_full)
     #     res[["table_restricted_caret"]] <- caret::confusionMatrix(tab_restricted)
     # }
+    # nolint end
     diffmat <- tab_full - tab_restricted
     if (all(diffmat == 0)) {
         tab_classifiable <- rbind(tab_restricted, 0)

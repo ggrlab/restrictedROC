@@ -46,7 +46,8 @@ If more than 2 list elements or data.frame columns, NotImplemented error.
 }
 \details{
 \if{html}{\out{<div class="sourceCode">}}\preformatted{1. Calculates density estimates per list-element/column with [density()]
-2. Approximates the estimated densities with [stats::approx()] for equally spaced `length.out` elements between xmin and xmax
+2. Approximates the estimated densities with [stats::approx()] for equally
+spaced `length.out` elements between xmin and xmax
 3. If `positive_label` is given, set this as the "+" density.
 }\if{html}{\out{</div>}}
 }

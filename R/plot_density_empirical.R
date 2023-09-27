@@ -3,7 +3,8 @@
 #' If more than 2 list elements or data.frame columns, NotImplemented error.
 #'
 #' 	1. Calculates density estimates per list-element/column with [density()]
-#' 	2. Approximates the estimated densities with [stats::approx()] for equally spaced `length.out` elements between xmin and xmax
+#' 	2. Approximates the estimated densities with [stats::approx()] for equally
+#'     spaced `length.out` elements between xmin and xmax
 #' 	3. If `positive_label` is given, set this as the "+" density.
 #'
 #' @param df
@@ -70,8 +71,8 @@ plot_density_empirical <- function(df,
         xmax <- max(vapply(density_estimates, function(x) max(x[["x"]]), numeric(1)))
     }
     eval_seq <- seq(from = xmin, to = xmax, length.out = length.out)
-    density_approximations <- vapply(density_estimates, function(densX) {
-        stats::approx(densX[["x"]], densX[["y"]], eval_seq)[["y"]]
+    density_approximations <- vapply(density_estimates, function(dens) {
+        stats::approx(dens[["x"]], dens[["y"]], eval_seq)[["y"]]
     }, numeric(length(eval_seq)))
     density_approximations <- tibble::as_tibble(density_approximations)
     density_approximations[["x"]] <- eval_seq
@@ -80,7 +81,11 @@ plot_density_empirical <- function(df,
     if (!is.null(positive_label)) {
         # If a positive label is given, reorder the grouped values as plot_density_empirical
         # needs the "positive" group be the first (only when giving _two_ distributions)
-        density_approximations <- density_approximations[c(positive_label, names(density_approximations)[-which(names(density_approximations) == positive_label)])]
+        density_approximations <- density_approximations[
+            c(positive_label, names(density_approximations)[
+                -which(names(density_approximations) == positive_label)
+            ])
+        ]
     }
 
     if (length(df) == 2) {

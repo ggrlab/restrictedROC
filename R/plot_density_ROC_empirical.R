@@ -169,7 +169,10 @@ plot_density_rROC_empirical <- function(values_grouped,
         positive_label = single_rROC$positive_label
     )
 
-    max_thresholds <- lapply(single_rROC[-which(names(single_rROC) %in% c("performances", "positive_label"))], function(x) x[["threshold"]])
+    max_thresholds <- lapply(
+        single_rROC[-which(names(single_rROC) %in% c("performances", "positive_label"))],
+        function(x) x[["threshold"]]
+    )
 
     plotted_density_maxthresholds <- plotted_density
     if (plot_thresholds) {

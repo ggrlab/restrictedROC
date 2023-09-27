@@ -86,7 +86,6 @@ plot_rROC <- function(rROC_result,
                 part = part,
                 df = df,
                 col_rzAUC = col_rzAUC
-                # ,rzauc_name = rzauc_name
             ) +
                 ggpubr::theme_pubr() +
                 theme(
@@ -129,9 +128,7 @@ plot_rROC <- function(rROC_result,
 plot_rROC_joint <- function(roc_part,
                             df,
                             part,
-                            col_rzAUC
-                            # ,rzauc_name
-) {
+                            col_rzAUC) {
     rzAUC <- NULL # linting
     rzauc_name <- paste0("rzAUC_", part)
     max_abs_rzAUC <- max(abs(df[[rzauc_name]]), 2, na.rm = TRUE)

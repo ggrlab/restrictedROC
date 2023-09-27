@@ -20,15 +20,22 @@
 #'      - keep_highs
 #'          AUC, AUC variance under H0, rzAUC, asymptotic pvalue, threshold
 #'
-#'          Threshold is the restriction value, all other values the corresponding performances for the highest (potentially absolute) rzAUC when keeping high values (markerHIGH)
+#'          Threshold is the restriction value, all other values the corresponding
+#'          performances for the highest (potentially absolute) rzAUC when keeping high
+#'          values (markerHIGH)
 #'      - keep_lows
 #'          AUC, AUC variance under H0, rzAUC, asymptotic pvalue, threshold
 #'
-#'          Threshold is the restriction value, all other values the corresponding performances for the highest (potentially absolute) rzAUC when keeping low values (markerLOW)
+#'          Threshold is the restriction value, all other values the corresponding
+#'          performances for the highest (potentially absolute) rzAUC when keeping low
+#'          values (markerLOW)
 #'      - max_total
 #'          AUC, AUC variance under H0, rzAUC, asymptotic pvalue, threshold, part
 #'
-#'          Threshold is the restriction value, all other values the corresponding performances for the highest (potentially absolute) rzAUC overall. This compares "global", "keep_highs" and "keep_lows", therefore `part` denotes where the result was coming from.
+#'          Threshold is the restriction value, all other values the corresponding
+#'          performances for the highest (potentially absolute) rzAUC overall.
+#'          This compares "global", "keep_highs" and "keep_lows", therefore `part`
+#'          denotes where the result was coming from.
 #'      - positive_label
 #'          What is the positive label
 #'      - pROC_full
@@ -98,7 +105,7 @@ simple_rROC_interpret <- function(perf_rroc, use_abs_rzAUC = TRUE) {
         }
     }
 
-    if (nrow(max_rzauc_perf_highpart) == 0 & nrow(max_rzauc_perf_lowpart) == 0) {
+    if (nrow(max_rzauc_perf_highpart) == 0 && nrow(max_rzauc_perf_lowpart) == 0) {
         max_rzauc <- NA
         max_rzauc_part <- "global"
     } else if (nrow(max_rzauc_perf_highpart) == 0) {

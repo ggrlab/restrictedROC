@@ -66,7 +66,10 @@ plot_rROC_part <- function(rROC_res,
         "original.response" = rROC_res[["pROC_full"]][["original.response"]]
     )
 
-    density_range <- c("min" = min(roc_data_df[["original.predictor"]]), "max" = max(roc_data_df[["original.predictor"]]))
+    density_range <- c(
+        "min" = min(roc_data_df[["original.predictor"]]),
+        "max" = max(roc_data_df[["original.predictor"]])
+    )
     if (all(is.na(p_full_density_ROC))) {
         p_full_density_ROC <- plot_density_ROC_empirical(
             values_grouped = split(roc_data_df[["original.predictor"]], roc_data_df[["original.response"]]),
@@ -92,7 +95,10 @@ plot_rROC_part <- function(rROC_res,
             # then use the closest possible threshold
             closest_i <- which.min(abs(rroc_ths - threshold))
             closest_th <- rroc_ths[closest_i]
-            warning(paste0("\nThreshold \n  ", threshold, "\nnot found, using the closest instead:\n  ", closest_th, ""))
+            warning(paste0(
+                "\nThreshold \n  ", threshold,
+                "\nnot found, using the closest instead:\n  ", closest_th, ""
+            ))
         } else {
             closest_i <- which(rroc_ths == threshold)
         }
@@ -143,8 +149,14 @@ plot_rROC_part <- function(rROC_res,
             col = default_part_colors["low"],
             size = .4
         ) +
-        geom_segment(x = onerow[["fpr_global"]], xend = onerow[["fpr_global"]], y = 0, yend = onerow[["tpr_global"]], col = "red") +
-        geom_segment(x = onerow[["fpr_global"]], xend = 1, y = onerow[["tpr_global"]], yend = onerow[["tpr_global"]], col = "red") +
+        geom_segment(
+            x = onerow[["fpr_global"]], xend = onerow[["fpr_global"]],
+            y = 0, yend = onerow[["tpr_global"]], col = "red"
+        ) +
+        geom_segment(
+            x = onerow[["fpr_global"]], xend = 1,
+            y = onerow[["tpr_global"]], yend = onerow[["tpr_global"]], col = "red"
+        ) +
         # https://stackoverflow.com/questions/12409960/ggplot2-annotate-outside-of-plot
         coord_cartesian(
             xlim = c(-0.01, 1), # This focuses the x-axis on the range of interest
