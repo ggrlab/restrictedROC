@@ -29,23 +29,95 @@ The goal of restrictedROC is to ...
 You can install the development version of restrictedROC like so:
 
 ``` r
-# FILL THIS IN! HOW CAN PEOPLE INSTALL YOUR DEV PACKAGE?
+devtools::install_github("ggrlab/restrictedROC")
 ```
 
-## Example
+## Quickstart
 
-This is a basic example which shows you how to solve a common problem:
+Given a dataset with one dependent (outcome, binary) variable and one independent 
+(predictor, numeric) variables, e.g. aSAH from the pROC package:
 
-```{r example}
-library(restrictedROC)
-## basic example code
+```r
+data(aSAH, package="pROC")
+head(aSAH)
+#    gos6 outcome gender age wfns s100b  ndka
+# 29    5    Good Female  42    1  0.13  3.01
+# 30    5    Good Female  37    1  0.14  8.54
+# 31    5    Good Female  42    1  0.10  8.09
+# 32    5    Good Female  27    1  0.04 10.42
+# 33    1    Poor Female  42    3  0.13 17.40
+# 34    1    Poor   Male  48    2  0.10 12.75
+```
+Here we use ``outcome`` and ``ndka`` as dependent and independent variables, respectively. 
+``outcome`` is a factor with two levels, ``ndka`` is a numeric variable.
+
+The most convenient usage of restrictedROC is via the ``simple_rROC_permutation()`` function.
+The most important results of 
+``restrictedROC::simple_rROC_permutation()`` are:
+
+    - (restricted) AUCs for all possible cutoffs of the predictor variable
+    - A global and maximal (including all restrictions) AUC
+    - Permutation p-values for the global and maximal AUC
+
+
+```r
+# library(restrictedROC)
+set.seed(412)
+res_rroc <- simple_rROC_permutation(
+    response = aSAH$outcome,
+    predictor = aSAH$ndka,
+    positive_label = "Good",
+    n_permutations=100  # increase that in real data!
+)
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
+``res_rroc$permutation_pval`` refers to the permutation p-values of:
+    - ``pval.twoside.global``: The global AUC when all samples are used. This is the usually known AUC with a calculated permutation p-value.
+    - ``pval.twoside.max``: This is the maximal (restricted or unrestricted) AUC's permutation p-value. 
 
-```{r cars}
-summary(cars)
+```r
+print(res_rroc$permutation_pval)
+#    pval.twoside.max pval.twoside.global      n_permutations 
+#          0.16831683          0.01980198        100.00000000 
 ```
+In this particular example we see that the global AUC is significant, but the maximal 
+AUC is not. This tells that the data should **not** be restricted. 
+
+However, if the p-value of the maximal AUC is significant, we can restrict the data
+to the informative range by corresponding to the following information:
+
+
+``res_rroc$global`` refers to the AUC, its variance under H0, the standardized AUC, 
+and its (asymptotic, not permutation!) p-value.
+```r
+print(res_rroc$global)
+#        auc auc_var_H0     rzAUC pval_asym
+# 1 0.388042   0.388042 -1.973565 0.0484312
+```
+``res_rroc$max_total`` refers to the AUC, its variance under H0, the standardized AUC, 
+its (asymptotic, not permutation!) p-value, the threshold(=restriction value) and which 
+part of the data is **kept** and therefore **within the informative range**. 
+```r
+print(res_rroc$max_total)
+#         auc  auc_var_H0     rzAUC   pval_asym threshold part
+# 1 0.3397963 0.003492623 -2.710795 0.006712216     5.685 high
+```
+In this example, the maximal AUC is 0.3398, with a restriction value of 5.685 and a 
+focus on the "high" part. Therefore, the informative range is ``ndka > 5.685``.
+
+
+We have a convenient way to visualize the data and the results:
+```r
+grouped_data <- split(aSAH$ndka, aSAH$outcome)
+pdf("example.pdf", width=10, height=5)
+restrictedROC::plot_density_rROC_empirical(
+    values_grouped=grouped_data
+)
+```
+
+
+
+
 
 You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date. `devtools::build_readme()` is handy for this.
 
