@@ -1,0 +1,180 @@
+---
+title: "Paper 02: rROC theoretic"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Paper 02: rROC theoretic}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+    collapse = TRUE,
+    comment = "#>"
+)
+```
+
+```{r setup}
+library(restrictedROC)
+
+size_factor <- .34
+main_height <- 18.5
+main_width <- 20
+dir.create("res/paper", recursive = TRUE)
+main_plotname <- "res/paper/rROC"
+```
+
+```{r, fig.fullwidth=TRUE, fig.width=5, fig.height=5}
+n_positives <- 100
+n_negatives <- 100
+
+# 1. Random
+# pdf(file.path(paste0(main_plotname, "_random.pdf")), height = main_height * size_factor, width = main_width * size_factor)
+tmp <- plot_rROC_theoretical(
+    qnorm_positive = function(x) qnorm(x, mean = 5, sd = 1),
+    qnorm_negative = function(x) qnorm(x, mean = 5, sd = 1),
+    n_positive = n_positives,
+    n_negative = n_negatives,
+    return_all = TRUE
+)
+print(tmp[["rroc"]][["single_rROC"]][["pROC_full"]])
+# Call:
+# roc.default(response = true_pred_df[["true"]], predictor = true_pred_df[["pred"]],     levels = c(FALSE, TRUE), direction = direction)
+
+# Data: true_pred_df[["pred"]] in 100 controls (true_pred_df[["true"]] FALSE) < 100 cases (true_pred_df[["true"]] TRUE).
+# Area under the curve: 0.5
+tmp <- tmp[["rroc"]][["plots"]]
+tmp <- tmp + ggplot2::ylim(c(-1, 1))
+print(tmp)
+print(tmp + ggplot2::theme(legend.position = "none"))
+print(ggpubr::as_ggplot(ggpubr::get_legend(tmp)))
+# dev.off()
+
+
+# pdf(file.path(paste0(main_plotname, "_posGTneg.pdf")), height = main_height * size_factor, width = main_width * size_factor)
+tmp <- plot_rROC_theoretical(
+    qnorm_positive = function(x) qnorm(x, mean = 6, sd = 1),
+    qnorm_negative = function(x) qnorm(x, mean = 5, sd = 1),
+    n_positive = n_positives,
+    n_negative = n_negatives,
+    return_all = TRUE
+)
+print(tmp[["rroc"]][["single_rROC"]][["pROC_full"]])
+# Call:
+# roc.default(response = true_pred_df[["true"]], predictor = true_pred_df[["pred"]],     levels = c(FALSE, TRUE), direction = direction)
+
+# Data: true_pred_df[["pred"]] in 100 controls (true_pred_df[["true"]] FALSE) < 100 cases (true_pred_df[["true"]] TRUE).
+# Area under the curve: 0.7655
+tmp <- tmp[["rroc"]][["plots"]]
+print(tmp)
+print(tmp + ggplot2::theme(legend.position = "none"))
+print(ggpubr::as_ggplot(ggpubr::get_legend(tmp)))
+# dev.off()
+
+
+# pdf(file.path(paste0(main_plotname, "_pos2norm_highdiff.pdf")), height = main_height * size_factor, width = main_width * size_factor)
+tmp <- plot_rROC_theoretical(
+    qnorm_positive = function(x) {
+        retvec <- numeric(length(x))
+        for (i in seq_along(x)) {
+            if (i %% 4 == 0) {
+                retvec[i] <- qnorm(x[i], 9, 1)
+            } else {
+                retvec[i] <- qnorm(x[i], 5, 1)
+            }
+        }
+        return(retvec)
+    },
+    qnorm_negative = function(x) qnorm(x, mean = 5, sd = 1),
+    n_positive = n_positives,
+    n_negative = n_negatives,
+    return_all = TRUE
+)
+print(tmp[["rroc"]][["single_rROC"]][["pROC_full"]])
+# Call:
+# roc.default(response = true_pred_df[["true"]], predictor = true_pred_df[["pred"]],     levels = c(FALSE, TRUE), direction = direction)
+
+# Data: true_pred_df[["pred"]] in 100 controls (true_pred_df[["true"]] FALSE) < 100 cases (true_pred_df[["true"]] TRUE).
+# Area under the curve: 0.6212
+tmp <- tmp[["rroc"]][["plots"]]
+print(tmp)
+print(tmp + ggplot2::theme(legend.position = "none"))
+print(ggpubr::as_ggplot(ggpubr::get_legend(tmp)))
+# dev.off()
+
+
+# pdf(file.path(paste0(main_plotname, "_pos2norm_highdiff_v2.pdf")), height = main_height * size_factor, width = main_width * size_factor)
+tmp <- plot_rROC_theoretical(
+    qnorm_positive = function(x) {
+        retvec <- numeric(length(x))
+        for (i in seq_along(x)) {
+            if (i %% 10 == 0) {
+                retvec[i] <- qnorm(x[i], 9, 1)
+            } else {
+                retvec[i] <- qnorm(x[i], 5, 1)
+            }
+        }
+        return(retvec)
+    },
+    qnorm_negative = function(x) qnorm(x, mean = 5, sd = 1),
+    n_positive = n_positives,
+    n_negative = n_negatives,
+    return_all = TRUE
+)
+print(tmp[["rroc"]][["single_rROC"]][["pROC_full"]])
+# Call:
+# roc.default(response = true_pred_df[["true"]], predictor = true_pred_df[["pred"]],     levels = c(FALSE, TRUE), direction = direction)
+
+# Data: true_pred_df[["pred"]] in 100 controls (true_pred_df[["true"]] FALSE) < 100 cases (true_pred_df[["true"]] TRUE).
+# Area under the curve: 0.5455
+tmp <- tmp[["rroc"]][["plots"]]
+print(tmp)
+print(tmp + ggplot2::theme(legend.position = "none"))
+print(ggpubr::as_ggplot(ggpubr::get_legend(tmp)))
+# dev.off()
+
+
+# # 4. Different mean + variance
+# # 4.1 mean: positive > negative, var: positive > negative --> left-skewed
+# pdf(file.path(paste0(main_plotname, "_posGTneg_posVARGTneg.pdf")), height = main_height * size_factor, width = main_width * size_factor)
+tmp <- plot_rROC_theoretical(
+    qnorm_positive = function(x) qnorm(x, mean = 6, sd = 2),
+    qnorm_negative = function(x) qnorm(x, mean = 5, sd = 1),
+    n_positive = n_positives,
+    n_negative = n_negatives,
+    return_all = TRUE
+)
+print(tmp[["rroc"]][["single_rROC"]][["pROC_full"]])
+# Call:
+# roc.default(response = true_pred_df[["true"]], predictor = true_pred_df[["pred"]],     levels = c(FALSE, TRUE), direction = direction)
+
+# Data: true_pred_df[["pred"]] in 100 controls (true_pred_df[["true"]] FALSE) < 100 cases (true_pred_df[["true"]] TRUE).
+# Area under the curve: 0.6754
+tmp <- tmp[["rroc"]][["plots"]]
+print(tmp)
+print(tmp + ggplot2::theme(legend.position = "none"))
+print(ggpubr::as_ggplot(ggpubr::get_legend(tmp)))
+# dev.off()
+
+
+# # 4.2 mean: positive > negative, var: positive < negative --> right-skewed
+# pdf(file.path(paste0(main_plotname, "_posGTneg_posVARLTneg.pdf")), height = main_height * size_factor, width = main_width * size_factor)
+tmp <- plot_rROC_theoretical(
+    qnorm_positive = function(x) qnorm(x, mean = 6, sd = 1),
+    qnorm_negative = function(x) qnorm(x, mean = 5, sd = 2),
+    n_positive = n_positives,
+    n_negative = n_negatives,
+    return_all = TRUE
+)
+print(tmp)
+print(tmp[["rroc"]][["single_rROC"]][["pROC_full"]])
+# Call:
+# roc.default(response = true_pred_df[["true"]], predictor = true_pred_df[["pred"]],     levels = c(FALSE, TRUE), direction = direction)
+
+# Data: true_pred_df[["pred"]] in 100 controls (true_pred_df[["true"]] FALSE) < 100 cases (true_pred_df[["true"]] TRUE).
+# Area under the curve: 0.5
+tmp <- tmp[["rroc"]][["plots"]]
+print(tmp + ggplot2::theme(legend.position = "none"))
+print(ggpubr::as_ggplot(ggpubr::get_legend(tmp)))
+# dev.off()
+```

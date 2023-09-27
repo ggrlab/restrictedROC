@@ -1,0 +1,190 @@
+---
+title: "Paper 04: rROC theoretic with FPR"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Paper 04: rROC theoretic with FPR}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+    collapse = TRUE,
+    comment = "#>"
+)
+```
+
+```{r setup}
+library(restrictedROC)
+library(ggplot2)
+
+size_factor <- .34
+main_height <- 20
+main_width <- 20
+dir.create("res/paper", recursive = TRUE)
+main_plotname <- "res/paper/rROC_fpr"
+```
+# Do not use the code!
+This code here is not intended to be used but rather to show the resulting plots. The usage is 
+somewhat different to what I would suggest. Look at the pictures, not at the code. 
+```{r, fig.fullwidth=TRUE, fig.width=5, fig.height=5}
+plots_including_fpr <- function(rroc_theo_result, rroc_ylim = NA) {
+    plot_x_fpr <- ggplot(
+        rroc_theo_result[["rroc"]][["single_rROC"]][["performances"]],
+        aes(x = threshold, y = fpr_global)
+    ) +
+        geom_point() +
+        ylab("False positive rate") +
+        xlab("x threshold") +
+        ggpubr::theme_pubr()
+    srroc <- rroc_theo_result[["rroc"]][["single_rROC"]]
+    max_th <- srroc$max_total$threshold
+    max_rzauc <- srroc$max_total$rzAUC
+    max_fpr <- srroc$performances[srroc$performances$threshold == max_th, ][["fpr_global"]]
+    max_tpr <- srroc$performances[srroc$performances$threshold == max_th, ][["tpr_global"]]
+
+    if (!all(is.na(rroc_ylim))) {
+        tmp <- rroc_theo_result[["rroc"]][["plots"]] + ggplot2::ylim(rroc_ylim)
+    } else {
+        tmp <- rroc_theo_result[["rroc"]][["plots"]]
+    }
+
+    return(list(
+        tmp,
+        tmp + ggplot2::theme(legend.position = "none"),
+        ggpubr::as_ggplot(ggpubr::get_legend(tmp)),
+        plot_x_fpr,
+        patchwork::wrap_plots(list(
+            "A" = tmp[[1]],
+            "B" = tmp[[3]] +
+                geom_segment(x = max_fpr, xend = max_fpr, y = -Inf, yend = max_tpr, col = "red"),
+            "C" = plot_x_fpr +
+                geom_segment(x = max_th, xend = max_th, y = -Inf, yend = max_fpr, col = "red") +
+                geom_segment(x = -Inf, xend = max_th, y = max_fpr, yend = max_fpr, col = "red"),
+            "D" = tmp[[4]] +
+                geom_segment(x = max_fpr, xend = max_fpr, y = -Inf, yend = max_rzauc, col = "red") +
+                ggplot2::theme(legend.position = "none")
+        )) +
+            patchwork::plot_layout(design = "AB\nCD")
+    ))
+}
+
+n_positives <- 100
+n_negatives <- 100
+
+# 1. Random
+filename <- file.path(paste0(main_plotname, "_random.pdf"))
+# pdf(filename, height = main_height * size_factor, width = main_width * size_factor)
+rroc_theo <- plot_rROC_theoretical(
+    qnorm_positive = function(x) qnorm(x, mean = 5, sd = 1),
+    qnorm_negative = function(x) qnorm(x, mean = 5, sd = 1),
+    n_positive = n_positives,
+    n_negative = n_negatives,
+    return_all = TRUE
+)
+print(plots_including_fpr(rroc_theo, rroc_ylim = c(-1, 1)))
+# dev.off()
+# sink(paste0(filename, ".txt"))
+print(rroc_theo)
+# sink()
+
+filename <- file.path(paste0(main_plotname, "_posGTneg.pdf"))
+# pdf(filename, height = main_height * size_factor, width = main_width * size_factor)
+rroc_theo <- plot_rROC_theoretical(
+    qnorm_positive = function(x) qnorm(x, mean = 6, sd = 1),
+    qnorm_negative = function(x) qnorm(x, mean = 5, sd = 1),
+    n_positive = n_positives,
+    n_negative = n_negatives,
+    return_all = TRUE
+)
+print(plots_including_fpr(rroc_theo))
+# dev.off()
+# sink(paste0(filename, ".txt"))
+print(rroc_theo)
+# sink()
+
+
+filename <- file.path(paste0(main_plotname, "_pos2norm_highdiff.pdf"))
+# pdf(filename, height = main_height * size_factor, width = main_width * size_factor)
+rroc_theo <- plot_rROC_theoretical(
+    qnorm_positive = function(x) {
+        retvec <- numeric(length(x))
+        for (i in seq_along(x)) {
+            if (i %% 4 == 0) {
+                retvec[i] <- qnorm(x[i], 9, 1)
+            } else {
+                retvec[i] <- qnorm(x[i], 5, 1)
+            }
+        }
+        return(retvec)
+    },
+    qnorm_negative = function(x) qnorm(x, mean = 5, sd = 1),
+    n_positive = n_positives,
+    n_negative = n_negatives,
+    return_all = TRUE
+)
+print(plots_including_fpr(rroc_theo))
+# dev.off()
+# sink(paste0(filename, ".txt"))
+print(rroc_theo)
+# sink()
+
+
+filename <- file.path(paste0(main_plotname, "_pos2norm_highdiff_v2.pdf"))
+# pdf(filename, height = main_height * size_factor, width = main_width * size_factor)
+rroc_theo <- plot_rROC_theoretical(
+    qnorm_positive = function(x) {
+        retvec <- numeric(length(x))
+        for (i in seq_along(x)) {
+            if (i %% 10 == 0) {
+                retvec[i] <- qnorm(x[i], 9, 1)
+            } else {
+                retvec[i] <- qnorm(x[i], 5, 1)
+            }
+        }
+        return(retvec)
+    },
+    qnorm_negative = function(x) qnorm(x, mean = 5, sd = 1),
+    n_positive = n_positives,
+    n_negative = n_negatives,
+    return_all = TRUE
+)
+print(plots_including_fpr(rroc_theo))
+# dev.off()
+# sink(paste0(filename, ".txt"))
+print(rroc_theo)
+# sink()
+
+# 4. Different mean + variance
+# 4.1 mean: positive > negative, var: positive > negative --> left-skewed
+filename <- file.path(paste0(main_plotname, "_posGTneg_posVARGTneg.pdf"))
+# pdf(filename, height = main_height * size_factor, width = main_width * size_factor)
+rroc_theo <- plot_rROC_theoretical(
+    qnorm_positive = function(x) qnorm(x, mean = 6, sd = 2),
+    qnorm_negative = function(x) qnorm(x, mean = 5, sd = 1),
+    n_positive = n_positives,
+    n_negative = n_negatives,
+    return_all = TRUE
+)
+print(plots_including_fpr(rroc_theo))
+# dev.off()
+# sink(paste0(filename, ".txt"))
+print(rroc_theo)
+# sink()
+
+# 4.2 mean: positive > negative, var: positive < negative --> right-skewed
+filename <- file.path(paste0(main_plotname, "_posGTneg_posVARLTneg.pdf"))
+# pdf(filename, height = main_height * size_factor, width = main_width * size_factor)
+rroc_theo <- plot_rROC_theoretical(
+    qnorm_positive = function(x) qnorm(x, mean = 6, sd = 1),
+    qnorm_negative = function(x) qnorm(x, mean = 5, sd = 2),
+    n_positive = n_positives,
+    n_negative = n_negatives,
+    return_all = TRUE
+)
+print(plots_including_fpr(rroc_theo))
+# dev.off()
+# sink(paste0(filename, ".txt"))
+print(rroc_theo)
+# sink()
+```

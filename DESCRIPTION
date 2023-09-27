@@ -7,6 +7,8 @@ Authors@R:
 Description: Calculate restricted ROC-curves, AUCs and permutation p-values.
 License: MIT + file LICENSE
 Suggests: 
+    knitr,
+    rmarkdown,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Encoding: UTF-8
@@ -26,3 +28,4 @@ Imports:
     stats,
     tibble,
     tidyr
+VignetteBuilder: knitr
