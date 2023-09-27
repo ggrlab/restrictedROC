@@ -89,15 +89,16 @@ usethis::use_github(
     visibility = "public"
 )
 ```
+WARNING!!!
 If an error occurs because e.g. the repository exists already at github, use the following instead of 
 ``usethis::use_github()``:
 ```bash
-
 git branch -M main_devel
 git remote add origin git@github.com:ggrlab/restrictedROC.git
-git pull
+git checkout main
+git merge main_devel --allow-unrelated-histories
 git push -u origin main
-
+git branch --delete main_devel
 ```
 
 ```r
