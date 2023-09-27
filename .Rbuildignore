@@ -1,10 +1,11 @@
-^restrictedROC\.Rproj$
-^\.Rproj\.user$
 ^LICENSE\.md$
 ^README\.Rmd$
-^cran-comments\.md$
+^\.Rproj\.user$
 ^\.github$
-^codecov\.yml$
+^\.pre-commit-config\.yaml$
 ^_pkgdown\.yml$
+^codecov\.yml$
+^cran-comments\.md$
 ^docs$
 ^pkgdown$
+^restrictedROC\.Rproj$
