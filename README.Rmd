@@ -139,6 +139,5 @@ precommit is a wonderful tool to check your code before committing it.
 # bash::$ pip3 install pre-commit
 precommit::install_precommit()
 precommit::use_precommit()
-# Before committing, edit pre-commit-config.yaml
-
 ```
+Before committing: ``pre-commit install --hook-type pre-push``, then commit. 
