@@ -71,3 +71,42 @@ usethis::use_git()
 ```
 
 
+``usethis`` tells you to envoke further github-related commands. 
+There is two ways to continue: 
+1. Create a personal access token (PAT) and use it to authenticate with github
+2. Manually push the package to github 
+
+Pushing manually works fine, but some advanced ``usethis`` commands won't work properly, 
+therefore I will continue with the PAT.
+
+```{r}
+#
+usethis::create_github_token()
+gitcreds::gitcreds_set() # Then enter the freshly generated token
+usethis::use_github(
+    organisation = "ggrlab",
+    private = FALSE,
+    visibility = "public"
+)
+```
+If an error occurs because e.g. the repository exists already at github, use the following instead of 
+``usethis::use_github()``:
+```bash
+
+git branch -M main_devel
+git remote add origin git@github.com:ggrlab/restrictedROC.git
+git pull
+git push -u origin main
+
+```
+
+```r
+usethis::use_tidy_github()
+usethis::use_tidy_github_actions()
+# overwrite tidy's default "check-full" with "check-standard"
+# to not run so many checks
+usethis::use_github_action("check-standard")
+usethis::use_tidy_github_labels()
+usethis::use_pkgdown_github_pages()
+```
+
