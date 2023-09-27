@@ -163,5 +163,81 @@ precommit::snippet_generate('additional-deps-roxygenize')
 
 
 # How to add information
+
+```r
+
+# Use pre-commits to check your code before committing it
+remotes::install_github("lorenzwalthert/precommit")
+precommit::install_precommit()
+precommit::use_precommit()
+
+# Increase the versions, manually or by using usethis::use_version()
+usethis::use_version("minor")
+usethis::use_version("dev")
+
+# Add new functionality and document it
+# During development, have a clean R environment and run devtools::load_all() to load the current status of the package
+devtools::load_all()
+
+# After adding new functionality, run devtools::check() to update the documentation
+devtools::check()
+devtools::document()
+
+# Vignettes are a great way to document your package
+# Add a new vignette by running 
+usethis::use_vignette("vignette_name")
+# Change the vignette in vignettes/vignette_name.Rmd
+# Build the vignette by running
+devtools::build_vignettes() # This also installs the package
+
+devtools::build_readme() # This updates the README.md file from the README.Rmd
+```
+
 - Disable pre-commit for a single commit: ``git commit . -m 'quick fix' --no-verify``
- 
+
+
+# Troubleshooting: 
+
+## ``devtools::build_vignettes`` fails
+```
+--- re-building 'first_function.Rmd' using rmarkdown
+Error: processing vignette 'first_function.Rmd' failed with diagnostics:
+unused argument (resolve_symlink = FALSE)
+--- failed re-building 'first_function.Rmd'
+
+SUMMARY: processing the following file failed:
+  'first_function.Rmd'
+```
+
+Solution: 
+
+```
+install.packages("xfun")
+```
+
+## Vignette xfun::isFalse() will be deprecated
+
+What:    ``devtools::check()`` throws the following error:
+
+```
+> checking re-building of vignette outputs ... ERROR
+  Error(s) in re-building vignettes:
+    ...
+  --- re-building 'first_function.Rmd' using rmarkdown
+  Quitting from lines 11-15 (first_function.Rmd) 
+  Error: processing vignette 'first_function.Rmd' failed with diagnostics:
+  The function xfun::isFALSE() will be deprecated in the future. Please consider using base::isFALSE(x) or identical(x, FALSE) instead.
+  --- failed re-building 'first_function.Rmd'
+  
+  SUMMARY: processing the following file failed:
+    'first_function.Rmd'
+  
+  Error: Vignette re-building failed.
+  Execution halted
+```
+    
+Solution: See https://stackoverflow.com/questions/76081732/problem-when-converting-r-file-to-r-markdown
+
+```
+install.packages("knitr")
+```
