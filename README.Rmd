@@ -54,3 +54,20 @@ plot(pressure)
 ```
 
 In that case, don't forget to commit and push the resulting figure files, so they display on GitHub and CRAN.
+
+
+# How was this package created?
+
+```r
+
+# for VSCode
+install.packages("languageserver")
+install.packages("devtools")
+usethis::create_tidy_package("/home/gugl/clonedgit/ggrlab/restrictedROC")
+usethis::proj_activate("/home/gugl/clonedgit/ggrlab/restrictedROC")
+usethis::use_tidy_style(strict = TRUE)
+usethis::use_git()
+
+```
+
+
