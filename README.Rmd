@@ -35,21 +35,26 @@ devtools::install_github("ggrlab/restrictedROC")
 ## Quickstart
 
 Given a dataset with one dependent (outcome, binary) variable and one independent 
-(predictor, numeric) variables, e.g. aSAH from the pROC package:
+(predictor, numeric) variables, e.g. the value of a biomarker in two groups of patients,
+we want to know if the biomarker is informative for the outcome.
 
 ```r
-data(aSAH, package="pROC")
-head(aSAH)
-#    gos6 outcome gender age wfns s100b  ndka
-# 29    5    Good Female  42    1  0.13  3.01
-# 30    5    Good Female  37    1  0.14  8.54
-# 31    5    Good Female  42    1  0.10  8.09
-# 32    5    Good Female  27    1  0.04 10.42
-# 33    1    Poor Female  42    3  0.13 17.40
-# 34    1    Poor   Male  48    2  0.10 12.75
+set.seed(123)
+biodata <- data.frame(
+    outcome = factor(c(rep("Good", 50), rep("Poor", 50))),
+    biomarker = c(rnorm(50, 10, 3), rnorm(50, 9, 1))
+)
+head(biodata)
+#   outcome biomarker
+# 1    Good  8.318573
+# 2    Good  9.309468
+# 3    Good 14.676125
+# 4    Good 10.211525
+# 5    Good 10.387863
+# 6    Good 15.145195
 ```
-Here we use ``outcome`` and ``ndka`` as dependent and independent variables, respectively. 
-``outcome`` is a factor with two levels, ``ndka`` is a numeric variable.
+Here we use ``outcome`` and ``biomarker`` as dependent and independent variables, respectively. 
+``outcome`` is a factor with two levels, ``biomarker`` is a numeric variable.
 
 The most convenient usage of restrictedROC is via the ``simple_rROC_permutation()`` function.
 The most important results of 
@@ -63,9 +68,9 @@ The most important results of
 ```r
 # library(restrictedROC)
 set.seed(412)
-res_rroc <- simple_rROC_permutation(
-    response = aSAH$outcome,
-    predictor = aSAH$ndka,
+res_rroc <- restrictedROC::simple_rROC_permutation(
+    response = biodata$outcome,
+    predictor = biodata$biomarker,
     positive_label = "Good",
     n_permutations=100  # increase that in real data!
 )
@@ -76,43 +81,49 @@ res_rroc <- simple_rROC_permutation(
     - ``pval.twoside.max``: This is the maximal (restricted or unrestricted) AUC's permutation p-value. 
 
 ```r
-print(res_rroc$permutation_pval)
+print(round(res_rroc$permutation_pval, 3))
 #    pval.twoside.max pval.twoside.global      n_permutations 
-#          0.16831683          0.01980198        100.00000000 
+#               0.010               0.099             100.000
 ```
-In this particular example we see that the global AUC is significant, but the maximal 
-AUC is not. This tells that the data should **not** be restricted. 
-
-However, if the p-value of the maximal AUC is significant, we can restrict the data
-to the informative range by corresponding to the following information:
+In this particular example we see that at a significance level of 0.05, the global AUC is insignificant, but the maximal AUC is significant. 
+This tells that the data should be restricted and has a 
+**limited informative range**. 
 
 
 ``res_rroc$global`` refers to the AUC, its variance under H0, the standardized AUC, 
-and its (asymptotic, not permutation!) p-value.
+and its (asymptotic, not permutation!) p-value when using all samples without restriction.
 ```r
 print(res_rroc$global)
-#        auc auc_var_H0     rzAUC pval_asym
-# 1 0.388042   0.388042 -1.973565 0.0484312
+#      auc auc_var_H0   rzAUC pval_asym
+# 1 0.6016     0.6016 1.75103 0.0799407
 ```
+We see that the AUC is 0.6016, with a p-value of 0.08. This is not significant at a
+significance level of 0.05. 
+
 ``res_rroc$max_total`` refers to the AUC, its variance under H0, the standardized AUC, 
 its (asymptotic, not permutation!) p-value, the threshold(=restriction value) and which 
 part of the data is **kept** and therefore **within the informative range**. 
 ```r
 print(res_rroc$max_total)
-#         auc  auc_var_H0     rzAUC   pval_asym threshold part
-# 1 0.3397963 0.003492623 -2.710795 0.006712216     5.685 high
+#         auc  auc_var_H0    rzAUC    pval_asym threshold part
+# 1 0.9089069 0.007759784 4.641941 3.451517e-06  9.377944 high
 ```
-In this example, the maximal AUC is 0.3398, with a restriction value of 5.685 and a 
-focus on the "high" part. Therefore, the informative range is ``ndka > 5.685``.
+In this example, the maximal AUC is 0.9089, with a restriction value of 9.377944 and a 
+focus on the "low" part. Therefore, the informative range is ``biomarker < 9.378``.
+
+In particular, we observe that the AUC is much higher than the global AUC, and that the
+p-value is lower. This is because the data is restricted to the informative range 
+and the AUC is calculated only on the samples with values within this range. 
 
 
 We have a convenient way to visualize the data and the results:
 ```r
-grouped_data <- split(aSAH$ndka, aSAH$outcome)
+grouped_data <- split(biodata$biomarker, biodata$outcome)
 png("example.png", width=800, height=800, res=150)
 print(
     restrictedROC::plot_density_rROC_empirical(
-    values_grouped=grouped_data, positive_label = "Good"
+        values_grouped=grouped_data, 
+        positive_label = "Good"
 )
 )
 dev.off()
@@ -120,19 +131,10 @@ dev.off()
 Link to the resulting png: ![aSAH rROC example](example.png)
 
 
-
-
-
-
-You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date. `devtools::build_readme()` is handy for this.
-
-You can also embed plots, for example:
-
-```{r pressure, echo = FALSE}
-plot(pressure)
-```
-
-In that case, don't forget to commit and push the resulting figure files, so they display on GitHub and CRAN.
+``plot_density_rROC_empirical()`` effectively: 
+    1. Calls ``simple_rROC`` to perform restriction
+    2. Makes the results readable with ``simple_rROC_interpret()``
+    3. Plots the original data and the restriction results
 
 
 # How was this package created?
