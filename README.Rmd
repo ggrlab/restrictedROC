@@ -141,3 +141,11 @@ precommit::install_precommit()
 precommit::use_precommit()
 ```
 Before committing: ``pre-commit install --hook-type pre-push``, then commit. 
+
+Before pushing: Need devtools as dependency
+
+```r
+usethis::use_package("devtools")
+usethis::use_git_hook("pre-push", script = "devtools::check()")
+```r
+```
