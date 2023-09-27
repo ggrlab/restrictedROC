@@ -109,11 +109,16 @@ focus on the "high" part. Therefore, the informative range is ``ndka > 5.685``.
 We have a convenient way to visualize the data and the results:
 ```r
 grouped_data <- split(aSAH$ndka, aSAH$outcome)
-pdf("example.pdf", width=10, height=5)
-restrictedROC::plot_density_rROC_empirical(
-    values_grouped=grouped_data
+png("example.png", width=800, height=800, res=150)
+print(
+    restrictedROC::plot_density_rROC_empirical(
+    values_grouped=grouped_data, positive_label = "Good"
 )
+)
+dev.off()
 ```
+Link to the resulting png: ![aSAH rROC example](example.png)
+
 
 
 
