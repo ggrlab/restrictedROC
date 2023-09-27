@@ -28,7 +28,7 @@ The goal of restrictedROC is to ...
 
 You can install the development version of restrictedROC like so:
 
-``` r
+```{r, eval=FALSE}
 devtools::install_github("ggrlab/restrictedROC")
 ```
 
@@ -38,7 +38,7 @@ Given a dataset with one dependent (outcome, binary) variable and one independen
 (predictor, numeric) variables, e.g. the value of a biomarker in two groups of patients,
 we want to know if the biomarker is informative for the outcome.
 
-```r
+```{r}
 set.seed(123)
 biodata <- data.frame(
     outcome = factor(c(rep("Good", 50), rep("Poor", 50))),
@@ -65,14 +65,14 @@ The most important results of
     - Permutation p-values for the global and maximal AUC
 
 
-```r
+```{r}
 # library(restrictedROC)
 set.seed(412)
 res_rroc <- restrictedROC::simple_rROC_permutation(
     response = biodata$outcome,
     predictor = biodata$biomarker,
     positive_label = "Good",
-    n_permutations=100  # increase that in real data!
+    n_permutations = 100 # increase that in real data!
 )
 ```
 
@@ -80,9 +80,9 @@ res_rroc <- restrictedROC::simple_rROC_permutation(
     - ``pval.twoside.global``: The global AUC when all samples are used. This is the usually known AUC with a calculated permutation p-value.
     - ``pval.twoside.max``: This is the maximal (restricted or unrestricted) AUC's permutation p-value. 
 
-```r
+```{r}
 print(round(res_rroc$permutation_pval, 3))
-#    pval.twoside.max pval.twoside.global      n_permutations 
+#    pval.twoside.max pval.twoside.global      n_permutations
 #               0.010               0.099             100.000
 ```
 In this particular example we see that at a significance level of 0.05, the global AUC is insignificant, but the maximal AUC is significant. 
@@ -92,7 +92,7 @@ This tells that the data should be restricted and has a
 
 ``res_rroc$global`` refers to the AUC, its variance under H0, the standardized AUC, 
 and its (asymptotic, not permutation!) p-value when using all samples without restriction.
-```r
+```{r}
 print(res_rroc$global)
 #      auc auc_var_H0   rzAUC pval_asym
 # 1 0.6016     0.6016 1.75103 0.0799407
@@ -103,7 +103,7 @@ significance level of 0.05.
 ``res_rroc$max_total`` refers to the AUC, its variance under H0, the standardized AUC, 
 its (asymptotic, not permutation!) p-value, the threshold(=restriction value) and which 
 part of the data is **kept** and therefore **within the informative range**. 
-```r
+```{r}
 print(res_rroc$max_total)
 #         auc  auc_var_H0    rzAUC    pval_asym threshold part
 # 1 0.9089069 0.007759784 4.641941 3.451517e-06  9.377944 high
@@ -117,18 +117,18 @@ and the AUC is calculated only on the samples with values within this range.
 
 
 We have a convenient way to visualize the data and the results:
-```r
+```{r, out.width="50%"}
 grouped_data <- split(biodata$biomarker, biodata$outcome)
-png("example.png", width=800, height=800, res=150)
+png("example.png", width = 800, height = 800, res = 150)
 print(
     restrictedROC::plot_density_rROC_empirical(
-        values_grouped=grouped_data, 
+        values_grouped = grouped_data,
         positive_label = "Good"
-)
+    )
 )
 dev.off()
 ```
-Link to the resulting png: ![aSAH rROC example](example.png)
+![aSAH rROC example](example.png)
 
 
 ``plot_density_rROC_empirical()`` effectively: 
@@ -139,8 +139,7 @@ Link to the resulting png: ![aSAH rROC example](example.png)
 
 # How was this package created?
 
-```r
-
+```{r, eval = FALSE}
 # for VSCode
 install.packages("languageserver")
 install.packages("devtools")
@@ -148,7 +147,6 @@ usethis::create_tidy_package("/home/gugl/clonedgit/ggrlab/restrictedROC")
 usethis::proj_activate("/home/gugl/clonedgit/ggrlab/restrictedROC")
 usethis::use_tidy_style(strict = TRUE)
 usethis::use_git()
-
 ```
 
 
@@ -160,7 +158,7 @@ There is two ways to continue:
 Pushing manually works fine, but some advanced ``usethis`` commands won't work properly, 
 therefore I will continue with the PAT.
 
-```{r}
+```{r, eval = FALSE}
 #
 usethis::create_github_token()
 gitcreds::gitcreds_set() # Then enter the freshly generated token
@@ -173,7 +171,7 @@ usethis::use_github(
 WARNING!!!
 If an error occurs because e.g. the repository exists already at github, use the following instead of 
 ``usethis::use_github()``:
-```bash
+```{bash, eval = FALSE}
 git branch -M main_devel
 git remote add origin git@github.com:ggrlab/restrictedROC.git
 git checkout main
@@ -182,7 +180,7 @@ git push -u origin main
 git branch --delete main_devel
 ```
 
-```r
+```{r, eval = FALSE}
 usethis::use_tidy_github()
 usethis::use_tidy_github_actions()
 # overwrite tidy's default "check-full" with "check-standard"
@@ -194,24 +192,24 @@ usethis::use_pkgdown_github_pages()
 
 
 Additional information: 
-```r
+```{r, eval = FALSE}
 usethis::use_author(
-    given="Gunther", 
-    family="Glehr", 
-    email="gunthergl@gmx.net", 
-    role=c("aut", "cre"), 
-    comment = c("ORCID"="0000-0002-1495-9162")
-    )
+    given = "Gunther",
+    family = "Glehr",
+    email = "gunthergl@gmx.net",
+    role = c("aut", "cre"),
+    comment = c("ORCID" = "0000-0002-1495-9162")
+)
 usethis::use_lifecycle()
 usethis::use_news_md()
 lintr::use_lintr(type = "tidyverse")
-# Change manually to: 
+# Change manually to:
 # linters: linters_with_defaults(line_length_linter = line_length_linter(120),indentation_linter = indentation_linter(4)) # see vignette("lintr")
 # encoding: "UTF-8"
 ```
 precommit is a wonderful tool to check your code before committing it. 
 
-```r
+```{r, eval = FALSE}
 # https://lorenzwalthert.github.io/precommit/articles/precommit.html
 # install.packages("precommit")
 # bash::$ conda deactivate
@@ -222,7 +220,7 @@ precommit::use_precommit()
 Before committing: ``pre-commit install --hook-type pre-push``, then commit. 
 
 Used packages:
-```r
+```{r, eval = FALSE}
 usethis::use_package("ggplot2")
 usethis::use_package("patchwork")
 usethis::use_package("pROC")
@@ -234,17 +232,14 @@ usethis::use_package("labeling")
 usethis::use_package("tidyr")
 usethis::use_package("statmod")
 usethis::use_package("future.apply")
-precommit::snippet_generate('additional-deps-roxygenize')
-
-
+precommit::snippet_generate("additional-deps-roxygenize")
 ```
 
 
 
 # How to add information
 
-```r
-
+```{r, eval = FALSE}
 # Use pre-commits to check your code before committing it
 remotes::install_github("lorenzwalthert/precommit")
 precommit::install_precommit()
@@ -263,7 +258,7 @@ devtools::check()
 devtools::document()
 
 # Vignettes are a great way to document your package
-# Add a new vignette by running 
+# Add a new vignette by running
 usethis::use_vignette("vignette_name")
 # Change the vignette in vignettes/vignette_name.Rmd
 # Build the vignette by running
@@ -290,7 +285,7 @@ SUMMARY: processing the following file failed:
 
 Solution: 
 
-```
+```{r, eval = FALSE}
 install.packages("xfun")
 ```
 
@@ -317,6 +312,6 @@ What:    ``devtools::check()`` throws the following error:
     
 Solution: See https://stackoverflow.com/questions/76081732/problem-when-converting-r-file-to-r-markdown
 
-```
+```{r, eval = FALSE}
 install.packages("knitr")
 ```
