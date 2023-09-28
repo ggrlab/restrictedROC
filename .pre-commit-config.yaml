@@ -87,8 +87,8 @@ repos:
         language: fail
         files: '\.(Rhistory|RData|Rds|rds)$'
         # `exclude: <regex>` to allow committing specific files
-    - id: devtools::check
-      name: devtools::check
+    - id: devtools-check
+      name: devtools-check
       additional_dependencies:
       -    devtools
       -    dplyr
