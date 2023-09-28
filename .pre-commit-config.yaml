@@ -88,7 +88,7 @@ repos:
         files: '\.(Rhistory|RData|Rds|rds)$'
         # `exclude: <regex>` to allow committing specific files
     - id: devtools::check
-      name: devtools::check (Takes long first time installing devtools)
+      name: devtools::check
       additional_dependencies:
       -    devtools
       -    dplyr
