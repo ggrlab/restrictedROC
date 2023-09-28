@@ -21,6 +21,7 @@ The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/
 
   - Added code and articles from the former gitlab repository
     [restrictedROC-gitlab](https://git.uni-regensburg.de/03_projects/theory/restrictedROC).
+
 # restrictedROC 0.0.0.9000
 
 * Initialization.
