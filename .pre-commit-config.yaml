@@ -108,5 +108,7 @@ repos:
       language: r
       stages:
         - "pre-push"
+      verbose: true
+      
 # ci:
 #     autoupdate_schedule: monthly
