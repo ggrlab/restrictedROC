@@ -1,3 +1,7 @@
+# upper level files
+.*.pdf
+.*.png
+\.lintr
 ^LICENSE\.md$
 ^Meta$
 ^README\.Rmd$

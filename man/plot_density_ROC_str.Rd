@@ -48,13 +48,14 @@ plot the corresponding densities and their ROC-curves.
 }
 \examples{
 
-plot_density_ROC_str()
+plot_density_ROC_str(length.out = 50)
 plot_density_ROC_str(
     dist_positive_str = "norm",
     dist_negative = "norm",
     dist_positive_args = list("mean" = 0, "sd" = 1),
     dist_negative_args = list("mean" = 1, "sd" = 1),
-    xmin = -4, xmax = 7
+    xmin = -4, xmax = 7,
+    length.out = 50
 )
 # pdf("removeme.pdf", width = 14, height = 6)
 plot_density_ROC_str(
@@ -62,7 +63,8 @@ plot_density_ROC_str(
     dist_negative = "norm",
     dist_positive_args = list("mean" = 1, "sd" = 1),
     dist_negative_args = list("mean" = 0, "sd" = 1),
-    xmin = -4, xmax = 7
+    xmin = -4, xmax = 7,
+    length.out = 50
 )
 # dev.off()
 # pdf("removeme_2.pdf", width = 14, height = 6)
@@ -71,7 +73,8 @@ plot_density_ROC_str(
     dist_negative = "norm",
     dist_positive_args = list("mean" = 1, "sd" = .5),
     dist_negative_args = list("mean" = 1, "sd" = 1),
-    xmin = -4, xmax = 7, length.out = 2503
+    xmin = -4, xmax = 7,
+    length.out = 50
 )
 # dev.off()
 # pdf("removeme_3.pdf", width = 14, height = 6)
@@ -80,7 +83,8 @@ plot_density_ROC_str(
     dist_negative = "norm",
     dist_positive_args = list("mean" = 1, "sd" = 2),
     dist_negative_args = list("mean" = 1, "sd" = 1),
-    xmin = -4, xmax = 7, length.out = 2503
+    xmin = -4, xmax = 7,
+    length.out = 50
 )
 # dev.off()
 tmp <- plot_density_ROC_str(
@@ -88,7 +92,8 @@ tmp <- plot_density_ROC_str(
     dist_negative = "norm",
     dist_positive_args = list("mean" = 1, "sd" = 2),
     dist_negative_args = list("mean" = 1, "sd" = 1),
-    xmin = -4, xmax = 7, length.out = 2503
+    xmin = -4, xmax = 7,
+    length.out = 50
 )
 
 }

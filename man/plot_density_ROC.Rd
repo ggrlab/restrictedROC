@@ -39,6 +39,9 @@ PURELY VISUAL, ROC curves are calculated based on the actual distributions!}
 \item{xmax}{Maximum value of simulated points for the plots from the distributions.
 \code{length.out} points will be generated between \verb{[xmin, xmax]}.
 PURELY VISUAL, ROC curves are calculated based on the actual distributions!}
+
+\item{colors_pos_neg_both}{Colors for positive ("+"), negative ("-") and overlapping "+/-" areas of the
+densities}
 }
 \value{
 \code{patchwork}'ed ggplots: left density, right ROC curve.
