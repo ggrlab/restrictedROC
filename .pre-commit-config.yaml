@@ -1,7 +1,10 @@
 # All available hooks: https://pre-commit.com/hooks.html
 # R specific hooks: https://github.com/lorenzwalthert/precommit
 
+# https://pre-commit.com/#pre-commit-configyaml---top-level
 fail_fast: true
+default_stages: [pre-commit]
+
 repos:
 -   repo: https://github.com/lorenzwalthert/precommit
     rev: v0.3.2.9021
@@ -88,6 +91,18 @@ repos:
       name: devtools::check (Takes long first time installing devtools)
       additional_dependencies:
       -    devtools
+      -    dplyr
+      -    future.apply
+      -    ggplot2
+      -    ggpubr
+      -    labeling
+      -    lifecycle
+      -    patchwork
+      -    pROC
+      -    statmod
+      -    stats
+      -    tibble
+      -    tidyr
       # entry: Rscript -e 'if(!require(devtools)){install.packages("devtools")}; devtools::check()'
       entry: Rscript -e 'devtools::check()'
       language: r
