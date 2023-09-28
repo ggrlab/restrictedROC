@@ -1,10 +1,5 @@
 ---
 title: "Vignette 01: rzAUC colors"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Vignette 01: rzAUC colors}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r, include = FALSE}

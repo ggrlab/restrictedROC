@@ -1,10 +1,5 @@
 ---
 title: "Paper 07: rROC label swap"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Paper 07: rROC label swap}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r, include = FALSE}

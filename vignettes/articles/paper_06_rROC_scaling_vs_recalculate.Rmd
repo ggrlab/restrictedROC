@@ -1,10 +1,5 @@
 ---
 title: "Paper 06: rROC scaling/recalculating"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Paper 06: rROC scaling/recalculating}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r, include = FALSE}
