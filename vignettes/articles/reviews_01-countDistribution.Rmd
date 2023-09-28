@@ -1,0 +1,90 @@
+---
+title: "Count distributions"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+    collapse = TRUE,
+    comment = "#>"
+)
+```
+Examples of negative binomial distributions with different parameters leading to restricted and unrestricted ROC curves for different parametrizations. 
+
+```{r setup}
+options(warn = 1)
+library(restrictedROC)
+```
+From `stats::qnbinom`:
+
+An alternative parametrization (often used in ecology) is by the mean ``mu`` (see above), and size, the dispersion parameter, where ``prob = size/(size+mu)``. The ``variance`` is ``mu + mu^2/size`` in this parametrization.
+```{r, fig.fullwidth=TRUE, fig.width=5, fig.height=5}
+var_alternative <- function(mu, size) {
+    return(mu + mu**2 / size)
+}
+text_parameters <- function(mu, size) {
+    sprintf(
+        "Mean = %5.1f, Size=%5.1f, Variance: %5.1f",
+        mu, size, var_alternative(mu, size)
+    )
+}
+
+current_sim <- function(dists) {
+    restrictedROC::sim(dists, do_melt = FALSE, length.out = 250)
+}
+
+# From Ecological Models and Data in R, p. 165: In similar, but own words:
+# In a negative binomial model with mean m and overdispersion k, smaller
+# k means more heterogeneity. The variance of the negative binomial distribution is m + m^2/k.
+# And so as k becomes large, the variance approaches m, and the negative binomial
+# approaches the Poisson distribution. For k>10, the negative binomial is
+# often indistinguishable from the Poisson distribution.
+# In ecological applications, k is usually < 1.
+
+# The "ecological" parameterization of the negative binomial replaces the
+# parameters p (probability of success per trial: prob in R) and n (number of
+# successes before you stop counting failures: size in R) with µ = n(1−p)/p,
+# the mean number of failures expected (or of counts in a sample: mu in R),
+# and k, which is typically called an overdispersion parameter. Confusingly,
+# k is also called size in R, because it is mathematically equivalent to n in
+# the failure-process parameterization.
+
+set.seed(129387)
+# pdf("removeme.pdf")
+for (list_size_mus in c(
+    list(size = c(1, 1), mu = c(700, 100)),
+    list(size = c(.1, .1), mu = c(700, 100)),
+    list(size = c(.25, .25), mu = c(700, 100))
+)
+) {
+    s1 <- list_size_mus[["size"]][[1]]
+    s2 <- list_size_mus[["size"]][[2]]
+    m1 <- list_size_mus[["mu"]][[1]]
+    m2 <- list_size_mus[["mu"]][[2]]
+
+    sim_x <- current_sim(
+        list(
+            "positive" = function(length.out) {
+                rnbinom(length.out, size = s1, mu = m1)
+            },
+            "negative" = function(length.out) {
+                rnbinom(length.out, size = s2, mu = m2)
+            }
+        )
+    )
+
+    plots_rroc_way_x <- restrictedROC::plot_density_rROC_empirical(
+        values_grouped = sim_x,
+        direction = "<",
+        positive_label = "positive"
+    )
+
+    print(
+        plots_rroc_way_x[["plots"]] +
+            ggplot2::theme(legend.position = "none") +
+            patchwork::plot_annotation(
+                subtitle = paste0(text_parameters(m1, s1), "\n", text_parameters(m2, s2))
+            )
+    )
+}
+# dev.off()
+```
