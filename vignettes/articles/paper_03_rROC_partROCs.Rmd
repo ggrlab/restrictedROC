@@ -1,10 +1,5 @@
 ---
 title: "Paper 03: rROC partROCs"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Paper 03: rROC partROCs}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r, include = FALSE}

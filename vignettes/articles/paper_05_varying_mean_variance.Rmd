@@ -1,10 +1,5 @@
 ---
 title: "Paper 05: rROC with varying mean/variance"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Paper 05: rROC with varying mean/variance}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r, include = FALSE}

@@ -1,10 +1,5 @@
 ---
 title: "Paper 04: rROC theoretic with FPR"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Paper 04: rROC theoretic with FPR}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r, include = FALSE}

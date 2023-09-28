@@ -1,10 +1,5 @@
 ---
 title: "Vignette 02: Restriction plots"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Vignette 02: Restriction plots}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r, include = FALSE}

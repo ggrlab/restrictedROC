@@ -72,7 +72,7 @@ sim_samples <- sim(
         "dist_2" = function(x) rnorm(x, mean = 0, sd = 1)
     ),
     do_melt = FALSE,
-    length.out = 1000
+    length.out = 50
 )
 plot_density_rROC_empirical(sim_samples)
 plot_density_rROC_empirical(sim_samples, positive_label = "dist_1")
