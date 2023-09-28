@@ -264,6 +264,12 @@ usethis::use_vignette("vignette_name")
 # Build the vignette by running
 devtools::build_vignettes() # This also installs the package
 
+# Articles
+# Instead of a vignette, you can create an article, which is a term used by
+# pkgdown for a vignette-like .Rmd document that is not shipped with the package,
+# but that appears only in the website.
+usethis::use_article("article_name")
+
 devtools::build_readme() # This updates the README.md file from the README.Rmd
 ```
 
