@@ -220,6 +220,7 @@ usethis::use_package("labeling")
 usethis::use_package("tidyr")
 usethis::use_package("statmod")
 usethis::use_package("future.apply")
+usethis::use_package("readxl", type = "Suggests")
 precommit::snippet_generate("additional-deps-roxygenize")
 ```
 

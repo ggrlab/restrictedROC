@@ -13,6 +13,7 @@
 ^cran-comments\.md$
 ^doc$
 ^docs$
+^intermediate_data$
 ^pkgdown$
 ^restrictedROC\.Rproj$
 ^vignettes/articles$
