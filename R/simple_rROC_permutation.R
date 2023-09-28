@@ -60,6 +60,9 @@ simple_rROC_permutation <- function(response,
                                     parallel_permutations = FALSE,
                                     return_proc = FALSE,
                                     verbose = FALSE) {
+    if (length(response) != length(predictor)) {
+        stop("response and predictor must have the same length")
+    }
     res_full <- simple_rROC(
         response = response,
         predictor = predictor,
