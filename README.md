@@ -14,11 +14,12 @@ status](https://www.r-pkg.org/badges/version/restrictedROC)](https://CRAN.R-proj
 coverage](https://codecov.io/gh/ggrlab/restrictedROC/branch/main/graph/badge.svg)](https://app.codecov.io/gh/ggrlab/restrictedROC?branch=main)
 <!-- badges: end -->
 
-The goal of restrictedROC is to …
+The goal of restrictedROC is to provide a convenient way to calculate
+restricted ROC curves and their permutation p-values.
 
 ## Installation
 
-You can install the development version of restrictedROC like so:
+You can install the latest version of restrictedROC like so:
 
 ``` r
 devtools::install_github("ggrlab/restrictedROC")
@@ -45,13 +46,6 @@ head(biodata)
 #> 4    Good 10.211525
 #> 5    Good 10.387863
 #> 6    Good 15.145195
-#   outcome biomarker
-# 1    Good  8.318573
-# 2    Good  9.309468
-# 3    Good 14.676125
-# 4    Good 10.211525
-# 5    Good 10.387863
-# 6    Good 15.145195
 ```
 
 Here we use `outcome` and `biomarker` as dependent and independent
@@ -62,9 +56,11 @@ The most convenient usage of restrictedROC is via the
 `simple_rROC_permutation()` function. The most important results of
 `restrictedROC::simple_rROC_permutation()` are:
 
-    - (restricted) AUCs for all possible cutoffs of the predictor variable
-    - A global and maximal (including all restrictions) AUC
-    - Permutation p-values for the global and maximal AUC
+  - (restricted) AUCs for all possible cutoffs of the predictor variable
+  - A global and maximal (including all restrictions) AUC
+  - Permutation p-values for the global and maximal AUC
+
+<!-- end list -->
 
 ``` r
 # library(restrictedROC)
@@ -73,22 +69,23 @@ res_rroc <- restrictedROC::simple_rROC_permutation(
     response = biodata$outcome,
     predictor = biodata$biomarker,
     positive_label = "Good",
-    n_permutations = 100  # increase that in real data!
+    n_permutations = 100 # increase that in real data!
 )
 ```
 
-`res_rroc$permutation_pval` refers to the permutation p-values of: -
-`pval.twoside.global`: The global AUC when all samples are used. This is
-the usually known AUC with a calculated permutation p-value. -
-`pval.twoside.max`: This is the maximal (restricted or unrestricted)
-AUC’s permutation p-value.
+`res_rroc$permutation_pval` refers to the permutation p-values of:
+
+  - `pval.twoside.global`: The global AUC when all samples are used.
+    This is the usually known AUC with a calculated permutation p-value.
+  - `pval.twoside.max`: This is the maximal (restricted or unrestricted)
+    AUC’s permutation p-value.
+
+<!-- end list -->
 
 ``` r
 print(round(res_rroc$permutation_pval, 3))
 #>    pval.twoside.max pval.twoside.global      n_permutations 
 #>               0.010               0.099             100.000
-#    pval.twoside.max pval.twoside.global      n_permutations
-#               0.010               0.099             100.000
 ```
 
 In this particular example we see that at a significance level of 0.05,
@@ -104,8 +101,6 @@ using all samples without restriction.
 print(res_rroc$global)
 #>      auc auc_var_H0   rzAUC pval_asym
 #> 1 0.6016     0.6016 1.75103 0.0799407
-#      auc auc_var_H0   rzAUC pval_asym
-# 1 0.6016     0.6016 1.75103 0.0799407
 ```
 
 We see that the AUC is 0.6016, with a p-value of 0.08. This is not
@@ -120,8 +115,6 @@ therefore **within the informative range**.
 print(res_rroc$max_total)
 #>         auc  auc_var_H0    rzAUC    pval_asym threshold part
 #> 1 0.9089069 0.007759784 4.641941 3.451517e-06  9.377944 high
-#         auc  auc_var_H0    rzAUC    pval_asym threshold part
-# 1 0.9089069 0.007759784 4.641941 3.451517e-06  9.377944 high
 ```
 
 In this example, the maximal AUC is 0.9089, with a restriction value of
@@ -212,7 +205,6 @@ results
 # How was this package created?
 
 ``` r
-
 # for VSCode
 install.packages("languageserver")
 install.packages("devtools")
@@ -266,16 +258,16 @@ Additional information:
 
 ``` r
 usethis::use_author(
-    given="Gunther", 
-    family="Glehr", 
-    email="gunthergl@gmx.net", 
-    role=c("aut", "cre"), 
-    comment = c("ORCID"="0000-0002-1495-9162")
-    )
+    given = "Gunther",
+    family = "Glehr",
+    email = "gunthergl@gmx.net",
+    role = c("aut", "cre"),
+    comment = c("ORCID" = "0000-0002-1495-9162")
+)
 usethis::use_lifecycle()
 usethis::use_news_md()
 lintr::use_lintr(type = "tidyverse")
-# Change manually to: 
+# Change manually to:
 # linters: linters_with_defaults(line_length_linter = line_length_linter(120),indentation_linter = indentation_linter(4)) # see vignette("lintr")
 # encoding: "UTF-8"
 ```
@@ -308,13 +300,12 @@ usethis::use_package("labeling")
 usethis::use_package("tidyr")
 usethis::use_package("statmod")
 usethis::use_package("future.apply")
-precommit::snippet_generate('additional-deps-roxygenize')
+precommit::snippet_generate("additional-deps-roxygenize")
 ```
 
 # How to add information
 
 ``` r
-
 # Use pre-commits to check your code before committing it
 remotes::install_github("lorenzwalthert/precommit")
 precommit::install_precommit()
@@ -333,11 +324,21 @@ devtools::check()
 devtools::document()
 
 # Vignettes are a great way to document your package
-# Add a new vignette by running 
+# Add a new vignette by running
 usethis::use_vignette("vignette_name")
 # Change the vignette in vignettes/vignette_name.Rmd
 # Build the vignette by running
 devtools::build_vignettes() # This also installs the package
+
+# Articles
+# Instead of a vignette, you can create an article, which is a term used by
+# pkgdown for a vignette-like .Rmd document that is not shipped with the package,
+# but that appears only in the website.
+usethis::use_article("article_name")
+# Further arguments of devtools::build_site() are forwarded to pkgdown::build_site():
+# https://pkgdown.r-lib.org/reference/build_site.html
+devtools::build_site()
+devtools::build_site(devel = TRUE, lazy = TRUE) # Use this for faster iteration during development
 
 devtools::build_readme() # This updates the README.md file from the README.Rmd
 ```
@@ -349,15 +350,13 @@ devtools::build_readme() # This updates the README.md file from the README.Rmd
 
 ## `devtools::build_vignettes` fails
 
-``` r
---- re-building 'first_function.Rmd' using rmarkdown
-Error: processing vignette 'first_function.Rmd' failed with diagnostics:
-unused argument (resolve_symlink = FALSE)
---- failed re-building 'first_function.Rmd'
-
-SUMMARY: processing the following file failed:
-  'first_function.Rmd'
-```
+    --- re-building 'first_function.Rmd' using rmarkdown
+    Error: processing vignette 'first_function.Rmd' failed with diagnostics:
+    unused argument (resolve_symlink = FALSE)
+    --- failed re-building 'first_function.Rmd'
+    
+    SUMMARY: processing the following file failed:
+      'first_function.Rmd'
 
 Solution:
 
@@ -369,22 +368,20 @@ install.packages("xfun")
 
 What: `devtools::check()` throws the following error:
 
-``` r
-> checking re-building of vignette outputs ... ERROR
-  Error(s) in re-building vignettes:
-    ...
-  --- re-building 'first_function.Rmd' using rmarkdown
-  Quitting from lines 11-15 (first_function.Rmd) 
-  Error: processing vignette 'first_function.Rmd' failed with diagnostics:
-  The function xfun::isFALSE() will be deprecated in the future. Please consider using base::isFALSE(x) or identical(x, FALSE) instead.
-  --- failed re-building 'first_function.Rmd'
-  
-  SUMMARY: processing the following file failed:
-    'first_function.Rmd'
-  
-  Error: Vignette re-building failed.
-  Execution halted
-```
+    > checking re-building of vignette outputs ... ERROR
+      Error(s) in re-building vignettes:
+        ...
+      --- re-building 'first_function.Rmd' using rmarkdown
+      Quitting from lines 11-15 (first_function.Rmd) 
+      Error: processing vignette 'first_function.Rmd' failed with diagnostics:
+      The function xfun::isFALSE() will be deprecated in the future. Please consider using base::isFALSE(x) or identical(x, FALSE) instead.
+      --- failed re-building 'first_function.Rmd'
+      
+      SUMMARY: processing the following file failed:
+        'first_function.Rmd'
+      
+      Error: Vignette re-building failed.
+      Execution halted
 
 Solution: See
 <https://stackoverflow.com/questions/76081732/problem-when-converting-r-file-to-r-markdown>
