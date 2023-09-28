@@ -109,6 +109,7 @@ repos:
       stages:
         - "pre-push"
       verbose: true
+      require_serial: true
       
 # ci:
 #     autoupdate_schedule: monthly
