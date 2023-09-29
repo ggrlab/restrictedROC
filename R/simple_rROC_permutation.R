@@ -127,7 +127,7 @@ simple_rROC_permutation <- function(response,
             # as the observed data. May be vector/array.
             x = n_more_extreme,
             # total number of permutations performed
-            n = n_permutations,
+            nperm = n_permutations,
             # sample size of group 1,
             n1 = groups_table[names(groups_table) != res_full[["positive_label"]]],
             # sample size of group 2,

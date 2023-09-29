@@ -1,6 +1,6 @@
 Package: restrictedROC
 Title: Calculate restricted ROC curves
-Version: 3.1.3
+Version: 3.1.4
 Authors@R: 
     person("Gunther", "Glehr", , "gunthergl@gmx.net", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-1495-9162"))
@@ -25,6 +25,7 @@ Imports:
     lifecycle,
     patchwork,
     pROC,
+    qs,
     statmod,
     stats,
     tibble,

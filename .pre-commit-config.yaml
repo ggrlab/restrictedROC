@@ -27,6 +27,7 @@ repos:
         -    stats
         -    tibble
         -    tidyr
+        -    qs
     # # codemeta must be above use-tidy-description when both are used
     # # -   id: codemeta-description-updated
     # -   id: use-tidy-description
@@ -103,6 +104,7 @@ repos:
       -    stats
       -    tibble
       -    tidyr
+      -    qs
       # entry: Rscript -e 'if(!require(devtools)){install.packages("devtools")}; devtools::check()'
       entry: Rscript -e 'devtools::check()'
       language: r
