@@ -33,9 +33,14 @@ library(dplyr)
 dir.create("intermediate_data")
 download.file(
     url = "https://ars.els-cdn.com/content/image/1-s2.0-S0092867419309006-mmc1.xlsx",
-    destfile = "intermediate_data/harel2019.xlsx",
+    destfile = "intermediate_data/harel2019-s1.xlsx",
+    method = "wget"
 )
-harel_pheno <- readxl::read_excel("intermediate_data/harel2019.xlsx", sheet = "S1A", skip = 1, na = "NaN")
+harel_data <- readxl::read_excel("intermediate_data/harel2019-s1.xlsx", sheet = "S1B", skip = 1, na = "NaN")
+harel_exprs <- as.matrix(harel_data[, 1:116])
+harel_fdata <- harel_data[, 117:ncol(harel_data)]
+rownames(harel_exprs) <- harel_data[["T: Gene names"]]
+harel_pheno <- readxl::read_excel("intermediate_data/harel2019-s1.xlsx", sheet = "S1A", skip = 1, na = "NaN")
 # Patients were categorized into responders (complete or partial regression) and
 # non-responders (progressive disease) according to RECIST v1.0 guidelines
 # "Response" contains "PD", "PR", "CR" or "SD" (stable disease)
@@ -47,9 +52,40 @@ harel_pheno <- harel_pheno |>
 outcome <- harel_pheno[["response_paper"]]
 names(outcome) <- harel_pheno[["Sample ID"]]
 
+```
+```{r, merge features with same gene name}
+harel_exprs_nodup <- harel_exprs[!duplicated(rownames(harel_exprs)), ]
+for(dup_x in unique(rownames(harel_exprs)[duplicated(rownames(harel_exprs))])){
+    harel_exprs_nodup <- rbind(
+        harel_exprs_nodup, 
+        apply(harel_exprs[which(rownames(harel_exprs) == dup_x), ], 2, median, na.rm=TRUE)
+    )
+    rownames(harel_exprs_nodup)[nrow(harel_exprs_nodup)] <- dup_x
+}
+```
+```{r, filter 70% valid for TIL and aPD1}
+harel_exprs_til <- harel_exprs_nodup[, grepl("^TIL", colnames(harel_exprs_nodup))]
+harel_exprs_aPD1 <- harel_exprs_nodup[, grepl("^PD1", colnames(harel_exprs_nodup))]
+
+
+harel_exprs_f70 <- harel_exprs_nodup[apply(harel_exprs_nodup, 1, function(x) sum(!is.na(x))) < 0.7 * ncol(harel_exprs_nodup), ]
+harel_exprs_til_f70 <- harel_exprs_til[apply(harel_exprs_til, 1, function(x) sum(!is.na(x))) < 0.7 * ncol(harel_exprs_til), ]
+harel_exprs_aPD1_f70 <- harel_exprs_aPD1[apply(harel_exprs_aPD1, 1, function(x) sum(!is.na(x))) < 0.7 * ncol(harel_exprs_aPD1), ]
+
+dim(harel_exprs_til_f70)
+dim(harel_exprs_aPD1_f70)
+dim(harel_exprs_f70)
+dim(harel_exprs_til_f70[!is.na(rownames(harel_exprs_til_f70)), ])
+dim(harel_exprs_aPD1_f70[!is.na(rownames(harel_exprs_aPD1_f70)), ])
+dim(harel_exprs_f70[!is.na(rownames(harel_exprs_f70)), ])
+```
+
+
+NOT TOUCHED BELOW!
+```{r, }
 # S1C and S1D are the features with at least 70% present values
-harel_til <- readxl::read_excel("intermediate_data/harel2019.xlsx", sheet = "S1C", skip = 1, na = "NaN")
-harel_aPD1 <- readxl::read_excel("intermediate_data/harel2019.xlsx", sheet = "S1D", skip = 1, na = "NaN")
+harel_til <- readxl::read_excel("intermediate_data/harel2019-s1.xlsx", sheet = "S1C", skip = 1, na = "NaN")
+harel_aPD1 <- readxl::read_excel("intermediate_data/harel2019-s1.xlsx", sheet = "S1D", skip = 1, na = "NaN")
 
 # The description columns start with a T
 harel_til_mat <- as.matrix(harel_til[, !grepl("^T:", colnames(harel_til))])
