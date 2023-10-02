@@ -12,7 +12,7 @@ inst/doc
 # only highest-hierarchy pdf ignore
 *.pdf  
 vignettes/*.html
-vignettes/*.R
+# vignettes/*.R
 gifs/
 res/paper/*.txt
 docs
