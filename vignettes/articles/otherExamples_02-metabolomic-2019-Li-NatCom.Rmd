@@ -215,7 +215,7 @@ ttest_timepoints_fun <- function(data_named_timepoints,
 ```
 
 ```{r, ttests }
-li_all_data_measurements
+# li_all_data_measurements
 li_all_data_ttests <- lapply(
     li_all_data_measurements,
     ttest_timepoints_fun,
@@ -226,24 +226,19 @@ li_all_data_ttests <- lapply(
 ```{r, rroc 1k}
 library(future)
 plan(multisession)
-li_all_data_rroc <- lapply(
-    li_all_data_measurements,
-    rroc_timepoints_fun,
-    n_permutations = 1000,
-    parallel_permutations = TRUE,
-    save_intermediate_file = "intermediate_data/res_rroc_test_1k.qrds"
-)
+for (n_permutations in c(1000, 25000, 100000)) {
+    print(n_permutations)
+    li_all_data_rroc <- lapply(
+        li_all_data_measurements,
+        rroc_timepoints_fun,
+        n_permutations = n_permutations,
+        parallel_permutations = TRUE,
+        save_intermediate_file = paste0("intermediate_data/res_rroc_test_", n_permutations / 1000, "k.qrds")
+    )
+}
 ```
 
-```{r, rroc 25k}
-li_all_data_rroc <- lapply(
-    li_all_data_measurements,
-    rroc_timepoints_fun,
-    n_permutations = 25000,
-    parallel_permutations = TRUE,
-    save_intermediate_file = "intermediate_data/res_rroc_test_25k.qrds"
-)
-
+```{r}
 # ttest_timepoints_fun(li_all_data_measurements[[1]])
 
 # res_rroc_li1 <- rroc_timepoints_fun(
