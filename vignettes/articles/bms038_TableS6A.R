@@ -5,13 +5,17 @@
 rm(list = ls())
 # CHANGE This to directory downloaded to
 # PARENTDIR <- "/mnt/skimcs/Melanoma/BMS_038/forGithub/bms038_analysis/"
-PARENTDIR <- "/home/gugl/clonedgit/ggrlab/restrictedROC/cloned_other_repo/bms038_analysis/"
-setwd(PARENTDIR)
+# setwd(PARENTDIR)
 ########################################
 
 
 # Need to install these packages if not available
-pacman::p_load("DESeq2")
+# utils::remove.packages("geneplotter")
+# utils::remove.packages("DEseq2")
+# BiocManager::install("geneplotter")
+# install.packages("https://github.com/riazn/bms038_analysis/raw/master/packages/DESeq2_1.14.1.tar.gz", repos = NULL, type = "source")
+pacman::p_install("DESeq2")
+library(DESeq2)
 pacman::p_load("TxDb.Hsapiens.UCSC.hg19.knownGene")
 pacman::p_load("ggplot2")
 pacman::p_load(annotate)
@@ -92,8 +96,18 @@ ResFiltered <- function(x) {
 # Build object and run DEG
 ##########################################################
 # Read in matrix and Sample annotation
-mat <- read.delim("data/CountData.BMS038.txt")
-SampleTableCorrected <- read.csv("data/SampleTableCorrected.9.19.16.csv", row.names = 1)
+dir.create("intermediate_data/2017-riaz/", showWarnings = FALSE, recursive = TRUE)
+download.file(
+    url = "https://raw.githubusercontent.com/riazn/bms038_analysis/master/data/CountData.BMS038.txt",
+    destfile = "intermediate_data/2017-riaz/CountData.BMS038.txt"
+)
+download.file(
+    url = "https://raw.githubusercontent.com/riazn/bms038_analysis/master/data/SampleTableCorrected.9.19.16.csv",
+    destfile = "intermediate_data/2017-riaz/SampleTableCorrected.9.19.16.csv"
+)
+data_dir <- file.path("intermediate_data", "2017-riaz")
+mat <- read.delim(file.path(data_dir, "CountData.BMS038.txt"))
+SampleTableCorrected <- read.csv(file.path(data_dir, "SampleTableCorrected.9.19.16.csv"), row.names = 1)
 
 # Only samples with response
 SampleTableCorrected <- SampleTableCorrected[!(is.na(SampleTableCorrected$Response)), ]
@@ -158,7 +172,9 @@ dds.pre <- estimateSizeFactors(dds.pre)
 dds.pre <- DESeq(dds.pre)
 
 # Get the result
-Response.ihw.PRCR <- ResFiltered(results(dds.pre, name = "ResponsePRCR", filterFun = ihw))
+DESeq2::resultsNames(dds.pre)
+Response.ihw.PRCR <- ResFiltered(results(dds.pre, name = "Response_PRCR_vs_PD", filterFun = ihw))
 Response.ihw.PRCR <- Response.ihw.PRCR[order(Response.ihw.PRCR$padj), ]
 
 write.table(Response.ihw.PRCR, "output/TableS6.A.csv", sep = ",", quote = F, col.names = NA)
+sum(Response.ihw.PRCR$padj < 0.2)
