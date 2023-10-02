@@ -109,11 +109,19 @@ data_dir <- file.path("intermediate_data", "2017-riaz")
 mat <- read.delim(file.path(data_dir, "CountData.BMS038.txt"))
 SampleTableCorrected <- read.csv(file.path(data_dir, "SampleTableCorrected.9.19.16.csv"), row.names = 1)
 
+n_paper_fig3a <- paste0("Pt", c(
+    85, 39, 78, 17, 84, 62, 66, 9, 29, 8, 147, 106, 1, 28, 46, 24, 90, 11, 31, 5, 103,
+    38, 10, 26, 2, 98, 36, 14, 79, 37, 89, 65, 59, 92, 82, 77, 72, 3, 134, 130, 144,
+    194, 149, 18, 101
+), "_Pre")
+
 # Only samples with response
 SampleTableCorrected <- SampleTableCorrected[!(is.na(SampleTableCorrected$Response)), ]
-
+n_paper_fig3a[!n_paper_fig3a %in% SampleTableCorrected$Sample]
 # Find the overlapping samples
 inter <- intersect(colnames(mat), rownames(SampleTableCorrected))
+all(n_paper %in% inter)
+n_paper[!(n_paper %in% inter)]
 SampleTableCorrected <- SampleTableCorrected[inter, ]
 mat <- mat[, match(rownames(SampleTableCorrected), colnames(mat))]
 
@@ -174,7 +182,14 @@ dds.pre <- DESeq(dds.pre)
 # Get the result
 DESeq2::resultsNames(dds.pre)
 Response.ihw.PRCR <- ResFiltered(results(dds.pre, name = "Response_PRCR_vs_PD", filterFun = ihw))
+print(Response.ihw.PRCR)
 Response.ihw.PRCR <- Response.ihw.PRCR[order(Response.ihw.PRCR$padj), ]
 
 write.table(Response.ihw.PRCR, "output/TableS6.A.csv", sep = ",", quote = F, col.names = NA)
 sum(Response.ihw.PRCR$padj < 0.2)
+
+
+# checking names
+n_paper %in% colData(dds.pre)$Sample
+n_paper[!(n_paper %in% colData(dds.pre)$Sample)]
+colData(dds.pre)$Sample[!(colData(dds.pre)$Sample %in% n_paper)]
