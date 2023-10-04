@@ -124,7 +124,7 @@ wrapper_predictions_rroc <- function(summarized_experiment,
     )
 }
 
-wrapper_modelling <- function(train_x, train_y, test_x, test_y, ...) {
+wrapper_modelling <- function(train_x, train_y, test_x, test_y, verbose = TRUE, ...) {
     train_data <- cbind(train_x, factor(train_y))
     test_data <- cbind(test_x, factor(test_y, levels = levels(train_data[, ncol(train_data)])))
     data.table::fwrite(train_data, file = "h2o_train.csv")
@@ -164,7 +164,8 @@ wrapper_modelling <- function(train_x, train_y, test_x, test_y, ...) {
         max_depth = 20, # default
         min_rows = 1, # default
         nbins = 20, # default
-        seed = 6461063
+        seed = 6461063,
+        ...
     )
 
     pred_drf.train <- cbind(
@@ -172,15 +173,12 @@ wrapper_modelling <- function(train_x, train_y, test_x, test_y, ...) {
         tibble::as_tibble(h2o.predict(drf, newdata = train_h2o))
     )
     table_train <- table(pred_drf.train[, c("y", "predict")])
-    print(table_train)
 
     pred_drf.test <- cbind(
         y = test_data[, ncol(test_data)],
         tibble::as_tibble(h2o.predict(drf, newdata = test_h2o))
     )
     table_test <- table(pred_drf.test[, c("y", "predict")])
-    print(table_test)
-    print(fisher.test(table_test))
 
     roc_train <- pROC::roc(
         response = pred_drf.train[["y"]],
@@ -192,6 +190,16 @@ wrapper_modelling <- function(train_x, train_y, test_x, test_y, ...) {
         predictor = pred_drf.test[, 4], # pred_drf.test[["yes"]],
         direction = "<", levels = levels(pred_drf.test[["y"]])
     )
+    if (verbose) {
+        cat("Train\n")
+        print(table_train)
+
+        cat("Test\n")
+        print(table_test)
+        print(fisher.test(table_test))
+        print(roc_train)
+        print(roc_test)
+    }
     return(
         list(
             "model" = drf,
@@ -218,23 +226,43 @@ table_lsubcohort_pfs <- table_lsubcohort_pfs[apply(table_lsubcohort_pfs, 1, sum)
 
 for (data_x in list(data_pfs)) {
     for (subcohort_XX in rownames(table_lsubcohort_pfs)) {
-        cat("\n\nsubcohort: ", subcohort_XX, "\n")
-        samples_boolean_train <- SummarizedExperiment::colData(data_x)[["lee_subcohort"]] != subcohort_XX
-        samples_boolean_test <- SummarizedExperiment::colData(data_x)[["lee_subcohort"]] == subcohort_XX
+        for (datatype in c("bounded", "full")) {
+            cat(
+                "\n\nsubcohort: ", subcohort_XX,
+                "  datatype: ", datatype,
+                "\n\n"
+            )
+            savepath <- paste0(
+                "intermediate_data/2022-lee/leave_one_out/",
+                subcohort_XX,
+                "_",
+                datatype
+            )
+            samples_boolean_train <- SummarizedExperiment::colData(data_x)[["lee_subcohort"]] != subcohort_XX
+            samples_boolean_test <- SummarizedExperiment::colData(data_x)[["lee_subcohort"]] == subcohort_XX
 
-        rroc_predictions_traintest <- wrapper_predictions_rroc(
-            summarized_experiment = data_x,
-            boolean_train = samples_boolean_train,
-            boolean_test = samples_boolean_test,
-            outcome = outcome,
-            positive_label = "yes"
-        )
+            rroc_predictions_traintest <- wrapper_predictions_rroc(
+                summarized_experiment = data_x,
+                boolean_train = samples_boolean_train,
+                boolean_test = samples_boolean_test,
+                outcome = outcome,
+                positive_label = "yes"
+            )
 
-        model_and_predictions <- wrapper_modelling(
-            train_x = rroc_predictions_traintest[["train"]][["predictions"]][["bounded"]],
-            train_y = SummarizedExperiment::colData(data_x)[samples_boolean_train, ][[outcome]],
-            test_x = rroc_predictions_traintest[["test"]][["predictions"]][["bounded"]],
-            test_y = SummarizedExperiment::colData(data_x)[samples_boolean_test, ][[outcome]]
-        )
+            model_and_predictions <- wrapper_modelling(
+                train_x = rroc_predictions_traintest[["train"]][["predictions"]][[datatype]],
+                train_y = SummarizedExperiment::colData(data_x)[samples_boolean_train, ][[outcome]],
+                test_x = rroc_predictions_traintest[["test"]][["predictions"]][[datatype]],
+                test_y = SummarizedExperiment::colData(data_x)[samples_boolean_test, ][[outcome]]
+            )
+
+            h2o::h2o.saveModel(
+                model_and_predictions[["model"]],
+                path = paste0(savepath, ".model_h2o")
+            )
+            model_and_predictions_nomodel <- model_and_predictions[-1]
+            qs::qsave(rroc_predictions_traintest, file = paste0(savepath, "-rroc_predictions_traintest.qrds"))
+            qs::qsave(model_and_predictions_nomodel, file = paste0(savepath, "-model_and_predictions_nomodel.qrds"))
+        }
     }
 }
