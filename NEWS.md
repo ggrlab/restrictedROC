@@ -17,6 +17,11 @@ The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/
     e.g. .github/workflows/*, README.md, etc. Infrastructure updates increase
     the patch version.
 
+# restrictedROC 3.4.6
+
+  - Added quiet=TRUE into pROC::roc() within predict.restrictedROC()
+
+# ... not updated for a while
 # restrictedROC 3.0.0
 
   - Added code and articles from the former gitlab repository

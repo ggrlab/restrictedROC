@@ -186,7 +186,8 @@ predict.restrictedROC <- function(object,
         response = previous_df$response,
         predictor = previous_df$predictor,
         levels = c(FALSE, TRUE),
-        direction = "auto"
+        direction = "auto",
+        quiet = TRUE
     )
     classification_threshold_full <- pROC::coords(
         proc_auto_full,
@@ -218,7 +219,8 @@ predict.restrictedROC <- function(object,
         response = previous_kept_df$response,
         predictor = previous_kept_df$predictor,
         levels = c(FALSE, TRUE),
-        direction = "auto"
+        direction = "auto",
+        quiet = TRUE
     )
     classification_threshold_kept <- pROC::coords(
         proc_auto_kept,
