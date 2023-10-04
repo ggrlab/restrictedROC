@@ -243,7 +243,7 @@ named_figs <- list(
     "fig2d" = c("s3_nivo", "week 4", "baseline"),
     "fig2e" = c("s3_ever", "week 4", "baseline")
 )
-pdf("removeme.pdf", width = 12)
+pdf("removeme.pdf", width = 15, height = 4)
 for (study_tp1_tp2_x in names(named_figs)) {
     study_tp1_tp2 <- named_figs[[study_tp1_tp2_x]]
     study_x <- study_tp1_tp2[[1]]
@@ -260,7 +260,25 @@ for (study_tp1_tp2_x in names(named_figs)) {
         aes(x = avg.FC, y = negL10_q.value, label = feature)
     ) +
         ggtitle(study_tp1_tp2_x, subtitle = paste0("UNpaired t-test"))
-    plots_done <- lapply(list(plot_paper, plot_paper_unpaired), function(x) {
+
+    plot_permutation_global <- ggplot(
+        li_all_data_rroc[[study_x]][[paste0(tp1, "_", tp2)]],
+        aes(x = avg.FC, y = global_neglog_p.value, label = feature)
+    ) +
+        ggtitle(study_tp1_tp2_x, subtitle = paste0("Permutation test on AUC, global"))
+
+    plot_permutation_max <- ggplot(
+        li_all_data_rroc[[study_x]][[paste0(tp1, "_", tp2)]],
+        aes(x = avg.FC, y = max_neglog_p.value, label = feature)
+    ) +
+        ggtitle(study_tp1_tp2_x, subtitle = paste0("Permutation test on AUC, Restriction"))
+
+    plots_done <- lapply(list(
+        plot_paper,
+        plot_paper_unpaired,
+        plot_permutation_global,
+        plot_permutation_max
+    ), function(x) {
         x +
             geom_point() +
             geom_text(size = 1, color = "darkgreen") +
@@ -268,109 +286,9 @@ for (study_tp1_tp2_x in names(named_figs)) {
             ylab("-log10(q.value)") +
             ylim(c(0, 12))
     })
-    print(patchwork::wrap_plots(plots_done))
+    print(patchwork::wrap_plots(plots_done, ncol = 4))
 }
 dev.off()
-# ttest_timepoints_fun(li_all_data_measurements[[1]])
-
-# res_rroc_li1 <- rroc_timepoints_fun(
-#     data_named_timepoints = lapply(li_data_1, function(x) x[, c("Unique_Subject_Identifier", "hydroxyproline")])[c("w4", "w6")],
-#     verbose = TRUE,
-#     save_intermediate = "intermediate_data/res_rroc_li1.RDS",
-#     n_permutations = 250
-# )
-
-# tmp <- lapply(li_data_1, function(x) x[, c("Unique_Subject_Identifier", "hydroxyproline")])[c("w4", "w6")]
-# sum(!is.na(tmp[[1]][[2]]))
-# lapply(res_rroc_li1, function(x) x[[1]])
-# res_rroc_li1[["w6_w4"]][[2]]$hydroxyproline$perm_max_bound
-# res_rroc_li1[["w6_w4"]][[2]]$hydroxyproline$perm_global_bound
-
-# library(ggplot2)
-# pdf("removeme.pdf")
-# ggplot(res_rroc_li1[["w6_w4"]][[2]]$hydroxyproline$perm_max_bound, aes(x = rzAUC)) +
-#     geom_histogram(bins = 100) +
-#     geom_vline(xintercept = res_rroc_li1[["w6_w4"]][[2]]$hydroxyproline$max_total$rzAUC, color = "red", size = 1)
-# dev.off()
-# sum(abs(res_rroc_li1[["w6_w4"]][[2]]$hydroxyproline$perm_max_bound$rzAUC) > abs(res_rroc_li1[["w6_w4"]][[2]]$hydroxyproline$max_total$rzAUC))
-# sum(abs(res_rroc_li1[["w4_w6"]][[2]]$hydroxyproline$perm_max_bound$rzAUC) > abs(res_rroc_li1[["w4_w6"]][[2]]$hydroxyproline$max_total$rzAUC))
-
-# pdf("removeme.pdf")
-# res_rroc_test <- list()
-# for (timepoint1 in c("baseline", "w4", "w6")) {
-#     for (timepoint2 in c("baseline", "w4", "w6")) {
-#         cat(timepoint1, timepoint2, "\n")
-#         if (timepoint1 == timepoint2) {
-#             next
-#         }
-#         data_tp1 <- li_data_1[[timepoint1]]
-#         data_tp2 <- li_data_1[[timepoint2]]
-#         if (!all(colnames(data_tp1) == colnames(data_tp2))) {
-#             stop("The order of the features is not the same in both matrices")
-#         }
-#         tmp_reslist <- list()
-#         feature <- "tryptophan"
-#         for (feature in colnames(data_tp1[, -1])) {
-#             cat("  ", feature, "\n")
-#             if (!all(data_tp1[[1]] == data_tp2[[1]])) {
-#                 stop("The order of the samples is not the same in both matrices")
-#             }
-#             data_tp1_tp2 <- data.frame(
-#                 "tp1" = data_tp1[[feature]],
-#                 "tp2" = data_tp2[[feature]]
-#             )
-#             data_tp1_tp2_nona <- na.omit(data_tp1_tp2)
-#             # pdf("removeme.pdf")
-#             # restrictedROC::plot_density_rROC_empirical(values_grouped = data_tp1_tp2_nona)
-#             # dev.off()
-#             rroc_res <- restrictedROC::simple_rROC_permutation(
-#                 response = c(rep(timepoint1, nrow(data_tp1_tp2_nona)), rep(timepoint2, nrow(data_tp1_tp2_nona))),
-#                 predictor = c(data_tp1_tp2_nona[[1]], data_tp1_tp2_nona[[2]]),
-#                 n_permutations = 2500,
-#                 positive_label = timepoint2,
-#                 # parallel_permutations = FALSE
-#                 parallel_permutations = TRUE
-#             )
-#             print(rroc_res$permutation_pval)
-#             tmp_reslist[[feature]] <- rroc_res
-#             tmp_reslist[[feature]][["avg.FC"]] <- mean(data_tp1_tp2_nona[[2]]) - mean(data_tp1_tp2_nona[[1]])
-#         }
-#         tmp_reslist_formatted <- tibble::as_tibble(do.call(rbind, lapply(
-#             tmp_reslist, function(x) {
-#                 return(c(
-#                     "max_neglog_p.value" = -log10(x$permutation_pval[["pval.twoside.max"]]),
-#                     "global_neglog_p.value" = -log10(x$permutation_pval[["pval.twoside.global"]]),
-#                     "max_p.value" = (x$permutation_pval[["pval.twoside.max"]]),
-#                     "global_p.value" = (x$permutation_pval[["pval.twoside.global"]]),
-#                     "avg.FC" = x[["avg.FC"]]
-#                 ))
-#             }
-#         )))
-#         tmp_reslist_formatted[["max_q.value"]] <- p.adjust(tmp_reslist_formatted[["max_p.value"]], method = "BH")
-#         tmp_reslist_formatted[["global_q.value"]] <- p.adjust(tmp_reslist_formatted[["global_p.value"]], method = "BH")
-#         tmp_reslist_formatted[["feature"]] <- names(tmp_reslist)
-#         res_rroc_test[[paste0(timepoint1, "_", timepoint2)]] <- tmp_reslist_formatted
-#         qs::qsave(res_rroc_test, file = "intermediate_data/res_rroc_test.RDS")
-#     }
-# }
-# res_rroc_test <- qs::qread("intermediate_data/res_rroc_test.RDS")
-# lapply(res_rroc_test, function(x) dplyr::arrange(x, max_p.value) |> head())
-# lapply(res_rroc_test, function(x) dplyr::arrange(x, global_p.value) |> head())
-# res_rroc_test[["baseline_w4"]] |>
-#     dplyr::arrange(max_p.value) |>
-#     head()
-# res_rroc_test[["baseline_w4"]] |>
-#     dplyr::arrange(max_p.value) |>
-#     dplyr::pull(max_p.value) |>
-#     p.adjust(method = "BH") |>
-#     head()
-# library(ggplot2)
-# pdf("removeme.pdf")
-# ggplot(res_rroc_test[["baseline_w4"]], aes(x = avg.FC, y = -log10(max_q.value), label = feature)) +
-#     geom_point() +
-#     # geom_text(size = 1) +
-#     geom_hline(yintercept = -log10(0.05))
-# dev.off()
 ```
 
 
