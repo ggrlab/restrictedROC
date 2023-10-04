@@ -213,6 +213,9 @@ table_lsubcohort_pfs <- table(
     SummarizedExperiment::colData(data_lee)[["lee_subcohort"]],
     factor(SummarizedExperiment::colData(data_lee)[[outcome]], levels = c("yes", "no"))
 )
+# remove the cohorts without samples
+table_lsubcohort_pfs <- table_lsubcohort_pfs[apply(table_lsubcohort_pfs, 1, sum) != 0, ]
+
 for (data_x in list(data_pfs)) {
     for (subcohort_XX in rownames(table_lsubcohort_pfs)) {
         cat("\n\nsubcohort: ", subcohort_XX, "\n")
