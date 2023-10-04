@@ -201,14 +201,14 @@ predict.restrictedROC <- function(object,
     }
     classification_threshold_full <- classification_threshold_full[1]
 
-    pred_df$prediction <- pred_df$predictor > classification_threshold_full
+    pred_df$pred_full <- pred_df$predictor > classification_threshold_full
     if (classification_direction_full_control_X_case == ">") {
-        pred_df$prediction <- c("TRUE" = pred_low_label, "FALSE" = pred_high_label)[as.character(pred_df$prediction)]
+        pred_df$pred_full <- c("TRUE" = pred_low_label, "FALSE" = pred_high_label)[as.character(pred_df$pred_full)]
     } else {
-        pred_df$prediction <- c("TRUE" = pred_high_label, "FALSE" = pred_low_label)[as.character(pred_df$prediction)]
+        pred_df$pred_full <- c("TRUE" = pred_high_label, "FALSE" = pred_low_label)[as.character(pred_df$pred_full)]
     }
-    pred_df$prediction <- factor(pred_df$prediction, levels = c(pred_high_label, pred_low_label))
-    tab_full <- with(pred_df, table(prediction, response))
+    pred_df$pred_full <- factor(pred_df$pred_full, levels = c(pred_high_label, pred_low_label))
+    tab_full <- with(pred_df, table(pred_full, response))
 
 
     previous_kept_df <- previous_df[previous_df$keep, ]
@@ -233,14 +233,14 @@ predict.restrictedROC <- function(object,
     }
     classification_threshold_kept <- classification_threshold_kept[1]
 
-    pred_df$prediction <- pred_df$predictor > classification_threshold_kept
+    pred_df$pred_kept <- pred_df$predictor > classification_threshold_kept
     if (classification_direction_kept_control_X_case == ">") {
-        pred_df$prediction <- c("TRUE" = pred_low_label, "FALSE" = pred_high_label)[as.character(pred_df$prediction)]
+        pred_df$pred_kept <- c("TRUE" = pred_low_label, "FALSE" = pred_high_label)[as.character(pred_df$pred_kept)]
     } else {
-        pred_df$prediction <- c("TRUE" = pred_high_label, "FALSE" = pred_low_label)[as.character(pred_df$prediction)]
+        pred_df$pred_kept <- c("TRUE" = pred_high_label, "FALSE" = pred_low_label)[as.character(pred_df$pred_kept)]
     }
-    pred_df$prediction <- factor(pred_df$prediction, levels = c(pred_high_label, pred_low_label))
-    tab_restricted <- with(pred_df[pred_df$keep, ], table(prediction, response))
+    pred_df$pred_kept <- factor(pred_df$pred_kept, levels = c(pred_high_label, pred_low_label))
+    tab_restricted <- with(pred_df[pred_df$keep, ], table(pred_kept, response))
 
     res <- list("table_full" = tab_full, "table_restricted" = tab_restricted, "pred" = pred_df)
     # nolint start
@@ -253,7 +253,7 @@ predict.restrictedROC <- function(object,
     if (all(diffmat == 0)) {
         tab_classifiable <- rbind(tab_restricted, 0)
     } else {
-        tab_classifiable <- rbind(tab_restricted, diffmat[!apply(diffmat, 1, function(x) all(x == 0))])
+        tab_classifiable <- rbind(tab_restricted, apply(diffmat, 2, sum))
     }
     rownames(tab_classifiable)[3] <- "unclassifiable"
     names(dimnames(tab_classifiable)) <- names(dimnames(tab_restricted))
