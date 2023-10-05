@@ -37,7 +37,7 @@ for (data_x in list(data_pfs)) {
             for (repeat_i in seq_len(repeated_cv_n)) {
                 sampled_cv_ids <- sample(seq_len(ncol(data_subX)), replace = FALSE)
                 splitted_ids <- split(sampled_cv_ids, rep_len(1:k_fold_cv, length(sampled_cv_ids)))
-                if (length(splitted_ids[length(splitted_ids)]) < 4) {
+                if (length(splitted_ids[[length(splitted_ids)]]) < 4) {
                     splitted_ids[[length(splitted_ids) - 1]] <- c(
                         splitted_ids[[length(splitted_ids) - 1]],
                         splitted_ids[[length(splitted_ids)]]
@@ -50,6 +50,16 @@ for (data_x in list(data_pfs)) {
 
                 cv_results <- list()
                 for (cv_i in seq_len(k_fold_cv_current)) {
+                    # cat current time
+                    cat(
+                        "------------------------------------------ ",
+                        "Starting repeat ", repeat_i, "/", repeated_cv_n,
+                        " cv ", cv_i, "/", k_fold_cv_current,
+                        "     ",
+                        format(Sys.time(), "%Y-%m-%d %H:%M:%S"),
+                        "\n"
+                    )
+
                     savepath_cv <- paste0(savepath, "_repeat.", repeat_i, "_cv.", cv_i)
                     samples_boolean_test <- seq_len(ncol(data_subX)) %in% splitted_ids[[cv_i]]
                     samples_boolean_train <- !samples_boolean_test
