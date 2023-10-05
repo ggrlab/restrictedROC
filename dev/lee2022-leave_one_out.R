@@ -16,7 +16,8 @@ gather_predictions <- function(predicted_rroc_list) {
         tmp_df[["bounded"]] <- ifelse(
             tmp_df[["keep"]],
             tmp_df[["full"]],
-            data_x[["threshold_and_restriction"]][["restriction"]]
+            # data_x[["threshold_and_restriction"]][["restriction"]]
+            -1
         )
         colnames(tmp_df) <- paste0(colnames(tmp_df), "___", x)
         return(tmp_df)
@@ -164,7 +165,7 @@ wrapper_modelling <- function(train_x, train_y, test_x, test_y, verbose = TRUE, 
         max_depth = 20, # default
         min_rows = 1, # default
         nbins = 20, # default
-        seed = 6461063,
+        seed = 4242,
         ...
     )
 
@@ -196,7 +197,7 @@ wrapper_modelling <- function(train_x, train_y, test_x, test_y, verbose = TRUE, 
 
         cat("Test\n")
         print(table_test)
-        print(fisher.test(table_test))
+        # print(fisher.test(table_test))
         print(roc_train)
         print(roc_test)
     }
@@ -266,3 +267,57 @@ for (data_x in list(data_pfs)) {
         }
     }
 }
+
+
+
+####
+sink("dev/lee2022-cross-cohort.txt")
+for (data_x in list(data_pfs)) {
+    for (subcohort_a in rownames(table_lsubcohort_pfs)) {
+        for (subcohort_b in rownames(table_lsubcohort_pfs)) {
+            if (subcohort_a == subcohort_b) {
+                next
+            }
+            for (datatype in c("bounded", "full")) {
+                cat(
+                    "\n\n\n\n\nsubcohort_a: ", subcohort_a,
+                    "subcohort_b: ", subcohort_b,
+                    "  datatype: ", datatype,
+                    "\n\n"
+                )
+                savepath <- paste0(
+                    "intermediate_data/2022-lee/leave_one_out/",
+                    subcohort_a, ".vs.", subcohort_b,
+                    "_",
+                    datatype
+                )
+                samples_boolean_train <- SummarizedExperiment::colData(data_x)[["lee_subcohort"]] == subcohort_a
+                samples_boolean_test <- SummarizedExperiment::colData(data_x)[["lee_subcohort"]] == subcohort_b
+
+                rroc_predictions_traintest <- wrapper_predictions_rroc(
+                    summarized_experiment = data_x,
+                    boolean_train = samples_boolean_train,
+                    boolean_test = samples_boolean_test,
+                    outcome = outcome,
+                    positive_label = "yes"
+                )
+
+                model_and_predictions <- wrapper_modelling(
+                    train_x = rroc_predictions_traintest[["train"]][["predictions"]][[datatype]],
+                    train_y = SummarizedExperiment::colData(data_x)[samples_boolean_train, ][[outcome]],
+                    test_x = rroc_predictions_traintest[["test"]][["predictions"]][[datatype]],
+                    test_y = SummarizedExperiment::colData(data_x)[samples_boolean_test, ][[outcome]]
+                )
+
+                h2o::h2o.saveModel(
+                    model_and_predictions[["model"]],
+                    path = paste0(savepath, ".model_h2o")
+                )
+                model_and_predictions_nomodel <- model_and_predictions[-1]
+                qs::qsave(rroc_predictions_traintest, file = paste0(savepath, "-rroc_predictions_traintest.qrds"))
+                qs::qsave(model_and_predictions_nomodel, file = paste0(savepath, "-model_and_predictions_nomodel.qrds"))
+            }
+        }
+    }
+}
+sink()
