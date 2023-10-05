@@ -36,7 +36,7 @@ for (data_x in list(data_pfs)) {
             repeated_cv_results <- list()
             for (repeat_i in seq_len(repeated_cv_n)) {
                 sampled_cv_ids <- sample(seq_len(ncol(data_subX)), replace = FALSE)
-                splitted_ids <- split(sampled_cv_ids, ceiling(seq_along(sampled_cv_ids) / k_fold_cv))
+                splitted_ids <- split(sampled_cv_ids, rep_len(1:k_fold_cv, length(sampled_cv_ids)))
                 if (length(splitted_ids[length(splitted_ids)]) < 4) {
                     splitted_ids[[length(splitted_ids) - 1]] <- c(
                         splitted_ids[[length(splitted_ids) - 1]],
