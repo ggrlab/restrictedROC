@@ -213,3 +213,45 @@ wrapper_modelling <- function(train_x, train_y, test_x, test_y, verbose = TRUE, 
         )
     )
 }
+
+wrapper_traintest <- function(data_x,
+                              samples_boolean_train,
+                              samples_boolean_test,
+                              outcome,
+                              savepath,
+                              datatype = c("bounded", "full", "restricted", "keep")) {
+    datatype <- datatype[1]
+
+
+    rroc_predictions_traintest <- wrapper_predictions_rroc(
+        summarized_experiment = data_x,
+        boolean_train = samples_boolean_train,
+        boolean_test = samples_boolean_test,
+        outcome = outcome,
+        positive_label = "yes"
+    )
+
+    model_and_predictions <- wrapper_modelling(
+        train_x = rroc_predictions_traintest[["train"]][["predictions"]][[datatype]],
+        train_y = SummarizedExperiment::colData(data_x)[samples_boolean_train, ][[outcome]],
+        test_x = rroc_predictions_traintest[["test"]][["predictions"]][[datatype]],
+        test_y = SummarizedExperiment::colData(data_x)[samples_boolean_test, ][[outcome]]
+    )
+
+    h2o::h2o.saveModel(
+        model_and_predictions[["model"]],
+        path = paste0(savepath, ".model_h2o")
+    )
+    model_and_predictions_nomodel <- model_and_predictions[-1]
+    qs::qsave(rroc_predictions_traintest, file = paste0(savepath, "-rroc_predictions_traintest.qrds"))
+    qs::qsave(model_and_predictions_nomodel, file = paste0(savepath, "-model_and_predictions_nomodel.qrds"))
+
+    retvals <- c(
+        model_and_predictions[c("pred_train", "pred_test")],
+        list("aucs" = sapply(model_and_predictions[c("train", "test")], function(x) x[["auc"]]))
+    )
+    retvals$pred_train$sample_id <- colnames(data_x)[samples_boolean_train]
+    retvals$pred_test$sample_id <- colnames(data_x)[samples_boolean_test]
+
+    return(retvals)
+}
