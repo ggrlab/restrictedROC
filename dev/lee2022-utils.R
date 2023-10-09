@@ -209,12 +209,14 @@ wrapper_modelling <- function(train_x, train_y, test_x, test_y, verbose = TRUE, 
         y = train_data[, ncol(train_data)],
         tibble::as_tibble(h2o.predict(drf, newdata = train_h2o))
     )
+    levels(pred_drf.train[, 2]) <- levels(pred_drf.train[, 1])
     table_train <- table(pred_drf.train[, c("y", "predict")])
 
     pred_drf.test <- cbind(
         y = test_data[, ncol(test_data)],
         tibble::as_tibble(h2o.predict(drf, newdata = test_h2o))
     )
+    levels(pred_drf.test[, 2]) <- levels(pred_drf.test[, 1])
     table_test <- table(pred_drf.test[, c("y", "predict")])
 
     roc_train <- pROC::roc(
@@ -222,11 +224,15 @@ wrapper_modelling <- function(train_x, train_y, test_x, test_y, verbose = TRUE, 
         predictor = pred_drf.train[, 4], # pred_drf.train[["yes"]],
         direction = "<", levels = levels(pred_drf.train[["y"]])
     )
-    roc_test <- pROC::roc(
-        response = pred_drf.test[["y"]],
-        predictor = pred_drf.test[, 4], # pred_drf.test[["yes"]],
-        direction = "<", levels = levels(pred_drf.test[["y"]])
-    )
+    if (length(unique(pred_drf.test[["y"]])) > 1) {
+        roc_test <- pROC::roc(
+            response = pred_drf.test[["y"]],
+            predictor = pred_drf.test[, 4], # pred_drf.test[["yes"]],
+            direction = "<", levels = levels(pred_drf.test[["y"]])
+        )
+    } else {
+        roc_test <- list(auc = NA)
+    }
     if (verbose) {
         cat("Train\n")
         print(table_train)
