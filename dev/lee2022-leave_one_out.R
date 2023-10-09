@@ -96,6 +96,10 @@ for (data_x in list(data_pfs)) {
                         "restrictedness" = circlize::colorRamp2(
                             col = c("#04a804", "#e90000"),
                             breaks = c(0, 1)
+                        ),
+                        "variance" = circlize::colorRamp2(
+                            range(f_data[["variance"]]),
+                            hcl_palette = "Blue-Red 2"
                         )
                     )
                 ),
@@ -128,6 +132,10 @@ for (data_x in list(data_pfs)) {
                         "restrictedness" = circlize::colorRamp2(
                             col = c("#04a804", "#e90000"),
                             breaks = c(0, 1)
+                        ),
+                        "variance" = circlize::colorRamp2(
+                            range(f_data[["variance"]]),
+                            hcl_palette = "Blue-Red 2"
                         )
                     )
                 ),
@@ -162,8 +170,8 @@ for (data_x in list(data_pfs)) {
                             breaks = c(0, 1)
                         ),
                         "variance" = circlize::colorRamp2(
-                            col = c("#04a804", "#e90000"),
-                            breaks = c(0, 1)
+                            range(f_data[["variance"]]),
+                            hcl_palette = "Blue-Red 2"
                         )
                     )
                 ),
