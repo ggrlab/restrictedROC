@@ -126,10 +126,27 @@ wrapper_predictions_rroc <- function(summarized_experiment,
 }
 
 wrapper_modelling <- function(train_x, train_y, test_x, test_y, verbose = TRUE, ...) {
-    train_data <- cbind(train_x, factor(train_y))
-    test_data <- cbind(test_x, factor(test_y, levels = levels(train_data[, ncol(train_data)])))
-    data.table::fwrite(train_data, file = "h2o_train.csv")
-    data.table::fwrite(test_data, file = "h2o_test.csv")
+    unique_y <- sort(unique(c(train_y, test_y)))
+    train_data <- cbind(train_x, factor(train_y, levels = unique_y))
+    test_data <- cbind(test_x, factor(test_y, levels = unique_y))
+
+    train_data_extended <- rbind(train_data, train_data[1:length(unique_y), ])
+    train_data_extended[
+        (nrow(train_data_extended) - length(unique_y) + 1):nrow(train_data_extended),
+        ncol(train_data_extended)
+    ] <- unique_y
+
+    test_data_extended <- rbind(test_data, test_data[1:length(unique_y), ])
+    test_data_extended[
+        (nrow(test_data_extended) - length(unique_y) + 1):nrow(test_data_extended),
+        ncol(test_data_extended)
+    ] <- unique_y
+
+    # For the test data, it could happen that not all levels are present.
+    # Therefore I add a few rows with all unique levels which are removed within
+    # read_h2o
+    data.table::fwrite(train_data_extended, file = "h2o_train_extended.csv")
+    data.table::fwrite(test_data_extended, file = "h2o_test_extended.csv")
 
     library(h2o)
     h2o.init()
@@ -137,24 +154,31 @@ wrapper_modelling <- function(train_x, train_y, test_x, test_y, verbose = TRUE, 
     # prostate = h2o.importFile(path = prostate_path)
     read_h2o <- function(file_path, original_data = NA) {
         tmp <- h2o.importFile(file_path, header = TRUE)
-        if (nrow(tmp) == nrow(original_data) + 1) {
+        n_unique_y <- length(unique(original_data[, ncol(original_data)]))
+        if (nrow(tmp) == nrow(original_data) + 1 + n_unique_y) {
             tmp <- tmp[-1, ]
         }
+        # remove "extended" unique levels which are non-existent samples
+        tmp <- tmp[-c((nrow(tmp) - n_unique_y + 1):nrow(tmp)), ]
+
+        # h2o::h2o.relevel(x = tmp[, ncol(tmp)], y = levels(train_data[, ncol(train_data)]))
+        # h2o::h2o.levels(tmp[, ncol(tmp)]) <- levels(train_data[, ncol(train_data)])
+        # print(h2o::h2o.levels(tmp[, ncol(tmp)]))
         if (!all(is.na(original_data))) {
-            if (!all.equal(
+            if (!isTRUE(all.equal(
                 as.data.frame(tmp),
                 original_data,
                 tolerance = 1e-5,
-                check.names = FALSE
-            )) {
+                check.names = FALSE,
+            ))) {
                 stop("Writing/Reading into h2o went wrong.")
             }
         }
         return(tmp)
     }
 
-    train_h2o <- read_h2o("h2o_train.csv", train_data)
-    test_h2o <- read_h2o("h2o_test.csv", test_data)
+    train_h2o <- read_h2o("h2o_train_extended.csv", train_data)
+    test_h2o <- read_h2o("h2o_test_extended.csv", test_data)
 
 
     drf <- h2o.randomForest(
