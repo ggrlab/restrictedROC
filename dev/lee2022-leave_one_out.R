@@ -1,4 +1,71 @@
 source("dev/lee2022-utils.R")
+
+library(ggplot2)
+plot_heatmap <- function(df_data,
+                         samples_boolean,
+                         data_x_SummarizedExperiment,
+                         name,
+                         lee_subcohort_named_colors = c(
+                             "FrankelAE_2017" = "#8DD3C7",
+                             "GopalakrishnanV_2018" = "#FFFFB3",
+                             "Barcelona" = "#BEBADA",
+                             "Leeds" = "#FB8072",
+                             "Manchester" = "#80B1D3",
+                             "PRIMM-NL" = "#FDB462",
+                             "PRIMM-UK" = "#B3DE69",
+                             "MatsonV_2018" = "#FCCDE5",
+                             "PetersBA_2019" = "#D9D9D9",
+                             "WindTT_2020" = "#BC80BD"
+                         )) {
+    df_data_cSamples_rFeatures <- t(as.matrix(df_data))
+    f_data <- tibble::tibble(
+        restrictedness = apply(df_data_cSamples_rFeatures, 1, function(x) {
+            sum(is.na(x)) / length(x)
+        }),
+        variance = apply(df_data_cSamples_rFeatures, 1, function(x) {
+            var(x, na.rm = TRUE)
+        }),
+    )
+    f_data[["variance"]][is.na(f_data[["variance"]])] <- 0
+
+    p_data <- as.data.frame(SummarizedExperiment::colData(
+        data_x_SummarizedExperiment
+    )[samples_boolean, ])[, "lee_subcohort", drop = FALSE]
+    # remove zero variance features
+    df_data_cSamples_rFeatures <- df_data_cSamples_rFeatures[f_data[["variance"]] != 0, ]
+    f_data <- f_data[f_data[["variance"]] != 0, ]
+    ComplexHeatmap::Heatmap(
+        df_data_cSamples_rFeatures,
+        name = name,
+        show_column_names = FALSE,
+        show_row_names = FALSE,
+        column_title = "samples",
+        row_title = "features",
+        row_order = order(f_data[["restrictedness"]]),
+        cluster_columns = TRUE,
+        # na_col = "#00ff4c25",
+        na_col = "black",
+        right_annotation = ComplexHeatmap::rowAnnotation(
+            df = f_data,
+            col = list(
+                "restrictedness" = circlize::colorRamp2(
+                    col = c("#04a804", "#e90000"),
+                    breaks = c(0, 1)
+                ),
+                "variance" = circlize::colorRamp2(
+                    range(f_data[["variance"]]),
+                    hcl_palette = "Blue-Red 2"
+                )
+            )
+        ),
+        top_annotation = ComplexHeatmap::columnAnnotation(
+            df = p_data,
+            col = list("lee_subcohort" = lee_subcohort_named_colors)
+        )
+    )
+}
+
+
 library(Biobase)
 library(TreeSummarizedExperiment)
 qs::qload("intermediate_data/2022-lee/dev-data_lee.rds")
@@ -56,139 +123,34 @@ for (data_x in list(data_pfs)) {
             }
 
             # plotting
-            library(ggplot2)
-            df_data <- rroc_predictions_traintest[["train"]][["predictions"]][["restricted"]]
-            df_data_cSamples_rFeatures <- t(as.matrix(df_data))
-            f_data <- tibble::tibble(
-                restrictedness = apply(df_data_cSamples_rFeatures, 1, function(x) {
-                    sum(is.na(x)) / length(x)
-                }),
-                variance = apply(df_data_cSamples_rFeatures, 1, function(x) {
-                    var(x, na.rm = TRUE)
-                }),
-            )
-
-            p_data <- as.data.frame(SummarizedExperiment::colData(data_x)[samples_boolean_train, ])[, "lee_subcohort", drop = FALSE]
-            # remove zero variance features
-            df_data_cSamples_rFeatures <- df_data_cSamples_rFeatures[f_data[["variance"]] != 0, ]
-            f_data <- f_data[f_data[["variance"]] != 0, ]
-            pdf("removeme.pdf", width = 25, height = 20)
-            ComplexHeatmap::Heatmap(
-                df_data_cSamples_rFeatures,
-                name = "train",
-                show_column_names = FALSE,
-                show_row_names = FALSE,
-                column_title = "samples",
-                row_title = "features",
-                cluster_rows = TRUE,
-                clustering_distance_rows = function(m) {
-                    m[is.na(m)] <- min(m, na.rm = TRUE) - 1
-                    calc_dist <- dist(m)
-                    # calc_dist[is.na(calc_dist)] <- max(calc_dist, na.rm = TRUE)
-                    # calc_dist[is.na(calc_dist)] <- 0
-                    return(calc_dist)
-                },
-                cluster_columns = TRUE,
-                na_col = "#00ff4c25",
-                right_annotation = ComplexHeatmap::rowAnnotation(
-                    df = f_data,
-                    col = list(
-                        "restrictedness" = circlize::colorRamp2(
-                            col = c("#04a804", "#e90000"),
-                            breaks = c(0, 1)
-                        ),
-                        "variance" = circlize::colorRamp2(
-                            range(f_data[["variance"]]),
-                            hcl_palette = "Blue-Red 2"
-                        )
-                    )
-                ),
-                top_annotation = ComplexHeatmap::columnAnnotation(
-                    df = p_data,
-                    col = list(
-                        "lee_subcohort" = structure(
-                            RColorBrewer::brewer.pal(
-                                n = length(unique(p_data[["lee_subcohort"]])),
-                                name = "Dark2"
-                            ),
-                            names = unique(p_data[["lee_subcohort"]])
-                        )
-                    )
+            if (datatype == "full") {
+                dir.create("intermediate_data/2022-lee/results", recursive = TRUE, showWarnings = FALSE)
+                pdf(
+                    paste0(
+                        "intermediate_data/2022-lee/results/LOO-restriction_heatmap-",
+                        basename(savepath), ".pdf"
+                    ),
+                    width = 20, height = 25
                 )
-            )
-            ComplexHeatmap::Heatmap(
-                df_data_cSamples_rFeatures,
-                name = "train",
-                show_column_names = FALSE,
-                show_row_names = FALSE,
-                column_title = "samples",
-                row_title = "features",
-                row_order = order(f_data[["restrictedness"]]),
-                cluster_columns = TRUE,
-                na_col = "#00ff4c25",
-                right_annotation = ComplexHeatmap::rowAnnotation(
-                    df = f_data,
-                    col = list(
-                        "restrictedness" = circlize::colorRamp2(
-                            col = c("#04a804", "#e90000"),
-                            breaks = c(0, 1)
+                for (tt in c("train", "test")) {
+                    if (tt == "train") {
+                        samples_boolean <- samples_boolean_train
+                    } else {
+                        samples_boolean <- samples_boolean_test
+                    }
+                    ComplexHeatmap::draw(
+                        plot_heatmap(
+                            df_data = rroc_predictions_traintest[[tt]][["predictions"]][["restricted"]],
+                            samples_boolean = samples_boolean,
+                            data_x_SummarizedExperiment = data_x,
+                            name = tt
                         ),
-                        "variance" = circlize::colorRamp2(
-                            range(f_data[["variance"]]),
-                            hcl_palette = "Blue-Red 2"
-                        )
+                        column_title = tt,
+                        column_title_gp = grid::gpar(fontsize = 16)
                     )
-                ),
-                top_annotation = ComplexHeatmap::columnAnnotation(
-                    df = p_data,
-                    col = list(
-                        "lee_subcohort" = structure(
-                            RColorBrewer::brewer.pal(
-                                n = length(unique(p_data[["lee_subcohort"]])),
-                                name = "Dark2"
-                            ),
-                            names = unique(p_data[["lee_subcohort"]])
-                        )
-                    )
-                )
-            )
-            ComplexHeatmap::Heatmap(
-                df_data_cSamples_rFeatures,
-                name = "train",
-                show_column_names = FALSE,
-                show_row_names = FALSE,
-                column_title = "samples",
-                row_title = "features",
-                row_order = order(f_data[["variance"]]),
-                cluster_columns = TRUE,
-                na_col = "#00ff4c25",
-                right_annotation = ComplexHeatmap::rowAnnotation(
-                    df = f_data,
-                    col = list(
-                        "restrictedness" = circlize::colorRamp2(
-                            col = c("#04a804", "#e90000"),
-                            breaks = c(0, 1)
-                        ),
-                        "variance" = circlize::colorRamp2(
-                            range(f_data[["variance"]]),
-                            hcl_palette = "Blue-Red 2"
-                        )
-                    )
-                ),
-                top_annotation = ComplexHeatmap::columnAnnotation(
-                    df = p_data,
-                    col = list(
-                        "lee_subcohort" = structure(
-                            RColorBrewer::brewer.pal(
-                                n = length(unique(p_data[["lee_subcohort"]])),
-                                name = "Dark2"
-                            ),
-                            names = unique(p_data[["lee_subcohort"]])
-                        )
-                    )
-                )
-            )
-            dev.off()
+                }
+                dev.off()
+            }
         }
     }
 }
