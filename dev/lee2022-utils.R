@@ -154,7 +154,7 @@ wrapper_modelling <- function(train_x, train_y, test_x, test_y, verbose = TRUE, 
     # prostate = h2o.importFile(path = prostate_path)
     read_h2o <- function(file_path, original_data = NA) {
         tmp <- h2o.importFile(file_path, header = TRUE)
-        n_unique_y <- length(unique(original_data[, ncol(original_data)]))
+        n_unique_y <- length(levels(original_data[, ncol(original_data)]))
         if (nrow(tmp) == nrow(original_data) + 1 + n_unique_y) {
             tmp <- tmp[-1, ]
         }
@@ -166,12 +166,24 @@ wrapper_modelling <- function(train_x, train_y, test_x, test_y, verbose = TRUE, 
         # print(h2o::h2o.levels(tmp[, ncol(tmp)]))
         if (!all(is.na(original_data))) {
             if (!isTRUE(all.equal(
-                as.data.frame(tmp),
-                original_data,
+                as.data.frame(tmp[, -ncol(tmp)]),
+                original_data[, -ncol(original_data)],
                 tolerance = 1e-5,
                 check.names = FALSE,
             ))) {
-                stop("Writing/Reading into h2o went wrong.")
+                stop("Writing/Reading data_x into h2o went wrong.")
+            }
+            if (!all(
+                as.character(as.data.frame(tmp)[[ncol(tmp)]]) ==
+                    as.character(original_data[, ncol(original_data)])
+            )) {
+                stop("Writing/Reading data_y into h2o went wrong.")
+            }
+            if (!all(
+                h2o.levels(tmp[, ncol(tmp)]) ==
+                    levels(original_data[, ncol(original_data)])
+            )) {
+                stop("Writing/Reading data_y LEVELS into h2o went wrong.")
             }
         }
         return(tmp)
