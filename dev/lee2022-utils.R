@@ -46,11 +46,91 @@ gather_predictions <- function(predicted_rroc_list) {
     )
 }
 
-wrapper_predictions_rroc <- function(summarized_experiment,
-                                     boolean_train,
-                                     boolean_test,
-                                     outcome = "PFS12",
-                                     ...) {
+# wrapper_predictions_rroc <- function(summarized_experiment,
+#                                      boolean_train,
+#                                      boolean_test,
+#                                      outcome = "PFS12",
+#                                      ...) {
+#     if (length(boolean_train) != length(boolean_test)) {
+#         stop("boolean_train and boolean_test must be the same length")
+#     }
+#     if (length(boolean_train) != ncol(summarized_experiment)) {
+#         stop("boolean_train must be the same length as the number of columns in summarized_experiment")
+#     }
+#     train_sE <- summarized_experiment[, boolean_train]
+#     test_sE <- summarized_experiment[, boolean_test]
+
+#     train_x <- SummarizedExperiment::assay(train_sE)
+#     test_x <- SummarizedExperiment::assay(test_sE)
+#     # From ?restrictedROC::predict.restrictedROC:
+#     #' tmp <- simple_rROC(
+#     #'     response = aSAH$outcome,
+#     #'     predictor = aSAH$ndka,
+#     #'     return_proc = TRUE
+#     #' )
+#     #' single_rROC <- simple_rROC_interpret(tmp)
+#     #'
+#     #' predict(
+#     #'     single_rROC,
+#     #'     newdata = aSAH,
+#     #'     newdata_predictor_column = "ndka",
+#     #'     newdata_response_column = "outcome",
+#     #'     pred_high_label = "Poor",
+#     #'     pred_low_label = "Good"
+#     #' )
+#     res_rroc <- apply(train_x, 1, function(x) {
+#         restrictedROC::simple_rROC(
+#             response = train_sE[[outcome]],
+#             predictor = x,
+#             return_proc = TRUE,
+#             ...
+#             # positive_label = "yes",
+#         )
+#     })
+#     res_rroc_interpret <- lapply(res_rroc, restrictedROC::simple_rROC_interpret)
+#     # res_rroc_interpret[[1]]
+
+#     train_restricted <- sapply(names(res_rroc_interpret), function(feature_x) {
+#         tmp_df <- data.frame(train_x[feature_x, ], train_sE[[outcome]])
+#         colnames(tmp_df) <- c(feature_x, outcome)
+#         restrictedROC:::predict.restrictedROC(
+#             object = res_rroc_interpret[[feature_x]],
+#             newdata = tmp_df,
+#             newdata_predictor_column = feature_x,
+#             newdata_response_column = outcome,
+#             pred_high_label = "yes",
+#             pred_low_label = "no"
+#         )
+#     }, USE.NAMES = TRUE, simplify = FALSE)
+
+#     test_restricted <- sapply(names(res_rroc_interpret), function(feature_x) {
+#         tmp_df <- data.frame(test_x[feature_x, ], test_sE[[outcome]])
+#         colnames(tmp_df) <- c(feature_x, outcome)
+#         restrictedROC:::predict.restrictedROC(
+#             object = res_rroc_interpret[[feature_x]],
+#             newdata = tmp_df,
+#             newdata_predictor_column = feature_x,
+#             newdata_response_column = outcome,
+#             pred_high_label = "yes",
+#             pred_low_label = "no"
+#         )
+#     }, USE.NAMES = TRUE, simplify = FALSE)
+#     gathered_train <- gather_predictions(train_restricted)
+#     gathered_test <- gather_predictions(test_restricted)
+#     return(
+#         list(
+#             "train" = gathered_train,
+#             "test" = gathered_test
+#         )
+#     )
+# }
+
+wrapper_predictions_rroc_featureselect <- function(summarized_experiment,
+                                                   boolean_train,
+                                                   boolean_test,
+                                                   outcome = "PFS12",
+                                                   featureselection_type = 0,
+                                                   ...) {
     if (length(boolean_train) != length(boolean_test)) {
         stop("boolean_train and boolean_test must be the same length")
     }
@@ -62,22 +142,44 @@ wrapper_predictions_rroc <- function(summarized_experiment,
 
     train_x <- SummarizedExperiment::assay(train_sE)
     test_x <- SummarizedExperiment::assay(test_sE)
-    # From ?restrictedROC::predict.restrictedROC:
-    #' tmp <- simple_rROC(
-    #'     response = aSAH$outcome,
-    #'     predictor = aSAH$ndka,
-    #'     return_proc = TRUE
-    #' )
-    #' single_rROC <- simple_rROC_interpret(tmp)
-    #'
-    #' predict(
-    #'     single_rROC,
-    #'     newdata = aSAH,
-    #'     newdata_predictor_column = "ndka",
-    #'     newdata_response_column = "outcome",
-    #'     pred_high_label = "Poor",
-    #'     pred_low_label = "Good"
-    #' )
+
+    if (featureselection_type == 0) {
+        selected_features <- rownames(train_x)
+    } else {
+        res_rroc_significance <- apply(train_x, 1, function(x) {
+            restrictedROC::simple_rROC_permutation(
+                response = train_sE[[outcome]],
+                predictor = x,
+                return_proc = TRUE,
+                n_permutations = 1000,
+                fix_seed = 81,
+                parallel_permutations = TRUE,
+                ...
+            )
+        })
+        significances <- do.call(rbind, lapply(res_rroc_significance, function(x) {
+            x$permutation_pval
+        }))
+        global_sign <- rownames(significances)[significances[, "pval.twoside.global"] < 0.20]
+        max_sign <- rownames(significances)[significances[, "pval.twoside.max"] < 0.20]
+
+        if (featureselection_type == 1) {
+            selected_features <- global_sign
+        } else if (featureselection_type == 2) {
+            selected_features <- max_sign
+        } else if (featureselection_type == 3) {
+            selected_features <- unique(c(global_sign, max_sign))
+        } else {
+            stop("featureselection_type must be 1 (global sign.), 2 (max sign.) or 3 (either sign.)")
+        }
+    }
+    if (length(selected_features) == 0) {
+        # then select the 3 most significant GLOBAl features
+        selected_features <- rownames(significances)[order(significances[, "pval.twoside.global"])[1:3]]
+    }
+    train_x <- train_x[selected_features, , drop = FALSE]
+    test_x <- test_x[selected_features, , drop = FALSE]
+
     res_rroc <- apply(train_x, 1, function(x) {
         restrictedROC::simple_rROC(
             response = train_sE[[outcome]],
@@ -259,18 +361,21 @@ wrapper_modelling <- function(train_x, train_y, test_x, test_y, verbose = TRUE, 
 wrapper_traintest <- function(data_x,
                               samples_boolean_train,
                               samples_boolean_test,
+                              wrapper_predictions_rroc_fun = wrapper_predictions_rroc_featureselect,
                               outcome,
                               savepath,
-                              datatype = c("bounded", "full", "restricted", "keep")) {
+                              datatype = c("bounded", "full", "restricted", "keep"),
+                              ...) {
     datatype <- datatype[1]
 
 
-    rroc_predictions_traintest <- wrapper_predictions_rroc(
+    rroc_predictions_traintest <- wrapper_predictions_rroc_fun(
         summarized_experiment = data_x,
         boolean_train = samples_boolean_train,
         boolean_test = samples_boolean_test,
         outcome = outcome,
-        positive_label = "yes"
+        positive_label = "yes",
+        ...
     )
 
     model_and_predictions <- wrapper_modelling(
