@@ -130,13 +130,13 @@ wrapper_modelling <- function(train_x, train_y, test_x, test_y, verbose = TRUE, 
     train_data <- cbind(train_x, factor(train_y, levels = unique_y))
     test_data <- cbind(test_x, factor(test_y, levels = unique_y))
 
-    train_data_extended <- rbind(train_data, train_data[1:length(unique_y), ])
+    train_data_extended <- rbind(train_data, train_data[seq_along(unique_y), ])
     train_data_extended[
         (nrow(train_data_extended) - length(unique_y) + 1):nrow(train_data_extended),
         ncol(train_data_extended)
     ] <- unique_y
 
-    test_data_extended <- rbind(test_data, test_data[1:length(unique_y), ])
+    test_data_extended <- rbind(test_data, test_data[seq_along(unique_y), ])
     test_data_extended[
         (nrow(test_data_extended) - length(unique_y) + 1):nrow(test_data_extended),
         ncol(test_data_extended)
