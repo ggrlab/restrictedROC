@@ -206,11 +206,12 @@ li_all_data_ttests_unpaired <- lapply(
 library(future)
 plan(multisession)
 # for (n_permutations in c(1000, 25000, 100000)) {
-for (n_permutations in c(1000)) {
+for (n_permutations in c(25000)) {
+    # for (n_permutations in c(1000)) {
     li_all_data_rroc <- sapply(
         names(li_all_data_measurements),
         function(study_x) {
-            resfile <- paste0("intermediate_data/dev-res_rroc_test_", n_permutations / 1000, "k_", study_x, ".qrds")
+            resfile <- paste0("intermediate_data/res_rroc_test_", n_permutations / 1000, "k_", study_x, ".qrds")
             cat("Starting ", resfile, "\n")
             if (file.exists(resfile)) {
                 li_all_data_rroc <- qs::qread(resfile)
@@ -241,52 +242,134 @@ named_figs <- list(
     "fig2a" = c("s1", "week 4", "baseline"),
     "fig2c" = c("s1", "week 6", "week 4"),
     "fig2d" = c("s3_nivo", "week 4", "baseline"),
-    "fig2e" = c("s3_ever", "week 4", "baseline")
+    "fig2f" = c("s3_ever", "week 4", "baseline")
 )
-pdf("removeme.pdf", width = 15, height = 4)
-for (study_tp1_tp2_x in names(named_figs)) {
-    study_tp1_tp2 <- named_figs[[study_tp1_tp2_x]]
-    study_x <- study_tp1_tp2[[1]]
-    tp1 <- study_tp1_tp2[[2]]
-    tp2 <- study_tp1_tp2[[3]]
+# pdf("removeme.pdf", width = 15, height = 4)
+pdf("removeme.pdf", width = 4, height = 15)
+for (name_all in c(FALSE, TRUE)) {
+    for (study_tp1_tp2_x in names(named_figs)) {
+        study_tp1_tp2 <- named_figs[[study_tp1_tp2_x]]
+        study_x <- study_tp1_tp2[[1]]
+        tp1 <- study_tp1_tp2[[2]]
+        tp2 <- study_tp1_tp2[[3]]
 
-    plot_paper <- ggplot(
-        li_all_data_ttests_paired[[study_x]][[paste0(tp1, "_", tp2)]],
-        aes(x = avg.FC, y = negL10_q.value, label = feature)
-    ) +
-        ggtitle(study_tp1_tp2_x, subtitle = paste0("Paired t-test"))
-    plot_paper_unpaired <- ggplot(
-        li_all_data_ttests_unpaired[[study_x]][[paste0(tp1, "_", tp2)]],
-        aes(x = avg.FC, y = negL10_q.value, label = feature)
-    ) +
-        ggtitle(study_tp1_tp2_x, subtitle = paste0("UNpaired t-test"))
+        plot_paper <- ggplot(
+            li_all_data_ttests_paired[[study_x]][[paste0(tp1, "_", tp2)]],
+            aes(x = avg.FC, y = negL10_q.value, label = feature)
+        ) +
+            ggtitle(study_tp1_tp2_x, subtitle = paste0("Paired t-test"))
+        plot_paper_unpaired <- ggplot(
+            li_all_data_ttests_unpaired[[study_x]][[paste0(tp1, "_", tp2)]],
+            aes(x = avg.FC, y = negL10_q.value, label = feature)
+        ) +
+            ggtitle(study_tp1_tp2_x, subtitle = paste0("UNpaired t-test"))
 
-    plot_permutation_global <- ggplot(
-        li_all_data_rroc[[study_x]][[paste0(tp1, "_", tp2)]],
-        aes(x = avg.FC, y = global_neglog_p.value, label = feature)
-    ) +
-        ggtitle(study_tp1_tp2_x, subtitle = paste0("Permutation test on AUC, global"))
+        plot_permutation_global <- ggplot(
+            li_all_data_rroc[[study_x]][[paste0(tp1, "_", tp2)]],
+            aes(x = avg.FC, y = global_neglog_p.value, label = feature)
+        ) +
+            ggtitle(study_tp1_tp2_x, subtitle = paste0("Permutation test on AUC, global"))
 
-    plot_permutation_max <- ggplot(
-        li_all_data_rroc[[study_x]][[paste0(tp1, "_", tp2)]],
-        aes(x = avg.FC, y = max_neglog_p.value, label = feature)
-    ) +
-        ggtitle(study_tp1_tp2_x, subtitle = paste0("Permutation test on AUC, Restriction"))
+        plot_permutation_max <- ggplot(
+            li_all_data_rroc[[study_x]][[paste0(tp1, "_", tp2)]],
+            aes(x = avg.FC, y = max_neglog_p.value, label = feature)
+        ) +
+            ggtitle(study_tp1_tp2_x, subtitle = paste0("Permutation test on AUC, Restriction"))
 
-    plots_done <- lapply(list(
-        plot_paper,
-        plot_paper_unpaired,
-        plot_permutation_global,
-        plot_permutation_max
-    ), function(x) {
-        x +
-            geom_point() +
-            geom_text(size = 1, color = "darkgreen") +
-            xlab(paste0("Average fold change, ", tp1, " vs ", tp2, "\n", studies_clearnames[study_x])) +
-            ylab("-log10(q.value)") +
-            ylim(c(0, 12))
+        plots_done <- lapply(list(
+            plot_paper,
+            plot_paper_unpaired,
+            plot_permutation_global,
+            plot_permutation_max
+        ), function(x) {
+            tmp <- x +
+                geom_point() +
+                ggpubr::theme_pubr()
+            if (name_all) {
+                tmp <- tmp + geom_text(size = 1, color = "darkgreen")
+            } else {
+                # tmp <- tmp + geom_text(
+                #     data = subset(x$data, x$data[, x$labels$y] > -log10(0.05)),
+                #     size = 1.5, color = "darkgreen"
+                # )
+                tmp <- tmp + ggrepel::geom_text_repel(
+                    # tmp <- tmp + ggrepel::geom_label_repel(
+                    data = subset(x$data, x$data[, x$labels$y] > -log10(0.05)),
+                    size = 2, color = "darkgreen",
+                    min.segment.length = 0, seed = 42, box.padding = 0.3,
+                    max.overlaps = 10
+                )
+            }
+            return(
+                tmp +
+                    xlab(paste0("Average fold change, ", tp1, " vs ", tp2, "\n", studies_clearnames[study_x])) +
+                    ylab("-log10(q.value)") +
+                    geom_hline(yintercept = -log10(0.05), linetype = "dashed", color = "red") +
+                    ylim(c(0, 12))
+            )
+        })
+        print(patchwork::wrap_plots(plots_done, nrow = 4))
+    }
+}
+dev.off()
+```
+
+```{r, Plot distribution of explicit features}
+which_features <- list(
+    "fig2a_restriction" = "guanidinoacetic acid",
+    "fig2a_restriction" = "C14:1 carnitine",
+    "fig2a_restriction" = "guanine",
+    "fig2a_restriction" = "asparagine",
+    "fig2c_restriction" = "hydroxyproline",
+    "fig2c_restriction" = "C7 carnitine",
+    "fig2c_restriction" = "3-hydroxyanthranilic acid"
+)
+pdf("removeme_2.pdf", height = 15, width = 10)
+for (f_i in seq_along(which_features)) {
+    source_x <- names(which_features)[f_i]
+    feature_x <- which_features[[f_i]]
+    all_studies_plots <- list()
+    for (study_tp1_tp2_x in names(named_figs)) {
+        study_tp1_tp2 <- named_figs[[study_tp1_tp2_x]]
+        study_x <- study_tp1_tp2[[1]]
+        tp1 <- study_tp1_tp2[[2]]
+        tp2 <- study_tp1_tp2[[3]]
+        if (!feature_x %in% names(li_all_data_measurements[[study_x]][[tp1]])) {
+            cat("Feature ", feature_x, " not in ", study_x, "\n")
+            all_studies_plots[[study_tp1_tp2_x]] <- NA
+        } else {
+            data_tp1_tp2_noNA <- na.omit(
+                data.frame(
+                    "tp1" = li_all_data_measurements[[study_x]][[tp1]][[feature_x]],
+                    "tp2" = li_all_data_measurements[[study_x]][[tp2]][[feature_x]]
+                )
+            )
+            names(data_tp1_tp2_noNA) <- gsub(" ", "", c(tp1, tp2))
+            feature_paired_ttest <- li_all_data_ttests_paired[[study_x]][[paste0(tp1, "_", tp2)]]
+            feature_paired_ttest <- feature_paired_ttest[feature_paired_ttest$feature == feature_x, ]
+            all_studies_plots[[study_tp1_tp2_x]] <- restrictedROC::plot_density_rROC_empirical(
+                values_grouped = data_tp1_tp2_noNA,
+                xmin = min(data_tp1, data_tp2),
+                xmax = max(data_tp1, data_tp2)
+            )[["plots"]]
+        }
+    }
+    tmp <- lapply(names(all_studies_plots), function(plot_x) {
+        x <- all_studies_plots[[plot_x]]
+        if (all(is.na(x))) {
+            return(NA)
+        }
+        patchwork::wrap_plots(list(x[[1]] +
+            ggtitle(
+                plot_x,
+                studies_clearnames[named_figs[[plot_x]]]
+            ), x[[3]]), nrow = 1)
     })
-    print(patchwork::wrap_plots(plots_done, ncol = 4))
+    tmp[is.na(tmp)] <- NULL
+    print(
+        patchwork::wrap_plots(tmp, nrow = 4) +
+            patchwork::plot_annotation(title = paste(feature_x, "  source=", source_x))
+    )
 }
 dev.off()
 ```
