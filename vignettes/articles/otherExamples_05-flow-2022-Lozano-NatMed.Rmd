@@ -1,0 +1,145 @@
+---
+title: "Datatypes 04: Microbiome"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+    collapse = TRUE,
+    comment = "#>"
+)
+```
+
+
+
+
+```{r setup}
+options(warn = 1)
+library(restrictedROC)
+```
+```{r data}
+library(dplyr)
+dir.create("intermediate_data")
+# Data downloaded manually from
+
+#  - https://anlab.stanford.edu/irae
+#  - https://static-content.springer.com/esm/art%3A10.1038%2Fs41591-021-01623-z/MediaObjects/41591_2021_1623_MOESM3_ESM.xlsx
+pheno <- readxl::read_excel(
+    "intermediate_data/2022-Lozano/41591_2021_1623_MOESM3_ESM.xlsx",
+    sheet = "Table S1", na = "NA", skip = 3
+)
+pheno_discovery <- readxl::read_excel(
+    "intermediate_data/2022-Lozano/41591_2021_1623_MOESM3_ESM.xlsx",
+    sheet = "Table S3", na = "NA", skip = 3
+)
+cytof <- readxl::read_excel(
+    "intermediate_data/2022-Lozano/CyTOF_overview.xlsx",
+    skip = 3
+)
+colnames(cytof)[-1] <- paste0("cytof_", colnames(cytof)[-1])
+data_joint <- dplyr::right_join(pheno_discovery, cytof, by = c("Patient ID" = "PID")) |>
+    dplyr::filter(!is.na(`Severe irAE status (1=Yes, 0=No)d`))
+table(data_joint[["Severe irAE status (1=Yes, 0=No)d"]])
+```
+
+```{r, initial rROC plots}
+cytof_features <- grep("^cytof", colnames(data_joint), value = TRUE)
+library(ggplot2)
+pdf("2022-Lozano-NatMed_restrictedFeatures.pdf")
+tmp <- sapply(cytof_features, function(x) {
+    data_single_feature <- data_joint[[x]]
+    print(
+        restrictedROC::plot_density_rROC_empirical(
+            values_grouped = split(data_single_feature, data_joint[["Severe irAE status (1=Yes, 0=No)d"]]),
+            xmin = min(data_single_feature),
+            xmax = max(data_single_feature)
+        )[["plots"]] + patchwork::plot_annotation(title = x)
+    )
+})
+dev.off()
+```
+
+```{r, permutation tests}
+cytof_permutation_rroc <- sapply(cytof_features, function(x) {
+    print(x)
+    data_single_feature <- data_joint[[x]]
+    restrictedROC::simple_rROC_permutation(
+        response = data_joint[["Severe irAE status (1=Yes, 0=No)d"]],
+        predictor = data_single_feature,
+        n_permutations = 1000,
+        positive_label = 1,
+        direction = "<",
+        parallel_permutations = FALSE
+    )
+}, USE.NAMES = TRUE, simplify = FALSE)
+qs::qsave(cytof_permutation_rroc, file = "intermediate_data/2022-Lozano/cytof_permutation_rroc.RData")
+```
+
+```{r, Re-plot Fig 2c}
+library(ggplot2)
+permpvals <- do.call(
+    rbind,
+    lapply(cytof_permutation_rroc, function(x) x[["permutation_pval"]])
+) |>
+    as.data.frame() |>
+    tibble::rownames_to_column("feature") |>
+    dplyr::mutate(
+        "qval.twoside.max" = p.adjust(p = pval.twoside.max, method = "BH"),
+        "qval.twoside.global" = p.adjust(p = pval.twoside.global, method = "BH"),
+        "neg.log10.qval.max" = -log10(qval.twoside.max),
+        "neg.log10.qval.global" = -log10(qval.twoside.global)
+    )
+aucs <- do.call(
+    rbind,
+    lapply(cytof_permutation_rroc, function(x) c("auc.global" = x[["global"]][["auc"]], "auc.max" = x[["max_total"]][["auc"]]))
+) |> tibble::as_tibble()
+
+permpvals_aucs <- tibble::as_tibble(cbind(permpvals, aucs))
+pdf("2022-Lozano-NatMed_volcano.pdf")
+print(
+    ggplot(permpvals_aucs, aes(x = auc.global, y = neg.log10.qval.global)) +
+        geom_point() +
+        geom_hline(yintercept = -log10(0.05), color = "red") +
+        geom_vline(xintercept = 0.5, color = "red") +
+        geom_text(aes(label = feature), size = .75, col = "darkgreen") +
+        theme_bw() +
+        theme(
+            axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+            legend.position = "none"
+        ) +
+        ggtitle("Global AUC")
+)
+print(
+    ggplot(permpvals_aucs, aes(x = auc.max, y = neg.log10.qval.max)) +
+        geom_point() +
+        geom_hline(yintercept = -log10(0.05), color = "red") +
+        geom_vline(xintercept = 0.5, color = "red") +
+        geom_text(aes(label = feature), size = .75, col = "darkgreen") +
+        theme_bw() +
+        theme(
+            axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+            legend.position = "none"
+        ) +
+        ggtitle("Max AUC")
+)
+dev.off()
+
+
+pdf("2022-Lozano-NatMed_maxVSglobal.pdf")
+print(
+    ggplot(permpvals_aucs, aes(x=qval.twoside.max, y=qval.twoside.global)) + 
+        geom_point() +
+        geom_hline(yintercept = 0.05, color = "red") +
+        geom_vline(xintercept = 0.05, color = "red") +
+        scale_x_log10() + scale_y_log10()+ 
+        geom_text(aes(label = feature), size = 1.5, col = "darkgreen") +
+        theme_bw() +
+        theme(
+            axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+            legend.position = "none"
+        )
+)
+dev.off()
+```
+
+
+[1]: Lozano, A.X., Chaudhuri, A.A., Nene, A. et al. T cell characteristics associated with toxicity to immune checkpoint blockade in patients with melanoma. Nat Med 28, 353–362 (2022). https://doi.org/10.1038/s41591-021-01623-z 
