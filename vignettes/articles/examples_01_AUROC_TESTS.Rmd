@@ -1,0 +1,256 @@
+---
+title: "AUROC vs Mann-Whitney U"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+    collapse = TRUE,
+    comment = "#>"
+)
+```
+
+```{r setup}
+options(warn = 1)
+library(restrictedROC)
+library(MASS) # for rnbinom
+```
+From <cite>[Wackerly et al, 2014, Cengage Learning][1]</cite>: The Mann-Whitney U test is a nonparametric test obtained by:
+
+1. Ordering all (n_1 + n_2) observations by their value 
+2. Count how many observations of sample I precede _each_ observation of sample II 
+3. Sum all counts from step 2
+
+```{r, Example Mann-Whitney U}
+# Example from Wackerly 2014, p758, 15.6
+values <- c(25, 26, 27, 28, 29, 31, 32, 35)
+names(values) <- c("I", "I", "I", "II", "II", "I", "II", "II")
+print(values)
+
+# Count how many observations in I and II
+n_1 <- length(values[names(values) == "I"])
+n_2 <- length(values[names(values) == "II"])
+```
+
+```{r, U calculation}
+# 1. Ordering all (n_1 + n_2) observations by their value
+values_sorted <- sort(values)
+print(values_sorted)
+
+# 2. Count how many observations of sample I precede each observation of sample II
+u_values <- c()
+for (y_observation in values_sorted[names(values_sorted) == "II"]) {
+    u_values <- c(u_values, sum(values_sorted[names(values_sorted) == "I"] < y_observation))
+}
+
+u_total <- sum(u_values)
+print(u_total)
+```
+
+From <cite>[Wackerly et al, 2014, Cengage Learning][1], 15.6</cite> we see that the U statistic has a direct connection to the Wilcoxon rank sum statistic.  For that, we need to calculate the ranks of the values.
+```{r, Rank sum calculation}
+values_ranks <- rank(values)
+print(values_ranks)
+
+# Sum of ranks of for sample I and II
+rs_I <- sum(values_ranks[names(values_ranks) == "I"])
+rs_II <- sum(values_ranks[names(values_ranks) == "II"])
+ranksum <- min(rs_I, rs_II)
+print(ranksum)
+```
+
+```{r, Comparison to wilcoxon test}
+# R's wilcox.test:
+#   STATISTIC <- c(W = sum(r[seq_along(x)]) - n.x * (n.x + 1)/2)
+# translated:
+#  STATISTIC <- c("W"=rs_I - n_1*(n_1 + 1)/2)
+w_test <- wilcox.test(
+    x = values[names(values) == "I"],
+    y = values[names(values) == "II"],
+    paired = FALSE,
+    alternative = "two.sided"
+)
+print(w_test)
+print(c("W - manually calculated" = rs_I - n_1 * (n_1 + 1) / 2))
+```
+
+With the formula from Wackerly2014: 
+
+$$
+U = n_1 n_2 + \frac{n_1 (n_1 + 1)}{2} - ranksum_{I}
+$$
+
+we see that 
+$$
+ranksum_{I} = n_1 n_2 + \frac{n_1 (n_1 + 1)}{2} - U
+$$
+
+and therefore 
+
+$$
+W_{Rwilcox} = ranksum_{I} - \frac{n_1 (n_1 + 1)}{2} = n_1 n_2 - U
+$$
+```{r, From Mann-Whitney U statistic to Wilcoxon}
+ranksum_I_from_u <- n_1 * n_2 + n_1 * (n_1 + 1) / 2 - u_total
+w_r <- ranksum_I_from_u - n_1 * (n_1 + 1) / 2
+w_r_alternative <- n_1 * n_2 - u_total
+
+print(w_r_alternative)
+print(w_r)
+print(w_test)
+
+u_from_wilcox <- n_1 * n_2 - w_test$statistic
+print(u_from_wilcox)
+print(u_total)
+```
+
+### AUROC is the same as Mann-Whitney U statistic
+```{r, AUROC is the same as Mann-Whitney U statistic}
+# Example from Wackerly 2014, p758, 15.6
+values <- c(25, 26, 27, 28, 29, 31, 32, 35)
+names(values) <- c("I", "I", "I", "II", "II", "I", "II", "II")
+print(values)
+
+# Count how many observations in I and II
+n_1 <- length(values[names(values) == "I"])
+n_2 <- length(values[names(values) == "II"])
+
+auroc_from_u <- u_total / (n_1 * n_2)
+print(auroc_from_u)
+
+# Explicitely calculate AUC with pROC
+print(pROC::roc(
+    response = names(values),
+    predictor = values,
+    levels = c("I", "II"),
+    direction = "<",
+    auc = TRUE
+))
+```
+
+
+### Bigger example of AUROC vs Mann-Whitney U statistic
+```{r, Bigger example of AUROC vs Mann-Whitney U statistic}
+set.seed(2)
+values <- c(
+    a = rnorm(50, mean = 8, sd = 1),
+    b = rnorm(50, mean = 9, sd = 2)
+)
+names(values) <- gsub("[0-9]*", "", names(values))
+n_1 <- length(values[names(values) == "a"])
+n_2 <- length(values[names(values) == "b"])
+
+big_roc <- pROC::roc(
+    response = names(values),
+    predictor = values,
+    levels = c("a", "b"),
+    direction = "<",
+    auc = TRUE
+)
+big_wilcox <- wilcox.test(
+    x = values[names(values) == "a"],
+    y = values[names(values) == "b"],
+    paired = FALSE,
+    alternative = "two.sided"
+)
+big_ttest <- t.test(
+    x = values[names(values) == "a"],
+    y = values[names(values) == "b"],
+    paired = FALSE,
+    alternative = "two.sided"
+)
+
+u_from_wilcox <- n_1 * n_2 - big_wilcox$statistic
+auc_from_u <- u_from_wilcox / (n_1 * n_2)
+print(auc_from_u)
+print(big_roc)
+
+# Plot ROC curve
+library(ggplot2)
+df_split <- as.data.frame(split(values, names(values)))
+plot_box <- ggplot(reshape2::melt(df_split), aes(x = variable, y = value, fill = variable)) +
+    geom_boxplot() +
+    geom_jitter(size = 1, width = .1) +
+    scale_fill_manual(values = c("a" = "#008B4570", "b" = "#ee000070")) +
+    ggpubr::theme_pubr()
+plots_rroc <- restrictedROC::plot_density_ROC_empirical(
+    values_grouped = df_split,
+    xmin = min(values), xmax = max(values),
+    levels = c("b", "a"),
+    direction = "<"
+)
+scaling <- .35
+# pdf("removeme.pdf", width = 30 * scaling, height = 10 * scaling)
+set.seed(51) # for geom_jitter reproducibility
+patchwork::wrap_plots(
+    plot_box, plots_rroc[[1]] + scale_fill_manual(values = c("a" = "#008B4570", "b" = "#ee000070")), plots_rroc[[2]]
+)
+# dev.off()
+```
+
+```{r, RestrictedROC permutation test}
+rroc_perm <- restrictedROC::simple_rROC_permutation(
+    response = names(values),
+    predictor = values,
+    n_permutations = 1000,
+    positive_label = "b",
+    direction = "<",
+    return_proc = TRUE
+)
+```
+
+```{r, Compare tests}
+# nolint start
+print(big_roc)
+# Call:
+# roc.default(response = names(values), predictor = values, levels = c("a",     "b"), direction = "<", auc = TRUE)
+
+# Data: values in 50 controls (names(values) a) < 50 cases (names(values) b).
+# Area under the curve: 0.5592
+
+print(big_ttest)
+#         Welch Two Sample t-test
+# data:  values[names(values) == "a"] and values[names(values) == "b"]
+# t = -1.7942, df = 69.92, p-value = 0.07711
+# alternative hypothesis: true difference in means is not equal to 0
+# 95 percent confidence interval:
+#  -1.41436615  0.07477889
+# sample estimates:
+# mean of x mean of y
+#  8.069138  8.738932
+
+print(big_wilcox)
+# data:  values[names(values) == "a"] and values[names(values) == "b"]
+# W = 1102, p-value = 0.3092
+# alternative hypothesis: true location shift is not equal to 0
+
+print(rroc_perm$permutation_pval)
+#    pval.twoside.max pval.twoside.global      n_permutations
+#        6.993007e-03        3.226773e-01        1.000000e+03
+print(rroc_perm$max_total)
+#         auc auc_var_H0    rzAUC    pval_asym threshold part
+# 1 0.7549342 0.00486568 3.654739 0.0002574438  7.381726 high
+
+cat("Informative range established from restriction: (", round(rroc_perm$max_total[["threshold"]], 2), ", Inf)\n", sep = "")
+# Informative range established from restriction: (7.38, Inf)
+# nolint end
+
+rroc_part_plots <- restrictedROC::plot_rROC_part(
+    rROC_res = rroc_perm, threshold = rroc_perm$max_total[["threshold"]]
+)
+informative_range <- c(rroc_perm$max_total[["threshold"]])
+# pdf("removeme_2.pdf", width = 30 * scaling, height = 10 * scaling)
+set.seed(51) # for geom_jitter reproducibility
+patchwork::wrap_plots(
+    plot_box + geom_hline(yintercept = informative_range, col = "red", linewidth = 1),
+    plots_rroc[[1]] +
+        geom_vline(xintercept = informative_range, col = "red", linewidth = 1) +
+        scale_fill_manual(values = c("a" = "#008B4570", "b" = "#ee000070")),
+    plots_rroc[[2]]
+)
+# dev.off()
+# pdf("removeme_3.pdf", height=4, width=4)
+print(rroc_part_plots)
+# dev.off()
+```
+
+[1]: Wackerly, Dennis, William Mendenhall, and Richard L. Scheaffer. Mathematical statistics with applications. Cengage Learning, 2014.
