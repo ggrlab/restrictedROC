@@ -12,7 +12,7 @@ knitr::opts_chunk$set(
 In <cite>[Harel et al, 2019, Cell][1]</cite>, the authors describe melanoma response to immunotherapy. They use high-resolution mass spectrometry to quantify 4,300 proteins across 116 patients. Formalin-fixed paraffin-embedded (FFPE) tissues from 42 metastatic melanoma patients treated with TIL-based adoptive cell transfer and 74 treated with anti-PD1 immunotherapy were included. 
 Samples were taken before treatment except for two patients taken 11 or 18 days after treatment initialization. Patients are split into 21/40 responders, 21/27 non-responders and 0/7 stable disease according to RECIST v1.0 guidelines (TIL/anti-PD1 cohorts). See ``Tumor sample collection`` in the paper's method section. 
 
-We used the data available under [Table S2](https://www.sciencedirect.com/science/article/pii/S0092867419309006?via%3Dihub#app2) of the publication in ``1-s2.0-S0092867419309006-mmc1.xlsx``, sheet ``S1C`` and ``S1D``.
+We used the data available under [Table S1](https://www.sciencedirect.com/science/article/pii/S0092867419309006?via%3Dihub#app2) of the publication in ``1-s2.0-S0092867419309006-mmc1.xlsx``, sheet ``S1C`` and ``S1D``.
 According to the section ``Proteomics statistical analysis`` in the paper's method section, the following analysis was performed . 
 
     For the clinical tumor data, normalized ratio tumor/SILAC data were log2-transformed and the protein groups were filtered to have at least 70% valid values, reaching a list of 4588,4620 or 4416 protein groups for the TIL, the anti-PD1 or the combined datasets respectively, which were further used for all downstream analyses. Dataset integration was based on gene name; multiple entries for the same gene name were integrated to a single entry by calculating the median expression value. Data were normalized by subtracting most frequent value in each sample. To extract DEPs between responders and non-responders multiple comparisons were performed; a two-sample Student's t test was performed with a p value threshold of 0.05 for each of the two datasets, following by 2D annotation enrichment test (Cox and Mann, 2012) with FDR q-value 0.02 to derive the differential functional groups in each of the two datasets. A two-sample Student's t test with a permutation-based FDR q-value of 0.1 and S0 (Tusher et al., 2001) of 0.1 was performed for the anti-PD1 dataset or the combined dataset of both treatments, to extract significantly changing proteins. 
@@ -30,17 +30,18 @@ library(restrictedROC)
 
 ```{r download data}
 library(dplyr)
-dir.create("intermediate_data")
+dir.create("intermediate_data/2019-harel", recursive = TRUE)
 download.file(
     url = "https://ars.els-cdn.com/content/image/1-s2.0-S0092867419309006-mmc1.xlsx",
-    destfile = "intermediate_data/harel2019-s1.xlsx",
+    destfile = "intermediate_data/2019-harel/1-s2.0-S0092867419309006-mmc1.xlsx",
     method = "wget"
 )
-harel_data <- readxl::read_excel("intermediate_data/harel2019-s1.xlsx", sheet = "S1B", skip = 1, na = "NaN")
-harel_exprs <- as.matrix(harel_data[, 1:116])
-harel_fdata <- harel_data[, 117:ncol(harel_data)]
-rownames(harel_exprs) <- harel_data[["T: Gene names"]]
-harel_pheno <- readxl::read_excel("intermediate_data/harel2019-s1.xlsx", sheet = "S1A", skip = 1, na = "NaN")
+harel_pheno <- readxl::read_excel("intermediate_data/2019-harel/1-s2.0-S0092867419309006-mmc1.xlsx", sheet = "S1A", skip = 1, na = "NaN")
+# Metadata contains spaces in the sample names
+# the actual data always "_" instead of spaces
+harel_pheno[["Sample ID"]] <- gsub(" ", "_", harel_pheno[["Sample ID"]])
+
+
 # Patients were categorized into responders (complete or partial regression) and
 # non-responders (progressive disease) according to RECIST v1.0 guidelines
 # "Response" contains "PD", "PR", "CR" or "SD" (stable disease)
@@ -49,43 +50,127 @@ harel_pheno <- harel_pheno |>
     dplyr::filter(Response %in% c("PD", "PR", "CR")) |>
     # Add a column with the response as defined in the paper
     dplyr::mutate(response_paper = ifelse(Response == "PD", "non-responder", "responder"))
-outcome <- harel_pheno[["response_paper"]]
-names(outcome) <- harel_pheno[["Sample ID"]]
-
+outcome_noSD <- harel_pheno[["response_paper"]]
+names(outcome_noSD) <- harel_pheno[["Sample ID"]]
 ```
-```{r, merge features with same gene name}
-harel_exprs_nodup <- harel_exprs[!duplicated(rownames(harel_exprs)), ]
-for(dup_x in unique(rownames(harel_exprs)[duplicated(rownames(harel_exprs))])){
-    harel_exprs_nodup <- rbind(
-        harel_exprs_nodup, 
-        apply(harel_exprs[which(rownames(harel_exprs) == dup_x), ], 2, median, na.rm=TRUE)
-    )
-    rownames(harel_exprs_nodup)[nrow(harel_exprs_nodup)] <- dup_x
+
+```{r, Read S1C(TIL) and S1D(aPD1), filtered for 70% valid values and gene names median-merged}
+data_70 <- list(
+    aPD1 = readxl::read_excel("intermediate_data/harel2019-s1.xlsx", sheet = "S1D", skip = 1, na = "NaN"),
+    til = readxl::read_excel("intermediate_data/harel2019-s1.xlsx", sheet = "S1C", skip = 1, na = "NaN")
+)
+data_mats <- lapply(data_70, function(x) {
+    datapart_x_samples <- as.matrix(x[, grepl("^(PD1_)|(TIL_)", colnames(x))])
+    genename_column <- grepl("Gene name", colnames(x))
+    rownames(datapart_x_samples) <- x[genename_column][[1]]
+    return(datapart_x_samples)
+})
+
+lapply(data_mats, colnames)
+lapply(data_mats, dim)
+# $aPD1
+# [1] 4620   67
+# $til
+# [1] 4588   42
+```
+
+```{r, Reproduce t-tests}
+harel_ttests <- lapply(data_mats, function(datapart_x) {
+    res_t <- apply(datapart_x, 1, function(feature_x) {
+        # names(x) are the column names of the matrix
+        # The response needs to be ordered according to the column names
+        x_NonResponder <- split(feature_x, outcome_noSD[names(feature_x)])
+        res_test <- t.test(
+            x_NonResponder[["responder"]],
+            x_NonResponder[["non-responder"]],
+            alternative = "two.sided",
+            paired = FALSE,
+            var.equal = TRUE
+        )
+        return(c(
+            "neglog_p.value" = -log10(res_test$p.value),
+            "p.value" = res_test$p.value,
+            "t" = res_test$statistic[[1]],
+            "diff_nr_r" = (res_test$estimate["mean of x"] - res_test$estimate["mean of y"])[[1]]
+        ))
+    })
+    return(tibble::as_tibble(t(res_t), rownames = "gene") |> dplyr::arrange(diff_nr_r))
+})
+harel_ttests
+lapply(harel_ttests, function(x) sum(x$p.value <= 0.05, na.rm = TRUE))
+sign_ttests <- lapply(harel_ttests, function(x) x[x$p.value <= 0.05, na.rm = TRUE])
+
+significant_genes_paper <- sapply(c("S2A", "S2B"), function(x) {
+    tmp <- readxl::read_excel("intermediate_data/harel2019-s2.xlsx", sheet = x, skip = 1, na = "NaN")
+    return(tmp[, grepl("Gene name", colnames(tmp))][[1]])
+}, USE.NAMES = TRUE, simplify = FALSE)
+
+if (length(significant_genes_paper[[1]][!significant_genes_paper[[1]] %in% sign_ttests[["til"]][["gene"]]]) > 0) {
+    stop("Some TIL genes have not been found")
 }
-```
-```{r, filter 70% valid for TIL and aPD1}
-harel_exprs_til <- harel_exprs_nodup[, grepl("^TIL", colnames(harel_exprs_nodup))]
-harel_exprs_aPD1 <- harel_exprs_nodup[, grepl("^PD1", colnames(harel_exprs_nodup))]
-
-
-harel_exprs_f70 <- harel_exprs_nodup[apply(harel_exprs_nodup, 1, function(x) sum(!is.na(x))) < 0.7 * ncol(harel_exprs_nodup), ]
-harel_exprs_til_f70 <- harel_exprs_til[apply(harel_exprs_til, 1, function(x) sum(!is.na(x))) < 0.7 * ncol(harel_exprs_til), ]
-harel_exprs_aPD1_f70 <- harel_exprs_aPD1[apply(harel_exprs_aPD1, 1, function(x) sum(!is.na(x))) < 0.7 * ncol(harel_exprs_aPD1), ]
-
-dim(harel_exprs_til_f70)
-dim(harel_exprs_aPD1_f70)
-dim(harel_exprs_f70)
-dim(harel_exprs_til_f70[!is.na(rownames(harel_exprs_til_f70)), ])
-dim(harel_exprs_aPD1_f70[!is.na(rownames(harel_exprs_aPD1_f70)), ])
-dim(harel_exprs_f70[!is.na(rownames(harel_exprs_f70)), ])
+if (length(significant_genes_paper[[2]][!significant_genes_paper[[2]] %in% sign_ttests[["aPD1"]][["gene"]]]) > 0) {
+    stop("Some TIL genes have not been found")
+}
+# Calculate q-values (BH-method)
+harel_ttests_q <- lapply(harel_ttests, function(x) {
+    x[["q.value"]] <- p.adjust(x[["p.value"]], method = "BH")
+    x[["neglog_q.value"]] <- -log10(x[["q.value"]])
+    return(x)
+})
 ```
 
+```{r, Figure 2c: p-values and q-values}
+library(ggplot2)
+pdf("intermediate_data/2019-harel/fig3c_redone.pdf")
+set.seed(120398)
+print(
+    lapply(names(harel_ttests), function(part_x) {
+        ggplot(harel_ttests[[part_x]], aes(x = diff_nr_r, y = neglog_p.value)) +
+            geom_point() +
+            ggrepel::geom_text_repel(
+                data = subset(
+                    harel_ttests_q[[part_x]],
+                    p.value < 0.01 | abs(diff_nr_r) > 1
+                ),
+                aes(label = gene),
+                size = 1.5, col = "darkgreen",
+                min.segment.length = 0,
+                max.overlaps = 5
+            ) +
+            ggtitle(part_x) +
+            geom_hline(yintercept = -log10(0.05), col = "red", linetype = "dashed")
+    })
+)
+dev.off()
 
+
+pdf("intermediate_data/2019-harel/fig3c-02-qvalues.pdf")
+set.seed(120398)
+print(
+    lapply(names(harel_ttests_q), function(part_x) {
+        ggplot(harel_ttests_q[[part_x]], aes(x = diff_nr_r, y = neglog_q.value)) +
+            geom_point() +
+            ggrepel::geom_text_repel(
+                data = subset(
+                    harel_ttests_q[[part_x]],
+                    q.value < 0.1 | abs(diff_nr_r) > 1
+                ),
+                aes(label = gene),
+                size = 1.5, col = "darkgreen",
+                min.segment.length = 0,
+                max.overlaps = 5
+            ) +
+            ggtitle(part_x) +
+            geom_hline(yintercept = -log10(0.05), col = "red", linetype = "dashed")
+    })
+)
+dev.off()
+```
 NOT TOUCHED BELOW!
 ```{r, }
 # S1C and S1D are the features with at least 70% present values
-harel_til <- readxl::read_excel("intermediate_data/harel2019-s1.xlsx", sheet = "S1C", skip = 1, na = "NaN")
-harel_aPD1 <- readxl::read_excel("intermediate_data/harel2019-s1.xlsx", sheet = "S1D", skip = 1, na = "NaN")
+harel_til <- readxl::read_excel("intermediate_data/2019-harel/1-s2.0-S0092867419309006-mmc1.xlsx", sheet = "S1C", skip = 1, na = "NaN")
+harel_aPD1 <- readxl::read_excel("intermediate_data/2019-harel/1-s2.0-S0092867419309006-mmc1.xlsx", sheet = "S1D", skip = 1, na = "NaN")
 
 # The description columns start with a T
 harel_til_mat <- as.matrix(harel_til[, !grepl("^T:", colnames(harel_til))])
