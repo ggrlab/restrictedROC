@@ -166,6 +166,34 @@ print(
 )
 dev.off()
 ```
+
+```{r, Restriction}
+source("vignettes/articles/utils.R")
+int_dir <- "intermediate_data/2019-harel/rroc_intermediate"
+dir.create(int_dir, recursive = TRUE)
+library(future)
+plan(multisession)
+n_permutations <- 10000
+rroc_res <- sapply(rev(names(data_mats)), function(x_name) {
+    x <- data_mats[[x_name]]
+    x_noNArownames <- x[!is.na(rownames(x)), ]
+    rroc_permutation_many_features(
+        x = x_noNArownames,
+        response = outcome_noSD[colnames(x)],
+        save_intermediate_file = file.path(int_dir, paste0("harel_nPERM", n_permutations, "_", x_name, ".qrds")),
+        n_permutations = n_permutations,
+        positive_label = "responder",
+        parallel_permutations = TRUE,
+        verbose = TRUE
+    )
+}, USE.NAMES = TRUE, simplify = FALSE)
+
+# 10k permutations took 14s for one feature.
+# There are 4620 (aPD1) and 4588 (TIL) features
+# Therefore that takes 35h.
+```
+
+
 NOT TOUCHED BELOW!
 ```{r, }
 # S1C and S1D are the features with at least 70% present values
