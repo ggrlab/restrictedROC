@@ -13,7 +13,7 @@ table_lsubcohort_pfs <- table_lsubcohort_pfs[apply(table_lsubcohort_pfs, 1, sum)
 
 library(future)
 plan(multisession)
-repeated_cv_n <- 10
+repeated_cv_n <- 1
 k_fold_cv <- 5
 for (data_x in list(data_pfs)) {
     library(ggplot2)
@@ -27,7 +27,7 @@ for (data_x in list(data_pfs)) {
             ),
             width = 15, height = 15
         )
-        for (featureselection_type in 3:0) {
+        for (featureselection_type in c(2, 1, 0, 3)) {
             for (datatype in c("bounded", "full")) {
                 cat(
                     "\n\nsubcohort: ", subcohort_XX,
@@ -36,7 +36,7 @@ for (data_x in list(data_pfs)) {
                     "\n\n"
                 )
                 savepath <- paste0(
-                    "intermediate_data/2022-lee/CrossValidate_v2/",
+                    "intermediate_data/2022-lee/CrossValidate_v3/",
                     subcohort_XX,
                     "_",
                     datatype,
