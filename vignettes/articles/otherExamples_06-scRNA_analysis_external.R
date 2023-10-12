@@ -9,6 +9,12 @@ plan(multisession)
 
 options(future.globals.maxSize = 4096 * 1024^3)
 library(cowplot)
+# for some reason, Matrix 1.6-1 seems to NOT work? https://github.com/satijalab/seurat/issues/6746
+# Seurat::GetAssayData(object = s_obj, slot = "count")
+# Error in validityMethod(as(object, superClass)) :
+#   object 'Csparse_validate' not found
+packageurl <- "https://cran.r-project.org/src/contrib/Archive/Matrix/Matrix_1.5-4.1.tar.gz"
+install.packages(packageurl, repos = NULL, type = "source")
 library(Matrix)
 library(Seurat)
 library(ggplot2)
@@ -116,88 +122,148 @@ read_ddSEQ_metaData <- function(data.dirs) {
 ##################################################################################################################################
 ##################################################################################################################################
 
-###############
-# Import Data #
-###############
 
-### Each sample is in its own directory,
-### each directory contains *.cell.summary.csv, *.abundantReadCounts.csv, *.umiCounts.passingKneeFilter.table.csv
+##########################
+# CHANGED 2023-10-12: Download data #
+##########################
+gse <- GEOquery::getGEO("GSE166181", getGPL = TRUE)
+bd <- "intermediate_data/2021-Biasi"
+# supfiles <- GEOquery::getGEOSuppFiles("GSE166181", fetch_files = TRUE, baseDir = bd)
+supfiles <- GEOquery::getGEOSuppFiles("GSE166181", fetch_files = FALSE, baseDir = bd)
+loaded_supfiles <- lapply(supfiles[["fname"]], function(x) data.table::fread(file.path(bd, "GSE166181", x)))
+names(loaded_supfiles) <- supfiles[["fname"]]
+
+rownames(loaded_supfiles[[2]]) <- loaded_supfiles[[2]][["V1"]]
+loaded_supfiles[[2]][, 1] <- NULL
+rownames(loaded_supfiles[[3]]) <- loaded_supfiles[[3]][["V1"]]
+loaded_supfiles[[3]][, 1] <- NULL
+
+loaded_supfiles[[1]] <- as.data.frame(loaded_supfiles[[1]])
+rownames(loaded_supfiles[[1]]) <- loaded_supfiles[[1]][["cell_ID"]]
+lapply(loaded_supfiles, dim)
+
+loaded_supfiles_mats <- lapply(
+    loaded_supfiles[2:3], function(x) {
+        x_mat <- as.matrix(x)
+        rownames(x_mat) <- rownames(x)
+        return(x_mat)
+    }
+)
+
+library(tibble)
+checking_names <- tibble(
+    celln_meta = loaded_supfiles[["GSE166181_Metadata.tsv.gz"]][[1]],
+    celln_mat = colnames(loaded_supfiles[["GSE166181_Raw_UMI_CountMatrix_unnormalized_.tsv.gz"]])
+) |>
+    dplyr::mutate(are_equal = celln_meta == celln_mat)
+if (!all(checking_names$are_equal)) {
+    stop("Cell names in metadata and matrix are not equal")
+}
+# qs::qsave(
+#     list(
+#         loaded_supfiles_mats = loaded_supfiles_mats,
+#         loaded_supfiles = loaded_supfiles
+#     ),
+#     file = "removeme.qrds"
+# )
+s_obj <- Seurat::CreateSeuratObject(
+    # Either a matrix-like object with unnormalized data with cells as columns and features as rows or an Assay-derived object
+    counts = loaded_supfiles_mats[["GSE166181_Raw_UMI_CountMatrix_unnormalized_.tsv.gz"]],
+    # A data frame with cells as rows and metadata as columns
+    meta.data = loaded_supfiles[["GSE166181_Metadata.tsv.gz"]],
+    assay = "RNA", project = "GSE166181"
+)
+Seurat::SetAssayData(
+    object = s_obj,
+    assay = "RNA",
+    slot = "data",
+    new.data = loaded_supfiles_mats[["GSE166181_Normalized_UMI_CountMatrix.tsv.gz"]]
+)
+s_obj
 
 
-#########################################################
-##### MELA T0 FILES #####################################
-#########################################################
+# ###############
+# # Import Data #
+# ###############
 
-data.dirs <- list.files("C:/Users/Utente/Documents/UNIVERSITA/LAB/scRNA seq/T0_ALL", full.names = TRUE)
+# ### Each sample is in its own directory,
+# ### each directory contains *.cell.summary.csv, *.abundantReadCounts.csv, *.umiCounts.passingKneeFilter.table.csv
 
-# Function to read data
 
-data.input <- read_ddSEQ(data.dirs)
+# #########################################################
+# ##### MELA T0 FILES #####################################
+# #########################################################
 
-# Function to read metadata
+# data.dirs <- list.files("C:/Users/Utente/Documents/UNIVERSITA/LAB/scRNA seq/T0_ALL", full.names = TRUE)
 
-metadata.input <- read_ddSEQ_metaData(data.dirs)
+# # Function to read data
 
-# Clean Matrix delete row with 0 value
-sum(rowSums(data.input) == 0)
-data.input <- data.input[rowSums(data.input) > 0, ]
+# data.input <- read_ddSEQ(data.dirs)
 
-#########################
-# Create Seurat Objects #
-########################
+# # Function to read metadata
 
-s1 <- CreateSeuratObject(data.input, meta.data = metadata.input)
+# metadata.input <- read_ddSEQ_metaData(data.dirs)
 
-#########################################################
-##### MELA T1 FILES #####################################
-########################################################
+# # Clean Matrix delete row with 0 value
+# sum(rowSums(data.input) == 0)
+# data.input <- data.input[rowSums(data.input) > 0, ]
 
-data.dirs <- list.files("C:/Users/Utente/Documents/UNIVERSITA/LAB/scRNA seq/T1_ALL", full.names = TRUE)
+# #########################
+# # Create Seurat Objects #
+# ########################
 
-# Function to read data
+# s1 <- CreateSeuratObject(data.input, meta.data = metadata.input)
 
-data.input <- read_ddSEQ(data.dirs)
+# #########################################################
+# ##### MELA T1 FILES #####################################
+# ########################################################
 
-# Function to read metadata
+# data.dirs <- list.files("C:/Users/Utente/Documents/UNIVERSITA/LAB/scRNA seq/T1_ALL", full.names = TRUE)
 
-metadata.input <- read_ddSEQ_metaData(data.dirs)
+# # Function to read data
 
-#  Clean Matrix delete row with 0 value
-sum(rowSums(data.input) == 0)
-data.input <- data.input[rowSums(data.input) > 0, ]
+# data.input <- read_ddSEQ(data.dirs)
 
-#########################
-# Create Seurat Objects #
-########################
+# # Function to read metadata
 
-s2 <- CreateSeuratObject(data.input, meta.data = metadata.input)
+# metadata.input <- read_ddSEQ_metaData(data.dirs)
 
-#########################################################
-##### MELA T2 FILES #####################################
-########################################################
-data.dirs <- list.files("C:/Users/Utente/Documents/UNIVERSITA/LAB/scRNA seq/T2_ALL", full.names = TRUE)
+# #  Clean Matrix delete row with 0 value
+# sum(rowSums(data.input) == 0)
+# data.input <- data.input[rowSums(data.input) > 0, ]
 
-# Function to read data
+# #########################
+# # Create Seurat Objects #
+# ########################
 
-data.input <- read_ddSEQ(data.dirs)
+# s2 <- CreateSeuratObject(data.input, meta.data = metadata.input)
 
-# Function to read metadata
+# #########################################################
+# ##### MELA T2 FILES #####################################
+# ########################################################
+# data.dirs <- list.files("C:/Users/Utente/Documents/UNIVERSITA/LAB/scRNA seq/T2_ALL", full.names = TRUE)
 
-metadata.input <- read_ddSEQ_metaData(data.dirs)
+# # Function to read data
 
-#  Clean Matrix delete row with 0 value
-sum(rowSums(data.input) == 0)
-data.input <- data.input[rowSums(data.input) > 0, ]
+# data.input <- read_ddSEQ(data.dirs)
 
-#########################
-# Create Seurat Objects #
-########################
+# # Function to read metadata
 
-s3 <- CreateSeuratObject(data.input, meta.data = metadata.input)
+# metadata.input <- read_ddSEQ_metaData(data.dirs)
 
-# Merge Seurat OBJECT
-dat.combined <- merge(s1, y = c(s2, s3))
-dat.combined
+# #  Clean Matrix delete row with 0 value
+# sum(rowSums(data.input) == 0)
+# data.input <- data.input[rowSums(data.input) > 0, ]
+
+# #########################
+# # Create Seurat Objects #
+# ########################
+
+# s3 <- CreateSeuratObject(data.input, meta.data = metadata.input)
+
+# # Merge Seurat OBJECT
+# dat.combined <- merge(s1, y = c(s2, s3))
+dat.combined <- s_obj
 
 # Add new metadata
 
@@ -214,17 +280,19 @@ s3 <- subset(x = dat.combined, subset = group == "T2")
 
 # Cell count (using different metadata)
 Counts <- as.data.frame(table(dat.combined@meta.data$time))
+pdf("removeme.pdf")
 ggplot(dat.combined@meta.data, aes(unlist(time))) +
     geom_bar(aes(fill = unlist(time))) +
     xlab("Sample") +
     ylab("Cells") +
     geom_text(data = Counts, aes(x = Var1, y = Freq), label = Counts$Freq, vjust = 0) +
     theme(axis.text.x = element_text(angle = 90, hjust = 1), legend.position = "none")
-
+dev.off()
 # Cell count by replicate
 s1Counts <- as.data.frame(table(s1@meta.data$replicate))
 s2Counts <- as.data.frame(table(s2@meta.data$replicate))
 s3Counts <- as.data.frame(table(s3@meta.data$replicate))
+pdf("removeme.pdf")
 ggplot(s1@meta.data, aes(unlist(replicate))) +
     geom_bar(aes(fill = unlist(replicate))) +
     xlab("Sample") +
@@ -243,7 +311,7 @@ ggplot(s3@meta.data, aes(replicate)) +
     ylab("Cells") +
     geom_text(data = s3Counts, aes(x = Var1, y = Freq), label = s3Counts$Freq, vjust = 0) +
     theme(axis.text.x = element_text(angle = 90, hjust = 1), legend.position = "none")
-
+dev.off()
 # # Quality Control and Filtration {.tabset}
 # 1. nGene = Number of unique genes observed in that barcode ( >= 500 );
 # 2. nUMI = Number of UMIs observed in that barcode ( >= 1000 )
@@ -261,13 +329,15 @@ x2 <- ggplot(s2@meta.data, aes(x = nCount_RNA, y = nFeature_RNA)) +
     geom_point(aes(color = replicate))
 x3 <- ggplot(s3@meta.data, aes(x = nCount_RNA, y = nFeature_RNA)) +
     geom_point(aes(color = replicate))
+pdf("removeme.pdf", width = 50)
 plot_grid(x1, x2, x3)
-
+dev.off()
 y1 <- VlnPlot(s1, features = c("nFeature_RNA", "nCount_RNA", "pct.mito", "pct.rRNA"), ncol = 4, group.by = "group", pt.size = 0.1)
 y2 <- VlnPlot(s2, features = c("nFeature_RNA", "nCount_RNA", "pct.mito", "pct.rRNA"), ncol = 4, group.by = "group", pt.size = 0.1)
 y3 <- VlnPlot(s3, features = c("nFeature_RNA", "nCount_RNA", "pct.mito", "pct.rRNA"), ncol = 4, group.by = "group", pt.size = 0.1)
+pdf("removeme.pdf", width = 50, height = 25)
 plot_grid(y1, y2, y3, nrow = 3)
-
+dev.off()
 # Filter cells
 s1 <- subset(s1, subset = nFeature_RNA > 130 & nFeature_RNA < 1500 & pct.mito < 10 & nCount_RNA < 2500 & novelty > 0.2 & pct.rRNA < 10)
 s2 <- subset(s2, subset = nFeature_RNA > 130 & nFeature_RNA < 1500 & pct.mito < 10 & nCount_RNA < 2500 & novelty > 0.2 & pct.rRNA < 10)
