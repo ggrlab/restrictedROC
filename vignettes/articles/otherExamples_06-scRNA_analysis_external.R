@@ -3,26 +3,9 @@
 #######################################
 # scRNAseq script 2019 UMAP_SEURAT 3.0 #
 ######################################
-
-
-
-py_config()
-
-py_discover_config()
-
-library(reticulate)
-conda_create("r-reticulate")
-conda_install("r-reticulate", "umap-learn")
-use_condaenv("r-reticulate")
-
-
-
 #### set parallelization
 library(future)
-plan()
-plan("multiprocess", workers = 4)
-plan()
-
+plan(multisession)
 
 options(future.globals.maxSize = 4096 * 1024^3)
 library(cowplot)
