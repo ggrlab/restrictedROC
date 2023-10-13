@@ -14,7 +14,7 @@ library(cowplot)
 # Error in validityMethod(as(object, superClass)) :
 #   object 'Csparse_validate' not found
 packageurl <- "https://cran.r-project.org/src/contrib/Archive/Matrix/Matrix_1.5-4.1.tar.gz"
-install.packages(packageurl, repos = NULL, type = "source")
+# install.packages(packageurl, repos = NULL, type = "source")
 library(Matrix)
 library(Seurat)
 library(ggplot2)
@@ -179,7 +179,6 @@ Seurat::SetAssayData(
     slot = "data",
     new.data = loaded_supfiles_mats[["GSE166181_Normalized_UMI_CountMatrix.tsv.gz"]]
 )
-s_obj
 
 
 # ###############
@@ -339,10 +338,17 @@ pdf("removeme.pdf", width = 50, height = 25)
 plot_grid(y1, y2, y3, nrow = 3)
 dev.off()
 # Filter cells
-s1 <- subset(s1, subset = nFeature_RNA > 130 & nFeature_RNA < 1500 & pct.mito < 10 & nCount_RNA < 2500 & novelty > 0.2 & pct.rRNA < 10)
-s2 <- subset(s2, subset = nFeature_RNA > 130 & nFeature_RNA < 1500 & pct.mito < 10 & nCount_RNA < 2500 & novelty > 0.2 & pct.rRNA < 10)
-s3 <- subset(s3, subset = nFeature_RNA > 130 & nFeature_RNA < 1500 & pct.mito < 10 & nCount_RNA < 2500 & novelty > 0.2 & pct.rRNA < 10)
-
+# 2023-10-12: Update: "novelty" does not exist, so I removed it
+# s1 <- subset(s1, subset = nFeature_RNA > 130 & nFeature_RNA < 1500 & pct.mito < 10 & nCount_RNA < 2500 & novelty > 0.2 & pct.rRNA < 10)
+dim(s1)
+s1_new <- subset(s1, subset = nFeature_RNA > 130 & nFeature_RNA < 1500 & pct.mito < 10 & nCount_RNA < 2500 & pct.rRNA < 10)
+s2_new <- subset(s2, subset = nFeature_RNA > 130 & nFeature_RNA < 1500 & pct.mito < 10 & nCount_RNA < 2500 & pct.rRNA < 10)
+s3_new <- subset(s3, subset = nFeature_RNA > 130 & nFeature_RNA < 1500 & pct.mito < 10 & nCount_RNA < 2500 & pct.rRNA < 10)
+if (identical(s1_new, s1) & identical(s2_new, s2) & identical(s3_new, s3)) {
+    rm(s1_new, s2_new, s3_new)
+} else {
+    stop("There were additional cells filtered out - why would that be the case for the reported count matrix?")
+}
 # After Filtering
 
 x1 <- ggplot(s1@meta.data, aes(x = nCount_RNA, y = nFeature_RNA)) +
@@ -351,10 +357,12 @@ x2 <- ggplot(s2@meta.data, aes(x = nCount_RNA, y = nFeature_RNA)) +
     geom_point(aes(color = replicate))
 x3 <- ggplot(s3@meta.data, aes(x = nCount_RNA, y = nFeature_RNA)) +
     geom_point(aes(color = replicate))
+pdf("removeme.pdf", height = 25, width = 25)
 plot_grid(x1, x2, x3, nrow = 3)
-
+dev.off()
 
 #  Number of filtered cells
+# Here the reported number of filtered cells should always be 0 after we already use the normalized data!
 s1_1 <- subset(x = dat.combined, subset = group == "T0")
 s2_2 <- subset(x = dat.combined, subset = group == "T1")
 s3_3 <- subset(x = dat.combined, subset = group == "T2")
@@ -364,11 +372,24 @@ print(paste("Filtered", dim(GetAssayData(object = s3_3, slot = "counts"))[2] - d
 
 
 # Normalize and find variables
-s1 <- NormalizeData(s1, verbose = FALSE)
+s1_new <- NormalizeData(s1, verbose = FALSE)
+s2_new <- NormalizeData(s2, verbose = FALSE)
+s3_new <- NormalizeData(s3, verbose = FALSE)
+if (identical(s1_new, s1)) {
+    stop("Why are s1_new and s1 identical? They shouldn't be")
+}
+if (Matrix::all.equal(
+    Seurat::GetAssayData(s1_new, slot = "data"),
+    Seurat::GetAssayData(s1, slot = "data")
+)) {
+    stop("Why are s1_new and s1 identical? They shouldn't be.")
+    # Explanation:
+    # s1 has been normalized and PROBABLY integrated across s1, s2 and s3
+    # Therefore using the INTEGRATED count data to renormalize
+    # is not the same as using the ORIGINAL count data to renormalize
+}
 s1 <- FindVariableFeatures(s1, selection.method = "vst", nfeatures = 2000)
-s2 <- NormalizeData(s2, verbose = FALSE)
 s2 <- FindVariableFeatures(s2, selection.method = "vst", nfeatures = 2000)
-s3 <- NormalizeData(s3, verbose = FALSE)
 s3 <- FindVariableFeatures(s3, selection.method = "vst", nfeatures = 2000)
 
 # Create list of gene names from all 6 Seurat objects
@@ -382,37 +403,67 @@ total.genes <- list(
 common.genes <- Reduce(f = intersect, x = total.genes)
 
 
-# Intergration
+# # Intergration  # HAS BEEN DONE ALREADY!
+immune.combined <- s_obj
+s1
+immune.combined <- FindVariableFeatures(immune.combined, selection.method = "vst", nfeatures = 2000)
+# immune.anchors <- FindIntegrationAnchors(object.list = list(s1, s2, s3), dims = 1:20, verbose = TRUE)
+# FingIntegrationAnchors:
+#   anchor.features <- Reduce(f = intersect, x = all.rownames)
+#   anchor.features <- SelectIntegrationFeatures(
+#             object.list = object.list,
+#             nfeatures = anchor.features,
+#             assay = assay
+#         )
+#       # FindVariableFeatures on EACH element in object.list
+#       # Sort the features how often they were variable features
+#       # the variable features are intersected with the features present in all objects
+#       # Sort the feature ranks per object, finally select nFeatures (=2000 default) with the highest median rank
 
-immune.anchors <- FindIntegrationAnchors(object.list = list(s1, s2, s3), dims = 1:20, verbose = TRUE)
-immune.combined <- IntegrateData(anchorset = immune.anchors, dims = 1:20, features.to.integrate = common.genes)
+# immune.combined <- IntegrateData(anchorset = immune.anchors, dims = 1:20, features.to.integrate = common.genes)
 
+Seurat::SetAssayData(
+    object = immune.combined,
+    assay = "integrated", slot = "data",
+    new.data = Seurat::GetAssayData(immune.combined, slot = "data")
+)
 # Cell count for 'time' after filtering
 Counts_2 <- as.data.frame(table(immune.combined@meta.data$time))
+pdf("removeme.pdf")
 ggplot(immune.combined@meta.data, aes(unlist(time))) +
     geom_bar(aes(fill = unlist(time))) +
     xlab("Sample") +
     ylab("Cells") +
     geom_text(data = Counts_2, aes(x = Var1, y = Freq), label = Counts_2$Freq, vjust = 0) +
     theme(axis.text.x = element_text(angle = 90, hjust = 1), legend.position = "none")
+dev.off()
 
 
-DefaultAssay(immune.combined) <- "integrated"
+# DefaultAssay(immune.combined) <- "integrated"
 
 # Run scaling and PCA
-
 immune.combined <- ScaleData(immune.combined, vars.to.regress = c("nCount_RNA", "pct.mito"), verbose = TRUE)
+qs::qsave(immune.combined, "intermediate_data/2021-Biasi/immune.combined.qrds")
+
+# 2023-10-12: Here comes now the problem:
+#   RunPCA uses the most variable genes, but IntegrateData establishes them differently
+#   than just taking the most variable genes _after_ integration. Therefore we
+#   will necessarily have some differences in the PCA results AND ALL FOLLOW-UP analyses
+
 immune.combined <- RunPCA(immune.combined, npcs = 30, verbose = FALSE)
-
+qs::qsave(immune.combined, "intermediate_data/2021-Biasi/immune.combined.qrds")
+immune.combined <- qs::qread("intermediate_data/2021-Biasi/immune.combined.qrds")
 # Number of PCs to choose
-
+pdf("removeme.pdf")
 DimHeatmap(immune.combined, dims = 1:15, cells = 500, balanced = TRUE)
 ElbowPlot(immune.combined)
-
+dev.off()
 # UMAP and Clustering
 
 set.seed <- 123
 immune.combined <- RunUMAP(immune.combined, reduction = "pca", dims = 1:9)
+# Seurat version 3.0 (used in the publication) still used umap from the python package umap-learn
+# which used "correlation" as distance, therefore we expect additional differences here
 immune.combined <- FindNeighbors(immune.combined, reduction = "pca", dims = 1:9)
 
 res.try <- c(0.05, 0.1, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5)
@@ -421,32 +472,94 @@ immune.combined <- FindClusters(immune.combined, resolution = res.try)
 # Deciding what resolution to use
 
 library(clustree)
-clustree(immune.combined, prefix = "integrated_snn_res.")
+pdf("removeme_2.pdf")
+# clustree(immune.combined, prefix = "integrated_snn_res.")
+clustree(immune.combined, prefix = "RNA_snn_res.")
+dev.off()
 
 # Plot the best resolution 'res'
 
-Idents(immune.combined) <- "integrated_snn_res.0.5"
-p2 <- DimPlot(immune.combined, reduction = "umap", label = F, pt.size = 1)
+# Idents(immune.combined) <- "integrated_snn_res.0.5"
+Idents(immune.combined) <- "RNA_snn_res.0.5"
+p2 <- DimPlot(immune.combined, reduction = "umap", label = FALSE, pt.size = 1)
+pdf("removeme.pdf", height = 10, width = 10)
 plot_grid(p2)
-
+dev.off()
 # Cell number within each cluster
 
-table(immune.combined@meta.data$integrated_snn_res.0.4)
+# table(immune.combined@meta.data$integrated_snn_res.0.4)
+table(immune.combined@meta.data$RNA_snn_res.0.5)
+table(immune.combined@meta.data$RNA_snn_res.0.4)
 
 
 # Heatmap of top 10 expressed genes
-
+qs::qsave(immune.combined, "intermediate_data/2021-Biasi/immune.combined_postClustering.qrds")
+immune.combined <- qs::qread("intermediate_data/2021-Biasi/immune.combined_postClustering.qrds")
 library(viridis)
 library(dplyr)
+#' FindAllMarkers:
+#' @param slot Slot to pull data from; note that if \code{test.use} is "negbinom", "poisson", or "DESeq2",
+#' \code{slot} will be set to "counts". [Default: "data"]
 immune.combined.markers <- FindAllMarkers(immune.combined, only.pos = TRUE, min.pct = 0.25, logfc.threshold = 0.5)
+immune.combined.markers_v2 <- FindAllMarkers(immune.combined, only.pos = TRUE, min.pct = 0.1, logfc.threshold = 0.5)
+immune.combined.markers_v3 <- FindAllMarkers(immune.combined, only.pos = TRUE, min.pct = 0, logfc.threshold = 0.5)
+# r$> length(unique(immune.combined.markers_v3$gene))
+# [1] 176
+# r$> length(unique(immune.combined.markers$gene))
+# [1] 176
+
+### 2023-10-12: Customization: Use only logfc.threshold = 0.5, not min.pct as the calculation is potentially different?
+for (n_permutations in c(1e3, 10e3, 25e3)) {
+    rroc.markers <- NULL
+    for (cluster in levels(Seurat::Idents(immune.combined))) {
+        # seu_cluster <- immune.combined[, immune.combined[["RNA_snn_res.0.5"]] == cluster]
+        # seu_NOTcluster <- immune.combined[, immune.combined[["RNA_snn_res.0.5"]] != cluster]
+
+        # data_cluster <- Seurat::GetAssayData(seu_cluster, slot = "data")
+        # data_NOTcluster <- Seurat::GetAssayData(seu_NOTcluster, slot = "data")
+
+        cells.1 <- colnames(immune.combined)[immune.combined[["RNA_snn_res.0.5"]] == cluster]
+        cells.2 <- colnames(immune.combined)[immune.combined[["RNA_snn_res.0.5"]] != cluster]
+        fc.result <- Seurat::FoldChange(
+            object = immune.combined,
+            ident.1 = cluster
+        )
+        relevant_features <- rownames(fc.result |> dplyr::filter(avg_log2FC > .5))
+
+        rroc_res_cluster <- sapply(relevant_features, function(f_x) {
+            restrictedROC::simple_rROC_permutation(
+                response = (immune.combined[["RNA_snn_res.0.5"]])[, 1, drop = TRUE],
+                predictor = as.vector(Seurat::GetAssayData(immune.combined, slot = "data")[f_x, ]),
+                positive_label = cluster,
+                direction = "<",
+                n_permutations = n_permutations,
+                parallel_permutations = TRUE
+            )
+        }, simplify = FALSE, USE.NAMES = TRUE)
+        qs::qsave(rroc_res_cluster, file = paste0("intermediate_data/2021-Biasi/rroc_res_cluster_", cluster, "_nperm", n_permutations, ".qrds"))
+        rroc_res_cluster_markers <- do.call(rbind, lapply(rroc_res_cluster, function(x) {
+            c(x$permutation_pval, "auc.global" = x$global$auc, "auc.max_total" = x$max_total$auc)
+        }))
+        if (is.null(rroc.markers)) {
+            rroc.markers <- rroc_res_cluster_markers
+        } else {
+            rroc.markers <- rbind(rroc.markers, rroc_res_cluster_markers)
+        }
+    }
+    qs::qsave(rroc.markers, file = paste0("intermediate_data/2021-Biasi/rroc.markers", "_nperm", n_permutations, ".qrds"))
+}
+
+
+
 immune.combined.markers %>%
     group_by(cluster) %>%
-    top_n(n = 2, wt = avg_logFC)
+    top_n(n = 2, wt = avg_log2FC)
 top10 <- immune.combined.markers %>%
     group_by(cluster) %>%
-    top_n(n = 10, wt = avg_logFC)
+    top_n(n = 10, wt = avg_log2FC)
+pdf("removeme.pdf")
 DoHeatmap(immune.combined, features = top10$gene, size = 2, angle = 90) #+ scale_color_viridis(option = 'B')
-
+dev.off()
 
 # # Cluster QC plots
 # To assess cluster quality, we map metadata onto the clusters.
