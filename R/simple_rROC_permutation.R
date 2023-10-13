@@ -129,7 +129,9 @@ simple_rROC_permutation <- function(response,
             # total number of permutations performed
             nperm = n_permutations,
             # sample size of group 1,
-            n1 = groups_table[names(groups_table) != res_full[["positive_label"]]],
+            # the sum() is if there are more than 2 negative groups
+            # that MIGHT be a valid thing if we want to compare ONE group to ALL OTHERS
+            n1 = sum(groups_table[names(groups_table) != res_full[["positive_label"]]]),
             # sample size of group 2,
             n2 = groups_table[res_full[["positive_label"]]],
             twosided = TRUE

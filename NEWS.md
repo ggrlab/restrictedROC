@@ -17,7 +17,11 @@ The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/
     e.g. .github/workflows/*, README.md, etc. Infrastructure updates increase
     the patch version.
 
-# restrictedROC 3.4.6
+# 3.1.7
+
+    - Add the possibility to have more than 2 groups in the data (and define the positive group, ONE vs ALL)
+
+# restrictedROC 3.1.6
 
   - Added quiet=TRUE into pROC::roc() within predict.restrictedROC()
 
