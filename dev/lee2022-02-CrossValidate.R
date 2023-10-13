@@ -157,7 +157,7 @@ for (data_x in list(data_pfs)) {
                     )
                 }
             }
-            dev.off()
         }
+        dev.off()
     }
 }
