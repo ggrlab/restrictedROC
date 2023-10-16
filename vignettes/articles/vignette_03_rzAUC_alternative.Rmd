@@ -1,0 +1,111 @@
+---
+title: "Vignette 03: Alternative rzAUC calculation"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+    collapse = TRUE,
+    comment = "#>"
+)
+```
+
+```{r setup}
+options(warn = 1)
+library(restrictedROC)
+```
+
+```{r, fig.fullwidth=TRUE, fig.width=10, fig.height=5}
+data(aSAH, package = "pROC")
+
+# In this here are three warnings:
+# Warning messages:
+# 1: In get_all_aucs_fun(full_roc = full_roc, true_pred_df = true_pred_df,  :
+#   get_all_aucs_norecalculation() does not calculate single ROC curves, therefore cannot return them
+# 2: In get_all_aucs_fun(full_roc = full_roc, true_pred_df = true_pred_df,  :
+#   get_all_aucs_norecalculation() does not calculate single ROC curves, therefore cannot return them
+# 3: In plot_rROC_part(ret_procs) :
+# Threshold
+#   10
+# not found, using the closest instead:
+#   9.9
+ret_procs <- simple_rROC(
+    response = aSAH$outcome,
+    predictor = aSAH$ndka,
+    return_proc = TRUE,
+    positive_label = "Good"
+)
+ret_procs_i <- simple_rROC_interpret(ret_procs)
+pdf("removeme.pdf", width = 15)
+print(plot_rROC_part(ret_procs, threshold = 10)[["patchworked"]])
+print(restrictedROC::plot_rROC())
+dev.off()
+
+library(ggplot2)
+pdf("removeme.pdf")
+ggplot(ret_procs_i$performance, aes(x = fpr_global, y = rzAUC_high)) +
+    geom_point()
+ggplot(ret_procs_i$performance, aes(x = fpr_global, y = w.W_high)) +
+    geom_point()
+ggplot(ret_procs_i$performance, aes(x = fpr_global, y = w.U_high)) +
+    geom_point()
+dev.off()
+
+
+
+
+
+current_sim <- function(dists) {
+    # restrictedROC::sim(dists, do_melt = FALSE, length.out = 2500)
+    restrictedROC::sim(dists, do_melt = FALSE, length.out = 100)
+}
+set.seed(129387)
+simdata <- current_sim(
+    list(
+        "Positive" = function(length.out) {
+            unif <- runif(length.out)
+            vapply(unif, function(x) {
+                if (x > .2) {
+                    rnorm(1, mean = 6, sd = 1)
+                } else {
+                    rnorm(1, mean = 9, sd = 1)
+                }
+            }, numeric(1))
+        },
+        "Negative" = function(length.out) {
+            unif <- runif(length.out)
+            vapply(unif, function(x) {
+                if (x > .02) {
+                    rnorm(1, mean = 6, sd = 1)
+                } else {
+                    rnorm(1, mean = 9, sd = 1)
+                }
+            }, numeric(1))
+        }
+    )
+)
+
+simdata_melted <- restrictedROC::melt_gendata(simdata)
+colnames(simdata_melted) <- c("predictor", "response")
+rroc <- restrictedROC::simple_rROC(
+    response = simdata_melted[["response"]],
+    predictor = simdata_melted[["predictor"]],
+    positive_label = "Positive",
+    direction = "<",
+    return_proc = TRUE
+)
+rroc_i <- restrictedROC::simple_rROC_interpret(rroc)
+pdf("removeme.pdf")
+ggplot(rroc_i$performance, aes(x = fpr_global, y = rzAUC_high)) +
+    geom_point()
+ggplot(rroc_i$performance, aes(x = fpr_global, y = w.W_high)) +
+    geom_point()
+ggplot(rroc_i$performance, aes(x = fpr_global, y = w.p.value_high)) +
+    geom_point() +
+    scale_y_log10()
+ggplot(rroc_i$performance, aes(x = fpr_global, y = pval_asym_high)) +
+    geom_point() +
+    scale_y_log10()
+ggplot(rroc_i$performance, aes(x = fpr_global, y = w.p.value_high - pval_asym_high)) +
+    geom_point()
+dev.off()
+```
