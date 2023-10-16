@@ -307,12 +307,26 @@ get_all_aucs <- function(true_pred_df,
                     direction = direction,
                     levels = c(FALSE, TRUE),
                 )
-                one_threshold_auc <- data.frame(
+                # split_data <- split(part_df[["pred"]], part_df[["true"]])
+                # w_test <- wilcox.test(
+                #     x = split_data[["FALSE"]],
+                #     y = split_data[["TRUE"]],
+                #     alternative = "two.sided",
+                #     paired = FALSE
+                # )
+                inner_one_threshold_auc <- data.frame(
                     "threshold" = threshold_x,
                     "auc" = as.numeric(part_roc[["auc"]]),
                     "positives" = length(part_roc[["cases"]]),
                     "negatives" = length(part_roc[["controls"]])
+                    # ,"w.W" = w_test$statistic,
+                    # "w.p.value" = w_test$p.value,
+                    # "w.U" = length(part_roc[["cases"]]) * length(part_roc[["controls"]]) - w_test$statistic
                 )
+                # inner_one_threshold_auc[["w.AUC"]] <- with(
+                #     inner_one_threshold_auc, w.U / (positives * negatives)
+                # )
+                inner_one_threshold_auc
             },
             error = function(err) {
                 one_threshold_auc <- data.frame(
@@ -320,6 +334,10 @@ get_all_aucs <- function(true_pred_df,
                     "auc" = NA,
                     "positives" = sum(part_df[["true"]]),
                     "negatives" = sum(!part_df[["true"]])
+                    # ,"w.W" = NA,
+                    # "w.p.value" = NA,
+                    # "w.U" = NA,
+                    # "w.AUC" = NA
                 )
                 return(one_threshold_auc)
             }
