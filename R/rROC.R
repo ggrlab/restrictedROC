@@ -137,11 +137,30 @@ rROC.data.frame <- function(x,
                             do_plots = FALSE,
                             fix_seed = TRUE,
                             ...) {
+    original_positive_label <- positive_label
     if (is.null(save_path)) {
         save_intermediate <- load_existing_intermediate <- FALSE
     }
+    if (anyDuplicated(dependent_vars) != 0) {
+        stop("dependent_vars must be unique")
+    }
+    if (anyDuplicated(independent_vars) != 0) {
+        stop("independent_vars must be unique")
+    }
+
     reslist <- list()
     for (dv in dependent_vars) {
+        positive_label <- original_positive_label
+        if (!positive_label %in% x[[dv]]) {
+            positive_label <- sort(unique(x[[dv]]))[1]
+            warning(
+                paste0(
+                    "positive_label '", original_positive_label, "' not in '", dv,
+                    "'., Changing to the first sorted unique value of '", dv, "': '",
+                    positive_label, "'"
+                )
+            )
+        }
         reslist[[dv]] <- list()
         for (iv in independent_vars) {
             if (verbose) {
