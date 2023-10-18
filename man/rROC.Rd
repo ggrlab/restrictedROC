@@ -35,7 +35,7 @@ in the folder file.path(save_path, "_partial_directory") be loaded?}
     \item{\code{do_plots}}{Should the plot_density_rROC_empirical be calculated and returned?}
     \item{\code{verbose}}{Should progress be printed?}
     \item{\code{n_permutations}}{How many permutations should be done}
-    \item{\code{fix_seed}}{boolean: If TRUE, the seed for each permutation will be set by set.seed(permutation_i)}
+    \item{\code{fix_seed}}{boolean: If not FALSE, the seed for each permutation will be set by set.seed(fix_seed + permutation_i)}
     \item{\code{parallel_permutations}}{boolean: If TRUE, the permutation will be done via \code{future.apply::future_lapply},
 otherwise by \code{base::lapply}}
     \item{\code{positive_label}}{Label for the positive class. All other values of \code{response} are regarded as negative cases.}

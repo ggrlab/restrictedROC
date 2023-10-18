@@ -16,7 +16,7 @@
   positive_label = 1,
   verbose = TRUE,
   do_plots = FALSE,
-  fix_seed = TRUE,
+  fix_seed = 0,
   ...
 )
 }
@@ -48,7 +48,7 @@ in the folder file.path(save_path, "_partial_directory") be loaded?}
 
 \item{do_plots}{Should the plot_density_rROC_empirical be calculated and returned?}
 
-\item{fix_seed}{boolean: If TRUE, the seed for each permutation will be set by set.seed(permutation_i)}
+\item{fix_seed}{boolean: If not FALSE, the seed for each permutation will be set by set.seed(fix_seed + permutation_i)}
 
 \item{...}{
   Arguments passed on to \code{\link[=simple_rROC_permutation]{simple_rROC_permutation}}

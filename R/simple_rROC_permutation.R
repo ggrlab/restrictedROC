@@ -6,7 +6,7 @@
 #' @param n_permutations
 #' 	How many permutations should be done
 #' @param fix_seed
-#' boolean: If TRUE, the seed for each permutation will be set by set.seed(permutation_i)
+#' boolean: If not FALSE, the seed for each permutation will be set by set.seed(fix_seed + permutation_i)
 #' @param parallel_permutations
 #' boolean: If TRUE, the permutation will be done via `future.apply::future_lapply`,
 #' otherwise by `base::lapply`
@@ -56,7 +56,7 @@ simple_rROC_permutation <- function(response,
                                     positive_label = NULL,
                                     direction = "<",
                                     n_permutations = 100,
-                                    fix_seed = TRUE,
+                                    fix_seed = 0,
                                     parallel_permutations = FALSE,
                                     return_proc = FALSE,
                                     verbose = FALSE) {
@@ -88,8 +88,8 @@ simple_rROC_permutation <- function(response,
         if (verbose) {
             print(permutation_i)
         }
-        if (fix_seed) {
-            set.seed(permutation_i)
+        if (!isFALSE(fix_seed)) {
+            set.seed(fix_seed + permutation_i)
         }
         sampled_response <- sample(response)
         res_permutation <- simple_rROC(

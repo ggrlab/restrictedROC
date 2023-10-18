@@ -10,7 +10,7 @@ simple_rROC_permutation(
   positive_label = NULL,
   direction = "<",
   n_permutations = 100,
-  fix_seed = TRUE,
+  fix_seed = 0,
   parallel_permutations = FALSE,
   return_proc = FALSE,
   verbose = FALSE
@@ -30,7 +30,7 @@ positive_label already solves your problem.}
 
 \item{n_permutations}{How many permutations should be done}
 
-\item{fix_seed}{boolean: If TRUE, the seed for each permutation will be set by set.seed(permutation_i)}
+\item{fix_seed}{boolean: If not FALSE, the seed for each permutation will be set by set.seed(fix_seed + permutation_i)}
 
 \item{parallel_permutations}{boolean: If TRUE, the permutation will be done via \code{future.apply::future_lapply},
 otherwise by \code{base::lapply}}

@@ -37,7 +37,7 @@ rROC <- function(x, ...) {
 #' @inheritDotParams rROC.data.frame -dependent_vars -independent_vars
 #' @export
 rROC.matrix <- function(x, y, ...) {
-    if (inherits(y, "list")) {
+    if (is.list(y)) {
         # Then y is an actual list (not data.frame) of dependent variables
         y_df <- data.frame(y, check.names = FALSE)
     } else {
@@ -77,14 +77,14 @@ rROC.matrix <- function(x, y, ...) {
 #' @inheritDotParams rROC.data.frame -dependent_vars -independent_vars
 #' @export
 rROC.numeric <- function(x, y, ...) {
-    if (inherits(y, "list")) {
+    if (is.list(y)) {
         # Then y is an actual list (not data.frame) of dependent variables
         y_df <- data.frame(y, check.names = FALSE)
     } else {
         y_df <- data.frame("y" = y)
     }
 
-    if (length(x) != length(y)) {
+    if (length(x) != nrow(y_df)) {
         stop("x and y must have the same length")
     }
 
@@ -136,7 +136,7 @@ rROC.data.frame <- function(x,
                             positive_label = 1,
                             verbose = TRUE,
                             do_plots = FALSE,
-                            fix_seed = TRUE,
+                            fix_seed = 0,
                             ...) {
     original_positive_label <- positive_label
     if (is.null(save_path)) {
