@@ -57,7 +57,7 @@ rROC.matrix <- function(x, y, ...) {
         )
     }
 
-    x <- tibble::as_tibble(x)
+    x <- tibble::as_tibble(data.frame(x))
     dependent_vars <- colnames(y_df)
     independent_vars <- colnames(x)
     x <- tibble::add_column(x, y_df)
@@ -113,6 +113,7 @@ rROC.numeric <- function(x, y, ...) {
 #' @param x A data.frame containing all dependent and independent variables as columns.
 #' @param dependent_vars A character vector of dependent variable column names.
 #' @param independent_vars A character vector of independent variable column names.
+#' If NULL, all columns except dependent_vars are used.
 #' @param save_path Path to save the results to. Intermediate results are saved into
 #' the directory file.path(save_path, "_partial_directory").
 #' @param save_intermediate Should intermediate results be saved to disk? If TRUE,
@@ -143,6 +144,9 @@ rROC.data.frame <- function(x,
     }
     if (anyDuplicated(dependent_vars) != 0) {
         stop("dependent_vars must be unique")
+    }
+    if (is.null(independent_vars)) {
+        independent_vars <- colnames(x)[!(colnames(x) %in% dependent_vars)]
     }
     if (anyDuplicated(independent_vars) != 0) {
         stop("independent_vars must be unique")

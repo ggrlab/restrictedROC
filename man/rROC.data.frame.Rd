@@ -25,7 +25,8 @@
 
 \item{dependent_vars}{A character vector of dependent variable column names.}
 
-\item{independent_vars}{A character vector of independent variable column names.}
+\item{independent_vars}{A character vector of independent variable column names.
+If NULL, all columns except dependent_vars are used.}
 
 \item{save_path}{Path to save the results to. Intermediate results are saved into
 the directory file.path(save_path, "_partial_directory").}
