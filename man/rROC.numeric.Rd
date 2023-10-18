@@ -29,6 +29,17 @@ otherwise by \code{base::lapply}}
     \item{\code{positive_label}}{Label for the positive class. All other values of \code{response} are regarded as negative cases.}
   }}
 }
+\value{
+A list of lists of simple_rROC_permutation and plot results. It is structured as follows:
+\itemize{\item {dependent variable}: {
+\itemize{\item {independent variable}: {
+\itemize{
+\item {"plots"}: {\code{\link{plot_density_rROC_empirical}} result}
+\item {"permutation"}: {\code{\link{simple_rROC_permutation}} result}
+}}
+}}
+}
+}
 \description{
 rROC on a single numeric vector
 }

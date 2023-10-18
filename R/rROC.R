@@ -21,6 +21,7 @@
 #' @param ... TODO
 #' @inheritDotParams rROC.data.frame -dependent_vars -independent_vars
 #' @inheritDotParams simple_rROC_permutation -response -predictor -direction
+#' @inherit rROC.data.frame return
 #' @export
 rROC <- function(x, ...) {
     # R possesses a simple generic function mechanism which can be used for an
@@ -35,6 +36,7 @@ rROC <- function(x, ...) {
 #' @param x Matrix, rows are samples, columns are features. Every feature should be restricted.
 #' @param y Factor vector, values of the dependent variable for every column (element/sample).
 #' @inheritDotParams rROC.data.frame -dependent_vars -independent_vars
+#' @inherit rROC.data.frame return
 #' @export
 rROC.matrix <- function(x, y, ...) {
     if (is.list(y)) {
@@ -75,6 +77,7 @@ rROC.matrix <- function(x, y, ...) {
 #' @param x Numeric vector, values of the independent variable for every element/sample.
 #' @param y Factor vector, values of the dependent variable for every element/sample.
 #' @inheritDotParams rROC.data.frame -dependent_vars -independent_vars
+#' @inherit rROC.data.frame return
 #' @export
 rROC.numeric <- function(x, y, ...) {
     if (is.list(y)) {
@@ -100,6 +103,7 @@ rROC.numeric <- function(x, y, ...) {
 }
 
 #' @title Restriction for multiple dependent and independent variables
+#'
 #' @description
 #' Restriction for multiple dependent and independent variables.
 #' Traverses all dependent variables and within all independent variables.
@@ -124,6 +128,16 @@ rROC.numeric <- function(x, y, ...) {
 #' @param verbose Should progress be printed?
 #' @inheritParams simple_rROC_permutation
 #' @inheritDotParams simple_rROC_permutation -response -predictor -direction
+#' @return
+#' A list of lists of simple_rROC_permutation and plot results. It is structured as follows:
+#' \itemize{\item {dependent variable}: {
+#'      \itemize{\item {independent variable}: {
+#'          \itemize{
+#'              \item {"plots"}: {\code{\link{plot_density_rROC_empirical}} result}
+#'              \item {"permutation"}: {\code{\link{simple_rROC_permutation}} result}
+#'          }}
+#'     }}
+#' }
 #' @export
 rROC.data.frame <- function(x,
                             dependent_vars,
