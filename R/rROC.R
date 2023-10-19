@@ -215,7 +215,7 @@ rROC.data.frame <- function(x,
                     "response" = x[[dv]],
                     "predictor" = x[[iv]]
                 )
-                df$predictor[is.na(df$predictor)] <- median(df$predictor, na.rm = TRUE)
+                df$predictor[is.na(df$predictor)] <- stats::median(df$predictor, na.rm = TRUE)
                 per_resp_list <- split(df$predictor, df$response)
 
                 if (length(per_resp_list) == 1 || any(vapply(per_resp_list, length, FUN.VALUE = numeric(1)) == 1)) {
