@@ -15,6 +15,7 @@
 ^dev$
 ^doc$
 ^docs$
+^h2o_.*
 ^intermediate_data$
 ^pkgdown$
 ^restrictedROC\.Rproj$
