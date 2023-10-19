@@ -41,7 +41,7 @@ train_rROC_h2o <- function(x_prepared,
     train_data <- cbind(x_prepared, factor(y, levels = unique_y))
     data.table::fwrite(train_data, file = "h2o_train.csv")
     if (init_h2o) {
-        library(h2o)
+        # library(h2o)
         h2o::h2o.init()
     }
     train_h2o <- h2o::h2o.importFile("h2o_train.csv")
@@ -86,7 +86,7 @@ predict_rROC_h2o <- function(h2o_model,
     df_00 <- cbind(x_prepared, y = factor(y, levels = unique_y))
     data.table::fwrite(df_00, file = "h2o_df_00.csv")
     if (init_h2o) {
-        library(h2o)
+        # library(h2o)
         h2o::h2o.init()
     }
     df_00_h2o <- h2o::h2o.importFile("h2o_df_00.csv")
@@ -107,8 +107,8 @@ predict_rROC_h2o <- function(h2o_model,
         }
         res[["metrics"]] <- lapply(split_samples, function(x) {
             h2o::h2o.make_metrics(
-                predicted = as.h2o(x[, ncol(x)]),
-                actuals = as.h2o(x[["y"]])
+                predicted = h2o::as.h2o(x[, ncol(x)]),
+                actuals = h2o::as.h2o(x[["y"]])
             )
         })
     }
