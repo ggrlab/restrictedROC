@@ -6,10 +6,8 @@
 #' type of prediction (e.g. "predictor", "bounded", "keep"). Or you can specify
 #' a subset of these types (e.g. c("predictor", "bounded")), then the bound predictions
 #' including the predictions of only these types will be returned.
-#' @param ... Not used, only necessary for rROC_model to work properly.
 merge_applied <- function(rroc_applied,
-                          which_preds = c("all", "all_split", "predictor", "bounded", "keep"),
-                          ...) {
+                          which_preds = c("all", "all_split", "predictor", "bounded", "keep")) {
     per_feature_rroc_thresholds <- do.call(rbind, lapply(rroc_applied, function(y) y[["thresholds"]]))
     rownames(per_feature_rroc_thresholds) <- NULL # just cleanup
 

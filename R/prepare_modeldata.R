@@ -1,26 +1,27 @@
 #' @export
-rROC_model <- function(x, y, ...) {
-    UseMethod("rROC_model", x)
+prepare_modeldata <- function(x, ...) {
+    UseMethod("prepare_modeldata", x)
 }
 
 #' @export
-rROC_model.matrix <- function(x, y,
-                              rroc_result = NULL,
-                              rroc_applied = NULL,
-                              rroc_applied_savefile = NULL,
-                              rroc_savefile = NULL,
-                              ...) {
-    rROC_model.data.frame(x, y, rroc_result, rroc_applied, rroc_applied_savefile, rroc_savefile, ...)
+prepare_modeldata.matrix <- function(x,
+                                     ...) {
+    prepare_modeldata.data.frame(x, ...)
 }
 
 #' @export
-rROC_model.data.frame <- function(x, y,
-                                  rroc_result = NULL,
-                                  rroc_applied = NULL,
-                                  rroc_applied_savefile = NULL,
-                                  rroc_savefile = NULL,
-                                  ...) {
+prepare_modeldata.data.frame <- function(x,
+                                         y = NULL,
+                                         rroc_result = NULL,
+                                         rroc_applied = NULL,
+                                         rroc_applied_savefile = NULL,
+                                         rroc_savefile = NULL,
+                                         which_preds = "bounded",
+                                         ...) {
     if (all(is.null(rroc_result))) {
+        if (all(is.null(y))) {
+            stop("Either rroc_result or y must be supplied to recalculate rroc_result")
+        }
         rroc_result <- rROC(
             x,
             independent_vars = colnames(x),
@@ -54,15 +55,21 @@ rROC_model.data.frame <- function(x, y,
             qs::qsave(rroc_applied, file = rroc_applied_savefile)
         }
     }
-    # browser()
-    # return(rROC_model(rroc_result, y = y, ...))
+
+    if (!all(is.null(which_preds))) {
+        x_restricted_merged <- merge_applied(rroc_applied, which_preds = which_preds)
+    } else {
+        x_restricted_merged <- merge_applied(rroc_applied)
+    }
+
+    return(x_restricted_merged)
 }
 
-# rROC_model.matrix <- function(x, y, rroc_result = NULL, rroc_applied = NULL) {
+# # rROC_model.matrix <- function(x, y, rroc_result = NULL, rroc_applied = NULL) {
+# #     print("test")
+# # }
+# #' @export
+# rROC_model.rROC <- function(x, y, rroc_applied_savefile...) {
+#     apply_restriction()
 #     print("test")
 # }
-#' @export
-rROC_model.rROC <- function(x, y, rroc_applied_savefile...) {
-    apply_restriction()
-    print("test")
-}

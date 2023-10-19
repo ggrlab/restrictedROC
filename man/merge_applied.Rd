@@ -6,8 +6,7 @@
 \usage{
 merge_applied(
   rroc_applied,
-  which_preds = c("all", "all_split", "predictor", "bounded", "keep"),
-  ...
+  which_preds = c("all", "all_split", "predictor", "bounded", "keep")
 )
 }
 \arguments{
@@ -18,8 +17,6 @@ You can also specify "all_split" to return a list of predictions for each
 type of prediction (e.g. "predictor", "bounded", "keep"). Or you can specify
 a subset of these types (e.g. c("predictor", "bounded")), then the bound predictions
 including the predictions of only these types will be returned.}
-
-\item{...}{Not used, only necessary for rROC_model to work properly.}
 }
 \description{
 TODO (e.g. 'sum returns the sum of all the values present in its arguments.'
