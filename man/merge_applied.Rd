@@ -19,5 +19,5 @@ a subset of these types (e.g. c("predictor", "bounded")), then the bound predict
 including the predictions of only these types will be returned.}
 }
 \description{
-TODO (e.g. 'sum returns the sum of all the values present in its arguments.'
+Merge (cbind) applied rROC results
 }

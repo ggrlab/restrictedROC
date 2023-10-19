@@ -1,14 +1,33 @@
+#' @title Prepare model data
+#' @description This function prepares the data for the model. It takes the rROC result and
+#' applies the restrictions to the data. It then merges the predictions into a
+#' single data.frame which can be used as input for model building.
+#' @inheritParams prepare_modeldata.data.frame
+#' @inheritDotParams prepare_modeldata.data.frame
 #' @export
 prepare_modeldata <- function(x, ...) {
     UseMethod("prepare_modeldata", x)
 }
 
+#' @inheritDotParams prepare_modeldata.data.frame
 #' @export
 prepare_modeldata.matrix <- function(x,
                                      ...) {
     prepare_modeldata.data.frame(x, ...)
 }
-
+#' @title Prepare model data
+#' @description This function prepares the data for the model. It takes the rROC result and
+#' applies the restrictions to the data. It then merges the predictions into a
+#' single data.frame which can be used as input for model building.
+#' @param x Data which should be prepared. Can be a data.frame or matrix, but
+#' must have column names. Rows are samples, columns are features.
+#' @param y The outcome vector. If NULL, rroc_result must be supplied. If given, only
+#' rROC() uses it.
+#' @param rroc_result The result of rROC(). If NULL, rROC() is called with x, y and ``...``.
+#' @param rroc_savefile If not NULL, the rroc_result is saved to this file.
+#' @param which_preds Which predictions should be returned? Default is "bounded". See
+#' \code{\link{merge_applied}} for details.
+#' @param ... Arguments passed to rROC() if rroc_result is NULL.
 #' @export
 prepare_modeldata.data.frame <- function(x,
                                          y = NULL,

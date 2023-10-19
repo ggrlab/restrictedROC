@@ -1,5 +1,5 @@
 #' @title Merge (cbind) applied rROC results
-#' @description TODO (e.g. 'sum returns the sum of all the values present in its arguments.'
+#' @description Merge (cbind) applied rROC results
 #' @param rroc_applied A _single outcome_ result of apply_restriction()
 #' @param which_preds Which predictions should be returned? Default is all.
 #' You can also specify "all_split" to return a list of predictions for each
