@@ -75,7 +75,7 @@ apply_restriction <- function(object, newdata, feature = NA, removed_impute = -1
     }
     pred_df[["bounded"]] <- pred_df[["predictor"]]
     pred_df[["bounded"]][!pred_df[["keep"]]] <- removed_impute
-    return(list(
+    reslist <- list(
         "predictions" = tibble::as_tibble(pred_df),
         "thresholds" = tibble::tibble(
             "feature" = feature,
@@ -84,5 +84,7 @@ apply_restriction <- function(object, newdata, feature = NA, removed_impute = -1
             "imputed" = removed_impute
         ),
         "informative_range" = informative_range
-    ))
+    )
+    class(reslist) <- c("applied_rROC", class(reslist))
+    return(reslist)
 }
