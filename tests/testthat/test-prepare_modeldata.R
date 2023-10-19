@@ -4,27 +4,31 @@ test_that("prepare_modeldata: From data", {
     set.seed(100)
     prepared_df <- prepare_modeldata(
         x = aSAH[, "ndka", drop = FALSE],
-        y = aSAH["outcome"]
+        y = aSAH["outcome"],
+        positive_label = "Good"
     )
     testthat::expect_true(all(dim(prepared_df) == c(113, 1)))
 
     prepared_df <- prepare_modeldata(
         x = aSAH[, c("ndka", "s100b"), drop = FALSE],
-        y = aSAH["outcome"]
+        y = aSAH["outcome"],
+        positive_label = "Good"
     )
     testthat::expect_true(all(dim(prepared_df) == c(113, 2)))
 
     prepared_df <- prepare_modeldata(
         x = aSAH[, c("ndka", "s100b"), drop = FALSE],
         y = aSAH["outcome"],
-        which_preds = c("bounded")
+        which_preds = c("bounded"),
+        positive_label = "Good"
     )
     testthat::expect_true(all(dim(prepared_df) == c(113, 2)))
 
     prepared_df <- prepare_modeldata(
         x = aSAH[, c("ndka", "s100b"), drop = FALSE],
         y = aSAH["outcome"],
-        which_preds = c("bounded", "predictor")
+        which_preds = c("bounded", "predictor"),
+        positive_label = "Good"
     )
     testthat::expect_true(all(dim(prepared_df) == c(113, 4)))
 })
@@ -37,7 +41,8 @@ test_that("prepare_modeldata: From rROC", {
         x = aSAH[, "ndka", drop = FALSE],
         independent_vars = "ndka",
         y = aSAH["outcome"],
-        n_permutations = 0
+        n_permutations = 0,
+        positive_label = "Good"
     )
     prepared_df <- prepare_modeldata(
         x = aSAH[, c("ndka", "s100b"), drop = FALSE],
@@ -51,7 +56,8 @@ test_that("prepare_modeldata: From rROC", {
 
     prepared_df_2 <- prepare_modeldata(
         x = aSAH[, c("ndka", "s100b"), drop = FALSE],
-        y = aSAH["outcome"]
+        y = aSAH["outcome"],
+        positive_label = "Good"
     )
     testthat::expect_true(all(dim(prepared_df_2) == c(113, 2)))
 })

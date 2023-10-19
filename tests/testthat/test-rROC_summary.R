@@ -6,7 +6,8 @@ test_that("rROC summary", {
         aSAH,
         dependent_vars = "outcome",
         independent_vars = "ndka",
-        n_permutations = 2
+        n_permutations = 2,
+        positive_label = "Good"
     )
     testthat::expect_equal(dim(summary(res_df)), c(1, 10))
 
@@ -15,7 +16,8 @@ test_that("rROC summary", {
         aSAH,
         dependent_vars = "outcome",
         independent_vars = c("ndka", "s100b"),
-        n_permutations = 2
+        n_permutations = 2,
+        positive_label = "Good"
     )
     testthat::expect_equal(dim(summary(res_df)), c(2, 10))
 
@@ -24,7 +26,8 @@ test_that("rROC summary", {
         aSAH,
         dependent_vars = c("outcome", "gender"),
         independent_vars = c("ndka", "s100b"),
-        n_permutations = 2
+        n_permutations = 2,
+        positive_label = "Good"
     )
     testthat::expect_equal(dim(summary(res_df)), c(4, 10))
 })

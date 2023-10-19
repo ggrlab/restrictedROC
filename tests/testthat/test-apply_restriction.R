@@ -6,7 +6,8 @@ test_that("rROC apply restriction", {
         aSAH,
         dependent_vars = "outcome",
         independent_vars = "ndka",
-        n_permutations = 2
+        n_permutations = 2,
+        positive_label = "Good"
     )
     applied_1 <- apply_restriction(res_df, aSAH)
     applied_2 <- apply_restriction(res_df[[1]], aSAH)
@@ -31,7 +32,8 @@ test_that("rROC apply restriction missing feature", {
         aSAH,
         dependent_vars = "outcome",
         independent_vars = "ndka",
-        n_permutations = 2
+        n_permutations = 2,
+        positive_label = "Good"
     )
     testthat::expect_error(
         apply_restriction(res_df, aSAH[, "ndka"]),
