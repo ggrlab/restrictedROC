@@ -17,6 +17,12 @@ The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/
     e.g. .github/workflows/*, README.md, etc. Infrastructure updates increase
     the patch version.
 
+# 3.3.1
+    - `Added`: Documentation for rROC_models included 
+
+# 3.3.0
+    - `Added`: rROC_model based on h2o included: ``train_rROC_h2o`` and ``predict_rROC_h2o``
+
 # 3.2.2
     - `Added`: rROC.data.frame() can now handle ``dependent_vars`` _or_ ``y`` as input
 

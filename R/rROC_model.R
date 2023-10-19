@@ -1,3 +1,20 @@
+#' @title Train a predictive model using (rROC-preprocessed) data
+#' @description A convenience function to train a model using the data x_prepared to
+#' predict the outcome y. Per default, the function is a wrapper around the
+#' h2o.randomForest function.
+#' @param x_prepared A data frame containing the preprocessed data to use in the
+#' model. The data frame should not contain the outcome variable.
+#' Usually the result of a call to \code{\link{prepare_modeldata}}.
+#' @param y The outcome variable. Usually a factor.
+#' @param init_h2o Whether to initialize h2o. Defaults to TRUE.
+#' @param h2o_trainfun The function to use to train the model. Defaults to
+#' \code{\link{h2o.randomForest}} with some default parameters.
+#' Needs to have ``df``, ``col_y`` and ``cols_x`` as arguments where ``df`` is
+#' the data frame to use, ``col_y`` is the column index of the outcome variable
+#' and ``cols_x`` is a vector of column indices of the features to use to predict the
+#' outcome.
+#' @param ... Arguments passed to h2o_trainfun.
+#' @export
 train_rROC_h2o <- function(x_prepared,
                            y,
                            init_h2o = TRUE,
@@ -38,6 +55,23 @@ train_rROC_h2o <- function(x_prepared,
     return(h2o_model)
 }
 
+
+#' @title Predict new data with a trained model
+#' @description
+#' A convenience function to predict new data with a trained model.
+#' The function is a wrapper around the h2o.predict function.
+#' It returns a list with the predictions and optionally the metrics.
+#' @param h2o_model The model to use for prediction.
+#' @param x_prepared A data frame containing the preprocessed data to use in the
+#' model. The data frame can contain more variables than necessary within h2o_model
+#' @param y The true outcome variable. Usually a factor.
+#' @param init_h2o Whether to initialize h2o. Defaults to FALSE as I expect it was
+#' initialized during training already.
+#' @param calculate_metrics Whether to calculate metrics. Defaults to TRUE.
+#' @param sample_split A vector of length(y) containing the "split" of the data.
+#' The metrices are calculated for each split separately. Defaults to NULL, which means
+#' that the whole data is used.
+#' @export
 predict_rROC_h2o <- function(h2o_model,
                              x_prepared,
                              y,
@@ -64,15 +98,18 @@ predict_rROC_h2o <- function(h2o_model,
     )
     if (calculate_metrics) {
         if (!all(is.null(sample_split))) {
+            if (length(sample_split) != length(y)) {
+                stop("sample_split must be of length(y)")
+            }
             split_samples <- split(retdf, sample_split)
         } else {
             split_samples <- list("all" = retdf)
         }
-        preds_h2o <- as.h2o(x[, ncol(x)])
-        actuals_h2o <- as.h2o(x[["y"]])
-
         res[["metrics"]] <- lapply(split_samples, function(x) {
-            h2o::h2o.make_metrics(predicted = preds_h2o, actuals = actuals_h2o)
+            h2o::h2o.make_metrics(
+                predicted = as.h2o(x[, ncol(x)]),
+                actuals = as.h2o(x[["y"]])
+            )
         })
     }
     return(res)
