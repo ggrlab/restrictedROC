@@ -75,74 +75,75 @@ simple_rROC_permutation <- function(response,
         res[["pROC_full"]] <- res_full[["pROC_full"]]
     }
 
+    if (n_permutations > 0) {
+        # permutation values
+        if (parallel_permutations) {
+            lapply_fun <- function(x, FUN) {
+                future.apply::future_lapply(x, FUN, future.seed = TRUE)
+            }
+        } else {
+            lapply_fun <- lapply
+        }
+        permutation_res <- lapply_fun(seq_len(n_permutations), function(permutation_i) {
+            if (verbose) {
+                print(permutation_i)
+            }
+            if (!isFALSE(fix_seed)) {
+                set.seed(fix_seed + permutation_i)
+            }
+            sampled_response <- sample(response)
+            res_permutation <- simple_rROC(
+                response = sample(sampled_response),
+                predictor = predictor,
+                positive_label = positive_label,
+                direction = direction
+            )
+            res_permutation_interpreted <- simple_rROC_interpret(res_permutation)
+            return(c(res_permutation_interpreted["max_total"], res_permutation_interpreted["global"]))
+        })
+        perm_max_bound <- do.call(rbind, lapply(permutation_res, function(x) x[["max_total"]]))
+        perm_global_bound <- do.call(rbind, lapply(permutation_res, function(x) x[["global"]]))
 
-    # permutation values
-    if (parallel_permutations) {
-        lapply_fun <- function(x, FUN) {
-            future.apply::future_lapply(x, FUN, future.seed = TRUE)
+        # Proportion of values above the actually observed MAXIMUM value from all permutations
+        # nolint start
+        # n_perm_above_observed <- sum(permutation_res_bound[["rzAUC"]] > res[["max_total"]][["rzAUC"]])
+        # n_perm_below_observed <- sum(permutation_res_bound[["rzAUC"]] < res[["max_total"]][["rzAUC"]])
+        # nolint end
+        n_perm_twosided_max <- sum(abs(perm_max_bound[["rzAUC"]]) >= abs(res[["max_total"]][["rzAUC"]]))
+        n_perm_twosided_global <- sum(abs(perm_global_bound[["rzAUC"]]) >= abs(res[["global"]][["rzAUC"]]))
+
+        groups_table <- table(response)
+
+        # nolint start
+        ## statmod::permp calculates the exact permutation p-value.
+        ## An easy approximation is
+        ##  (n_more_extreme + 1) / (n_permutations + 1.)
+        ## But is too conservative according to Phipson&Smyth 2010,
+        ## therefore they introduce a slightly modified calculation in statmod::permp
+        # nolint end
+        perm_fun <- function(n_more_extreme) {
+            statmod::permp(
+                # number of permutations that yielded test statistics at least as extreme
+                # as the observed data. May be vector/array.
+                x = n_more_extreme,
+                # total number of permutations performed
+                nperm = n_permutations,
+                # sample size of group 1,
+                # the sum() is if there are more than 2 negative groups
+                # that MIGHT be a valid thing if we want to compare ONE group to ALL OTHERS
+                n1 = sum(groups_table[names(groups_table) != res_full[["positive_label"]]]),
+                # sample size of group 2,
+                n2 = groups_table[res_full[["positive_label"]]],
+                twosided = TRUE
+            )
         }
-    } else {
-        lapply_fun <- lapply
-    }
-    permutation_res <- lapply_fun(1:n_permutations, function(permutation_i) {
-        if (verbose) {
-            print(permutation_i)
-        }
-        if (!isFALSE(fix_seed)) {
-            set.seed(fix_seed + permutation_i)
-        }
-        sampled_response <- sample(response)
-        res_permutation <- simple_rROC(
-            response = sample(sampled_response),
-            predictor = predictor,
-            positive_label = positive_label,
-            direction = direction
+        res[["permutation_pval"]] <- c(
+            "pval.twoside.max" = perm_fun(n_perm_twosided_max),
+            "pval.twoside.global" = perm_fun(n_perm_twosided_global),
+            "n_permutations" = n_permutations
         )
-        res_permutation_interpreted <- simple_rROC_interpret(res_permutation)
-        return(c(res_permutation_interpreted["max_total"], res_permutation_interpreted["global"]))
-    })
-    perm_max_bound <- do.call(rbind, lapply(permutation_res, function(x) x[["max_total"]]))
-    perm_global_bound <- do.call(rbind, lapply(permutation_res, function(x) x[["global"]]))
-
-    # Proportion of values above the actually observed MAXIMUM value from all permutations
-    # nolint start
-    # n_perm_above_observed <- sum(permutation_res_bound[["rzAUC"]] > res[["max_total"]][["rzAUC"]])
-    # n_perm_below_observed <- sum(permutation_res_bound[["rzAUC"]] < res[["max_total"]][["rzAUC"]])
-    # nolint end
-    n_perm_twosided_max <- sum(abs(perm_max_bound[["rzAUC"]]) >= abs(res[["max_total"]][["rzAUC"]]))
-    n_perm_twosided_global <- sum(abs(perm_global_bound[["rzAUC"]]) >= abs(res[["global"]][["rzAUC"]]))
-
-    groups_table <- table(response)
-
-    # nolint start
-    ## statmod::permp calculates the exact permutation p-value.
-    ## An easy approximation is
-    ##  (n_more_extreme + 1) / (n_permutations + 1.)
-    ## But is too conservative according to Phipson&Smyth 2010,
-    ## therefore they introduce a slightly modified calculation in statmod::permp
-    # nolint end
-    perm_fun <- function(n_more_extreme) {
-        statmod::permp(
-            # number of permutations that yielded test statistics at least as extreme
-            # as the observed data. May be vector/array.
-            x = n_more_extreme,
-            # total number of permutations performed
-            nperm = n_permutations,
-            # sample size of group 1,
-            # the sum() is if there are more than 2 negative groups
-            # that MIGHT be a valid thing if we want to compare ONE group to ALL OTHERS
-            n1 = sum(groups_table[names(groups_table) != res_full[["positive_label"]]]),
-            # sample size of group 2,
-            n2 = groups_table[res_full[["positive_label"]]],
-            twosided = TRUE
-        )
+        res[["perm_max_bound"]] <- tibble::as_tibble(perm_max_bound)
+        res[["perm_global_bound"]] <- tibble::as_tibble(perm_global_bound)
     }
-    res[["permutation_pval"]] <- c(
-        "pval.twoside.max" = perm_fun(n_perm_twosided_max),
-        "pval.twoside.global" = perm_fun(n_perm_twosided_global),
-        "n_permutations" = n_permutations
-    )
-    res[["perm_max_bound"]] <- tibble::as_tibble(perm_max_bound)
-    res[["perm_global_bound"]] <- tibble::as_tibble(perm_global_bound)
     return(res)
 }

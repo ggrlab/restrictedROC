@@ -232,3 +232,52 @@ test_that("rROC methods, fix_seed", {
     )
     testthat::expect_equal(res_df_4, res_df_6)
 })
+
+test_that("rROC without permutation", {
+    library(restrictedROC)
+    data("aSAH", package = "pROC")
+    set.seed(100)
+    res_df <- rROC(
+        aSAH,
+        dependent_vars = "outcome",
+        independent_vars = "ndka",
+        n_permutations = 2
+    )
+    set.seed(100)
+    res_df_noperm <- rROC(
+        aSAH,
+        dependent_vars = "outcome",
+        independent_vars = "ndka",
+        n_permutations = 0
+    )
+    class(res_df_noperm[[1]][[1]][["permutation"]])
+    class(res_df[[1]][[1]][["permutation"]])
+
+    basic_rroc_results <- c(
+        "performances",
+        "global",
+        "keep_highs",
+        "keep_lows",
+        "max_total",
+        "positive_label"
+    )
+    testthat::expect_false(isTRUE(all.equal(res_df, res_df_noperm)))
+    testthat::expect_true(
+        all(basic_rroc_results %in% names(res_df_noperm[[1]][[1]][["permutation"]]))
+    )
+
+
+    added_permutation_results <- c(
+        "permutation_pval",
+        "perm_max_bound",
+        "perm_global_bound"
+    )
+    testthat::expect_true(
+        all(
+            c(
+                basic_rroc_results,
+                added_permutation_results
+            ) %in% names(res_df[[1]][[1]][["permutation"]])
+        )
+    )
+})
