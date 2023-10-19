@@ -222,6 +222,7 @@ usethis::use_package("statmod")
 usethis::use_package("future.apply")
 usethis::use_package("readxl", type = "Suggests")
 usethis::use_package("h2o", type = "Suggests")
+usethis::use_package("data.table", type = "Suggests")
 precommit::snippet_generate("additional-deps-roxygenize")
 ```
 
