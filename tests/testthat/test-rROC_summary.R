@@ -1,4 +1,3 @@
-devtools::load_all()
 test_that("rROC summary", {
     # library(restrictedROC)
     data("aSAH", package = "pROC")
