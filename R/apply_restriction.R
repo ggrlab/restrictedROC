@@ -57,6 +57,14 @@ apply_restriction <- function(object, newdata, feature = NA, removed_impute = -1
             "list element. If a single restrictedROC object is supplied, give the feature name."
         ))
     }
+    if (!feature %in% names(newdata)) {
+        stop(paste0(
+            "feature '", feature, "' not found in newdata. ",
+            "It must be a column of newdata (",
+            paste0(names(newdata), collapse = ", "),
+            ")"
+        ))
+    }
     pred_df <- data.frame("predictor" = newdata[[feature]])
     restriction <- single_rroc_result[["max_total"]][["threshold"]]
     restriction_part <- single_rroc_result[["max_total"]][["part"]]
