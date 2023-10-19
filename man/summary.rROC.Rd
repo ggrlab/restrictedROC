@@ -8,7 +8,8 @@
   object,
   relevant_cols_regex = c("pval.twoside.*", "n_permutations", "positive_label",
     ".*\\\\.auc$", "part"),
-  current_level = 0
+  current_level = 0,
+  ...
 )
 }
 \arguments{
@@ -17,6 +18,8 @@
 \item{relevant_cols_regex}{A regex to filter the columns of a single restriction.}
 
 \item{current_level}{The current level of the nested list. This is used internally.}
+
+\item{...}{Additional arguments passed to \code{\link{summary}}.}
 }
 \value{
 A summary of the result:

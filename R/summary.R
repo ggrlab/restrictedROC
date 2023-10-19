@@ -6,7 +6,7 @@
 #' @param object A \code{\link{rROC}} result
 #' @param relevant_cols_regex A regex to filter the columns of a single restriction.
 #' @param current_level The current level of the nested list. This is used internally.
-#'
+#' @param ... Additional arguments passed to \code{\link{summary}}.
 #' @export
 #' @return A summary of the result:
 summary.rROC <- function(object,
@@ -14,7 +14,8 @@ summary.rROC <- function(object,
                              "pval.twoside.*", "n_permutations",
                              "positive_label", ".*\\.auc$", "part"
                          ),
-                         current_level = 0) {
+                         current_level = 0,
+                         ...) {
     if (all(is.null(object)) || all(is.na(object))) {
         return(NULL)
     } else if (!"permutation_pval" %in% names(object)) {
