@@ -13,8 +13,6 @@ prepare_modeldata.matrix <- function(x,
 prepare_modeldata.data.frame <- function(x,
                                          y = NULL,
                                          rroc_result = NULL,
-                                         rroc_applied = NULL,
-                                         rroc_applied_savefile = NULL,
                                          rroc_savefile = NULL,
                                          which_preds = "bounded",
                                          ...) {
@@ -45,16 +43,11 @@ prepare_modeldata.data.frame <- function(x,
         }
     }
 
-    if (all(is.null(rroc_applied_savefile))) {
-        rroc_applied <- apply_restriction(
-            object = rroc_result,
-            newdata = x,
-            ...
-        )
-        if (!is.null(rroc_applied_savefile)) {
-            qs::qsave(rroc_applied, file = rroc_applied_savefile)
-        }
-    }
+    rroc_applied <- apply_restriction(
+        object = rroc_result,
+        newdata = x,
+        ...
+    )
 
     if (!all(is.null(which_preds))) {
         x_restricted_merged <- merge_applied(rroc_applied, which_preds = which_preds)
