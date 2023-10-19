@@ -1,12 +1,13 @@
 Package: restrictedROC
 Title: Calculate restricted ROC curves
-Version: 3.2.2.0001
+Version: 3.3.0
 Authors@R: 
     person("Gunther", "Glehr", , "gunthergl@gmx.net", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-1495-9162"))
 Description: Calculate restricted ROC-curves, AUCs and permutation p-values.
 License: MIT + file LICENSE
 Suggests: 
+    h2o,
     knitr,
     readxl,
     rmarkdown,
