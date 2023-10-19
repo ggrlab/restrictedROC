@@ -26,6 +26,8 @@ Dependent variable(s) must be given as "y" argument.
 \item{...}{
   Arguments passed on to \code{\link[=rROC.data.frame]{rROC.data.frame}}, \code{\link[=simple_rROC_permutation]{simple_rROC_permutation}}
   \describe{
+    \item{\code{y}}{Either a vector of dependent variable values or a list of length 1 of
+a vector of dependent variable values. If NULL, dependent_vars must be given.}
     \item{\code{save_path}}{Path to save the results to. Intermediate results are saved into
 the directory file.path(save_path, "_partial_directory").}
     \item{\code{save_intermediate}}{Should intermediate results be saved to disk? If TRUE,

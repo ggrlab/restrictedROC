@@ -115,7 +115,10 @@ rROC.numeric <- function(x, y, ...) {
 #' Can return plot_density_rROC_empirical for every combination.
 #'
 #' @param x A data.frame containing all dependent and independent variables as columns.
-#' @param dependent_vars A character vector of dependent variable column names.
+#' @param dependent_vars A character vector of dependent variable column names. If NULL,
+#' ``y`` must be given.
+#' @param y Either a vector of dependent variable values or a list of length 1 of
+#' a vector of dependent variable values. If NULL, dependent_vars must be given.
 #' @param independent_vars A character vector of independent variable column names.
 #' If NULL, all columns except dependent_vars are used.
 #' @param save_path Path to save the results to. Intermediate results are saved into
@@ -140,8 +143,9 @@ rROC.numeric <- function(x, y, ...) {
 #' }
 #' @export
 rROC.data.frame <- function(x,
-                            dependent_vars,
                             independent_vars,
+                            dependent_vars = NULL,
+                            y = NULL,
                             save_path = NULL,
                             parallel_permutations = TRUE,
                             n_permutations = 10000,
@@ -152,6 +156,20 @@ rROC.data.frame <- function(x,
                             do_plots = FALSE,
                             fix_seed = 0,
                             ...) {
+    if (is.null(dependent_vars)) {
+        if (is.null(y)) {
+            stop("Either dependent_vars or y must be given")
+        }
+        if (!(length(y) == 1 || length(y) == nrow(x))) {
+            stop("y must be a vector of length nrow(x) or a list of length 1 of such a vector.")
+        }
+        dependent_vars <- "y_manually_given"
+        x <- tibble::add_column(x, y_manually_given = y)
+        if (!is.null(names(y)) && length(names(y)) == 1) {
+            colnames(x)[length(colnames(x))] <- names(y)[1]
+            dependent_vars <- names(y)[1]
+        }
+    }
     original_positive_label <- positive_label
     if (is.null(save_path)) {
         save_intermediate <- load_existing_intermediate <- FALSE

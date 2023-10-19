@@ -6,8 +6,9 @@
 \usage{
 \method{rROC}{data.frame}(
   x,
-  dependent_vars,
   independent_vars,
+  dependent_vars = NULL,
+  y = NULL,
   save_path = NULL,
   parallel_permutations = TRUE,
   n_permutations = 10000,
@@ -23,10 +24,14 @@
 \arguments{
 \item{x}{A data.frame containing all dependent and independent variables as columns.}
 
-\item{dependent_vars}{A character vector of dependent variable column names.}
-
 \item{independent_vars}{A character vector of independent variable column names.
 If NULL, all columns except dependent_vars are used.}
+
+\item{dependent_vars}{A character vector of dependent variable column names. If NULL,
+\code{y} must be given.}
+
+\item{y}{Either a vector of dependent variable values or a list of length 1 of
+a vector of dependent variable values. If NULL, dependent_vars must be given.}
 
 \item{save_path}{Path to save the results to. Intermediate results are saved into
 the directory file.path(save_path, "_partial_directory").}

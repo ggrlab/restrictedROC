@@ -17,6 +17,9 @@ The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/
     e.g. .github/workflows/*, README.md, etc. Infrastructure updates increase
     the patch version.
 
+# 3.2.2
+    - `Added`: rROC.data.frame() can now handle ``dependent_vars`` _or_ ``y`` as input
+
 # 3.2.1
     - `Added`: Add rROC() as _the_ goto function for restricted ROC analysis
 

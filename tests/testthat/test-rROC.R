@@ -33,6 +33,20 @@ test_that("rROC methods", {
         n_permutations = 2
     )
     set.seed(100)
+    res_df_2 <- rROC(
+        aSAH,
+        y = aSAH[["outcome"]],
+        independent_vars = "ndka",
+        n_permutations = 2
+    )
+    set.seed(100)
+    res_df_3 <- rROC(
+        aSAH,
+        y = aSAH["outcome"],
+        independent_vars = "ndka",
+        n_permutations = 2
+    )
+    set.seed(100)
     res_numeric <- rROC(
         x = aSAH[["ndka"]],
         y = aSAH[["outcome"]],
@@ -45,6 +59,12 @@ test_that("rROC methods", {
         y = aSAH[["outcome"]],
         n_permutations = 2
     )
+
+    # The data are the same, but the names are different.
+    testthat::expect_equal(res_df[[1]], res_df_2[[1]])
+    # Giving "y" as a vector without name results in a placeholder OUTCOME-name: "y_manually_given"
+    testthat::expect_false(isTRUE(all.equal(res_df, res_df_2)))
+    testthat::expect_equal(res_df, res_df_3)
 
     # The names are different, but the values are the same
     testthat::expect_equal(res_df[[1]][[1]], res_numeric[[1]][[1]])
