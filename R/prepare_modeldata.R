@@ -28,12 +28,14 @@ prepare_modeldata.matrix <- function(x,
 #' @param which_preds Which predictions should be returned? Default is "bounded". See
 #' \code{\link{merge_applied}} for details.
 #' @param ... Arguments passed to rROC() if rroc_result is NULL.
+#' @inheritParams apply_restriction
 #' @export
 prepare_modeldata.data.frame <- function(x,
                                          y = NULL,
                                          rroc_result = NULL,
                                          rroc_savefile = NULL,
                                          which_preds = "bounded",
+                                         removed_impute = -1,
                                          ...) {
     if (all(is.null(rroc_result))) {
         if (all(is.null(y))) {
@@ -65,7 +67,7 @@ prepare_modeldata.data.frame <- function(x,
     rroc_applied <- apply_restriction(
         object = rroc_result,
         newdata = x,
-        ...
+        removed_impute = removed_impute
     )
 
     if (!all(is.null(which_preds))) {

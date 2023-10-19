@@ -22,12 +22,15 @@ test_that("rROC summary", {
     testthat::expect_equal(dim(summary(res_df)), c(2, 10))
 
 
-    res_df <- rROC(
-        aSAH,
-        dependent_vars = c("outcome", "gender"),
-        independent_vars = c("ndka", "s100b"),
-        n_permutations = 2,
-        positive_label = "Good"
+    # Two warnings will emerge here, one for every outcome
+    # Changing to the first sorted unique value of 'outcome': 'Good'
+    suppressWarnings(
+        res_df <- rROC(
+            aSAH,
+            dependent_vars = c("outcome", "gender"),
+            independent_vars = c("ndka", "s100b"),
+            n_permutations = 2
+        )
     )
     testthat::expect_equal(dim(summary(res_df)), c(4, 10))
 })

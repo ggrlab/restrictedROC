@@ -10,6 +10,7 @@
   rroc_result = NULL,
   rroc_savefile = NULL,
   which_preds = "bounded",
+  removed_impute = -1,
   ...
 )
 }
@@ -26,6 +27,8 @@ rROC() uses it.}
 
 \item{which_preds}{Which predictions should be returned? Default is "bounded". See
 \code{\link{merge_applied}} for details.}
+
+\item{removed_impute}{The value to impute for samples outside the informative range.}
 
 \item{...}{Arguments passed to rROC() if rroc_result is NULL.}
 }

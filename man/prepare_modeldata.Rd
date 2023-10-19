@@ -19,6 +19,7 @@ rROC() uses it.}
     \item{\code{rroc_savefile}}{If not NULL, the rroc_result is saved to this file.}
     \item{\code{which_preds}}{Which predictions should be returned? Default is "bounded". See
 \code{\link{merge_applied}} for details.}
+    \item{\code{removed_impute}}{The value to impute for samples outside the informative range.}
   }}
 }
 \description{
