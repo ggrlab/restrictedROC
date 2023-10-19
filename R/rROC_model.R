@@ -8,7 +8,7 @@
 #' @param y The outcome variable. Usually a factor.
 #' @param init_h2o Whether to initialize h2o. Defaults to TRUE.
 #' @param h2o_trainfun The function to use to train the model. Defaults to
-#' \code{\link{h2o.randomForest}} with some default parameters.
+#' \code{h2o.randomForest} with some default parameters.
 #' Needs to have ``df``, ``col_y`` and ``cols_x`` as arguments where ``df`` is
 #' the data frame to use, ``col_y`` is the column index of the outcome variable
 #' and ``cols_x`` is a vector of column indices of the features to use to predict the
@@ -19,7 +19,7 @@ train_rROC_h2o <- function(x_prepared,
                            y,
                            init_h2o = TRUE,
                            h2o_trainfun = function(df, col_y, cols_x, ...) {
-                               h2o.randomForest(
+                               h2o::h2o.randomForest(
                                    training_frame = df,
                                    y = col_y,
                                    x = cols_x,
@@ -42,9 +42,9 @@ train_rROC_h2o <- function(x_prepared,
     data.table::fwrite(train_data, file = "h2o_train.csv")
     if (init_h2o) {
         library(h2o)
-        h2o.init()
+        h2o::h2o.init()
     }
-    train_h2o <- h2o.importFile("h2o_train.csv")
+    train_h2o <- h2o::h2o.importFile("h2o_train.csv")
 
     h2o_model <- h2o_trainfun(
         df = train_h2o,
@@ -87,11 +87,11 @@ predict_rROC_h2o <- function(h2o_model,
     data.table::fwrite(df_00, file = "h2o_df_00.csv")
     if (init_h2o) {
         library(h2o)
-        h2o.init()
+        h2o::h2o.init()
     }
-    df_00_h2o <- h2o.importFile("h2o_df_00.csv")
+    df_00_h2o <- h2o::h2o.importFile("h2o_df_00.csv")
 
-    preds <- tibble::as_tibble(h2o.predict(h2o_model, newdata = df_00_h2o))
+    preds <- tibble::as_tibble(h2o::h2o.predict(h2o_model, newdata = df_00_h2o))
     retdf <- tibble::as_tibble(cbind(df_00, preds))
     res <- list(
         "predictions" = retdf

@@ -2,17 +2,17 @@
 % Please edit documentation in R/apply_restriction.R
 \name{apply_restriction}
 \alias{apply_restriction}
-\title{Apply a \link{nested list} of rROC results to new data}
+\title{Apply a (nested list) of rROC results to new data}
 \usage{
 apply_restriction(object, newdata, feature = NA, removed_impute = -1)
 }
 \arguments{
-\item{object}{A \link{nested list} of rROC results. See \code{\link{rROC}} for details.}
+\item{object}{A (nested list) of rROC results. See \code{\link{rROC}} for details.}
 
 \item{newdata}{A data frame with all predictor variables.}
 
 \item{feature}{The current feature. If \code{object} is a single restrictedROC object,
-this is the name of the feature. If \code{object} is a \link{nested list}, this is the name
+this is the name of the feature. If \code{object} is a (nested list), this is the name
 of the current list element. Example: \code{list("outcome_1"=list("feature_1"=rroc_result))}
 \code{feature} is \code{"feature_1"} when \code{rroc_result} is processed when
 rroc_result is detected.}

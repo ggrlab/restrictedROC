@@ -1,13 +1,13 @@
-#' @title Apply a [nested list] of rROC results to new data
+#' @title Apply a (nested list) of rROC results to new data
 #' @description
 #' Restriction returns an informative range which tells that some samples should be
 #' discarded according to their predictor value. This function applies the restriction
 #' to a new dataset. Predictor values outside the informative range are imputed with
 #' \code{removed_impute}.
-#' @param object A [nested list] of rROC results. See \code{\link{rROC}} for details.
+#' @param object A (nested list) of rROC results. See \code{\link{rROC}} for details.
 #' @param newdata A data frame with all predictor variables.
 #' @param feature The current feature. If \code{object} is a single restrictedROC object,
-#' this is the name of the feature. If \code{object} is a [nested list], this is the name
+#' this is the name of the feature. If \code{object} is a (nested list), this is the name
 #' of the current list element. Example: \code{list("outcome_1"=list("feature_1"=rroc_result))}
 #' \code{feature} is \code{"feature_1"} when \code{rroc_result} is processed when
 #' rroc_result is detected.

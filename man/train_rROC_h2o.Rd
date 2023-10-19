@@ -9,9 +9,9 @@ train_rROC_h2o(
   y,
   init_h2o = TRUE,
   h2o_trainfun = function(df, col_y, cols_x, ...) {
-     h2o.randomForest(training_frame
-    = df, y = col_y, x = cols_x, ntrees = 1000, max_depth = 20, min_rows = 1, nbins = 20,
-    seed = 4242, ...)
+    
+    h2o::h2o.randomForest(training_frame = df, y = col_y, x = cols_x, ntrees = 1000,
+    max_depth = 20, min_rows = 1, nbins = 20, seed = 4242, ...)
  },
   ...
 )
@@ -26,7 +26,7 @@ Usually the result of a call to \code{\link{prepare_modeldata}}.}
 \item{init_h2o}{Whether to initialize h2o. Defaults to TRUE.}
 
 \item{h2o_trainfun}{The function to use to train the model. Defaults to
-\code{\link{h2o.randomForest}} with some default parameters.
+\code{h2o.randomForest} with some default parameters.
 Needs to have \code{df}, \code{col_y} and \code{cols_x} as arguments where \code{df} is
 the data frame to use, \code{col_y} is the column index of the outcome variable
 and \code{cols_x} is a vector of column indices of the features to use to predict the
