@@ -163,12 +163,13 @@ rROC.data.frame <- function(x,
         if (!(length(y) == 1 || length(y) == nrow(x))) {
             stop("y must be a vector of length nrow(x) or a list of length 1 of such a vector.")
         }
-        dependent_vars <- "y_manually_given"
-        x <- tibble::add_column(x, y_manually_given = y)
+        x <- tibble::add_column(x, y)
         if (!is.null(names(y)) && length(names(y)) == 1) {
             colnames(x)[length(colnames(x))] <- names(y)[1]
-            dependent_vars <- names(y)[1]
+        } else {
+            colnames(x)[length(colnames(x))] <- "y_manually_given"
         }
+        dependent_vars <- colnames(x)[length(colnames(x))]
     }
     original_positive_label <- positive_label
     if (is.null(save_path)) {
