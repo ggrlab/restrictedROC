@@ -1,6 +1,7 @@
 # upper level files
 .*.pdf
 .*.png
+.*removeme.*
 \.lintr
 ^LICENSE\.md$
 ^Meta$
