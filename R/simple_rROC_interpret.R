@@ -157,6 +157,6 @@ simple_rROC_interpret <- function(perf_rroc, use_abs_rzAUC = TRUE) {
         "positive_label" = positive_label
     )
     res[["pROC_full"]] <- proc_full
-    class(res) <- c(class(res), "restrictedROC")
+    class(res) <- c("restrictedROC", class(res))
     return(res)
 }
