@@ -37,8 +37,6 @@ informative range. The informative range is then:
 \item \code{low}: \code{(-Inf, threshold]}
 \item \code{high}: \code{(threshold, Inf)}
 }
-\item \code{informative_range}: A numeric vector with two elements, the lower and
-upper bound of the informative range.
 }
 }
 \description{

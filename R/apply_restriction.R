@@ -30,8 +30,6 @@
 #'              \item \code{low}: \code{(-Inf, threshold]}
 #'              \item \code{high}: \code{(threshold, Inf)}
 #'          }
-#'      \item \code{informative_range}: A numeric vector with two elements, the lower and
-#'     upper bound of the informative range.
 #' }
 #'
 apply_restriction <- function(object, newdata, feature = NA, removed_impute = -1) {
@@ -81,9 +79,10 @@ apply_restriction <- function(object, newdata, feature = NA, removed_impute = -1
             "feature" = feature,
             "threshold" = single_rroc_result[["max_total"]][["threshold"]],
             "part" = single_rroc_result[["max_total"]][["part"]],
-            "imputed" = removed_impute
-        ),
-        "informative_range" = informative_range
+            "imputed" = removed_impute,
+            "informative_range.min" = min(informative_range),
+            "informative_range.max" = max(informative_range)
+        )
     )
     class(reslist) <- c("applied_rROC", class(reslist))
     return(reslist)
