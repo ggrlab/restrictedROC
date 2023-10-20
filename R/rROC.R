@@ -256,10 +256,10 @@ rROC.data.frame <- function(x,
             }
         }
     }
+    class(reslist) <- c("rROC", class(reslist))
     if (!is.null(save_path)) {
         qs::qsave(reslist, paste0(save_path, ".qs"))
         cat("Wrote final reslist to ", paste0(save_path, ".qs"), "\n")
     }
-    class(reslist) <- c("rROC", class(reslist))
     return(reslist)
 }
