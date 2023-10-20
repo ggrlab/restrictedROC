@@ -168,13 +168,13 @@ dev.off()
 ```
 
 ```{r, Restriction}
+n_permutations <- 50000
 source("vignettes/articles/utils.R")
 int_dir <- "intermediate_data/2019-harel/rroc_intermediate"
 dir.create(int_dir, recursive = TRUE)
 library(future)
 plan(multisession)
-n_permutations <- 10000
-rroc_res <- sapply(rev(names(data_mats)), function(x_name) {
+rroc_res <- sapply(names(data_mats), function(x_name) {
     x <- data_mats[[x_name]]
     x_noNArownames <- x[!is.na(rownames(x)), ]
     rroc_permutation_many_features(
@@ -191,109 +191,83 @@ rroc_res <- sapply(rev(names(data_mats)), function(x_name) {
 # 10k permutations took 14s for one feature.
 # There are 4620 (aPD1) and 4588 (TIL) features
 # Therefore that takes 35h.
+rroc_res <- sapply(names(data_mats), function(x_name) {
+    qs::qread(file.path(int_dir, paste0("harel_nPERM", n_permutations, "_", x_name, ".qrds")))
+}, USE.NAMES = TRUE, simplify = FALSE)
 ```
 
 
-NOT TOUCHED BELOW!
-```{r, }
-# S1C and S1D are the features with at least 70% present values
-harel_til <- readxl::read_excel("intermediate_data/2019-harel/1-s2.0-S0092867419309006-mmc1.xlsx", sheet = "S1C", skip = 1, na = "NaN")
-harel_aPD1 <- readxl::read_excel("intermediate_data/2019-harel/1-s2.0-S0092867419309006-mmc1.xlsx", sheet = "S1D", skip = 1, na = "NaN")
-
-# The description columns start with a T
-harel_til_mat <- as.matrix(harel_til[, !grepl("^T:", colnames(harel_til))])
-# rownames(harel_til_mat) <- harel_til[["T: Gene names"]]
-rownames(harel_til_mat) <- harel_til[["T: Protein IDs"]]
-if (anyDuplicated(rownames(harel_til_mat)) != 0) {
-    stop()
-}
-# rownames(harel_til_mat) <- sub(";.*", "", rownames(harel_til_mat))
-
-harel_aPD1_mat <- as.matrix(harel_aPD1[, !grepl("^T:", colnames(harel_aPD1))])
-rownames(harel_aPD1_mat) <- harel_aPD1[["T: T: Gene name"]]
-if (anyDuplicated(rownames(harel_aPD1_mat)) != 0) {
-    stop()
-}
-# rownames(harel_aPD1_mat) <- sub(";.*", "", rownames(harel_aPD1_mat))
-```
-
-```{r Reproduce t-tests}
-harel_ttests <- lapply(list("til" = harel_til_mat, "aPD1" = harel_aPD1_mat), function(datapart_x) {
-    res_t <- apply(datapart_x, 1, function(feature_x) {
-        # names(x) are the column names of the matrix
-        # The response needs to be ordered according to the column names
-        x_NonResponder <- split(feature_x, outcome[names(feature_x)])
-        res_test <- t.test(
-            x_NonResponder[["responder"]],
-            x_NonResponder[["non-responder"]],
-            alternative = "two.sided", paired = FALSE, var.equal = FALSE
+```{r, Plotting global vs restricted}
+library(ggplot2)
+pdf("intermediate_data/2019-harel/global_max_pval.pdf")
+for (name_x in names(rroc_res)) {
+    p1 <- ggplot(rroc_res[[name_x]], aes(x = global_p.value, y = max_p.value))
+    p2 <- ggplot(rroc_res[[name_x]], aes(x = global_q.value, y = max_q.value))
+    for (plot_x in list(p1, p2)) {
+        print(
+            plot_x +
+                geom_point() +
+                geom_abline(slope = 1, intercept = 0, linewidth = .1) +
+                geom_vline(xintercept = 0.05, linetype = "dashed") +
+                geom_hline(yintercept = 0.05, linetype = "dashed") +
+                scale_x_log10() +
+                scale_y_log10() +
+                # label feature with q.value < 0.05
+                ggrepel::geom_text_repel(
+                    data = subset(
+                        rroc_res[[name_x]],
+                        global_q.value > 0.05 & max_q.value < 0.05
+                    ),
+                    aes(label = feature),
+                    size = 1.5, col = "darkgreen",
+                    min.segment.length = 0,
+                    max.overlaps = 5
+                ) +
+                ggtitle(name_x) +
+                ggpubr::theme_pubr()
         )
-        return(c(
-            "neglog_p.value" = -log10(res_test$p.value),
-            "p.value" = res_test$p.value,
-            "t" = res_test$statistic[[1]],
-            "diff_nr_r" = -(res_test$estimate["mean of y"] - res_test$estimate["mean of x"])[[1]]
-        ))
-    })
-    return(tibble::as_tibble(t(res_t), rownames = "gene") |> dplyr::arrange(diff_nr_r))
-})
-harel_ttests
-lapply(harel_ttests, function(x) sum(x$p.value < 0.05, na.rm = TRUE))
-#
-harel_til_mat_ttest <- apply(harel_til_mat, 1, function(x) {
-    # names(x) are the column names of the matrix
-    # The response needs to be ordered according to the column names
-    x_NonResponder <- split(x, outcome[names(x)])
-    res_test <- t.test(
-        x_NonResponder[["responder"]],
-        x_NonResponder[["non-responder"]],
-        alternative = "two.sided", paired = FALSE, var.equal = FALSE
-    )
-    return(c("p.value" = res_test$p.value, "t" = res_test$statistic[[1]]))
-})
-tibble::as_tibble(t(harel_til_mat_ttest), rownames = "gene") |>
-    dplyr::arrange(t)
-
-x_NonResponder <- split(harel_til_mat["AMBP", ], outcome[colnames(harel_til_mat)])
-tmp <- t.test(
-    (na.omit(x_NonResponder[["responder"]])),
-    (na.omit(x_NonResponder[["non-responder"]])),
-    alternative = "two.sided", paired = FALSE, var.equal = TRUE
-)
-
-names(tmp)
-diff(tmp$estimate)
-print(tmp)
-print(sum(harel_til_mat_ttest < 0.05, na.rm = TRUE))
-tibble::tibble("gene" = names(harel_til_mat_ttest), "pvalue" = harel_til_mat_ttest)
-```
-
-
-
-
-```{r Why can I not reproduce the t-tests?}
-download.file(
-    url = "https://ars.els-cdn.com/content/image/1-s2.0-S0092867419309006-mmc2.xlsx",
-    destfile = "intermediate_data/harel2019-S2.xlsx",
-)
-harel_pheno |>
-    dplyr::filter(Cohort == "TIL") |>
-    dplyr::pull(Response) |>
-    table()
-harel_til_s2_ttest <- readxl::read_excel("intermediate_data/harel2019-S2.xlsx", sheet = "S2A", skip = 1, na = "NaN")
-ncol(harel_til_s2_ttest)
-# https://github.com/SurajGupta/r-source/blob/master/src/library/stats/R/t.test.R
-
-nx <- 21
-ny <- 21
-pval_equalvar <- function(tstat) {
-    return(2 * pt(-abs(tstat), nx + ny - 2))
+    }
 }
-
-pdf("removeme.pdf")
-hist(pval_equalvar(harel_til_s2_ttest[["Student's T-test Test statistic R_NR"]]))
 dev.off()
-t
+
+# Plotting the restricted ROC
+pdf("intermediate_data/2019-harel/rroc_significant.pdf", height = 8)
+for (feature_outcome in list(
+    c("ERO1L", "aPD1"),
+    c("WDR47", "aPD1"),
+    c("ETFB", "til"),
+    c("CALCOCO2", "til")
+)) {
+    feature_x <- feature_outcome[[1]]
+    outcome_x <- feature_outcome[[2]]
+
+    data_x <- data_mats[[outcome_x]][feature_x, ]
+    data_x_noNA <- na.omit(data_x)
+    grouped_vals <- split(data_x_noNA, outcome_noSD[names(data_x_noNA)])
+    names(grouped_vals) <- gsub("-", "", names(grouped_vals))
+    p1 <- restrictedROC::plot_density_rROC_empirical(
+        values_grouped = grouped_vals,
+        positive_label = "responder"
+    )[["plots"]]
+    p1 <- p1 + patchwork::plot_annotation(
+        title = paste0("Dataset: ", outcome_x, "  --- Feature: ", feature_x)
+    )
+    print(patchwork::wrap_elements(
+        p1
+    ) + patchwork::wrap_elements(
+        gridExtra::tableGrob(
+            rroc_res[[outcome_x]] |> dplyr::filter(feature == feature_x),
+            theme = gridExtra::ttheme_default(base_size = 8)
+        )
+    ) + patchwork::wrap_elements(
+        gridExtra::tableGrob(
+            harel_ttests_q[[outcome_x]] |> dplyr::filter(gene == feature_x),
+            theme = gridExtra::ttheme_default(base_size = 8)
+        )
+    ) +
+        patchwork::plot_layout(nrow = 3, height = c(.8, .1, .1)))
+}
+dev.off()
 ```
 
 [1]: Harel et al. "Proteomics of melanoma response to immunotherapy reveals mitochondrial dependence." Cell 179.1 (2019): 236-250. https://doi.org/10.1016/j.cell.2019.08.012
