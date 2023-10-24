@@ -5,7 +5,7 @@
 \title{Plot (restricted) ROC curves}
 \usage{
 plot_rROC_part(
-  rROC_res,
+  rROC_result,
   p_full_density_ROC = NA,
   threshold = NA,
   fpr = NA,
@@ -15,8 +15,6 @@ plot_rROC_part(
 )
 }
 \arguments{
-\item{rROC_res}{rROC result including full_pROC.}
-
 \item{p_full_density_ROC}{Density plot from plot_density_ROC_empirical of the full data, if not given it is calculated from rROC_res}
 
 \item{threshold}{At which threshold should be split into high and low. Alternatively, give a false positive rate (fpr)}
@@ -28,6 +26,8 @@ plot_rROC_part(
 \item{color_low}{Color for low part}
 
 \item{include_part_auc_text}{Should the text-annotations be added or not?}
+
+\item{rROC_res}{rROC result including full_pROC.}
 }
 \value{
 \link{patchwork}ed plots, see the description.
@@ -61,5 +61,4 @@ ret_procs <- simple_rROC(
 # pdf("removeme.pdf")
 print(plot_rROC_part(ret_procs, fpr = .5))
 # dev.off()
-
 }

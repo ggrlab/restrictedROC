@@ -1,3 +1,5 @@
+# All S3 methods must be exported https://github.com/r-lib/devtools/issues/2293
+
 #' Plot (restricted) ROC curves
 #'
 #' Plot for every tpr/fpr combination:
@@ -44,14 +46,84 @@
 #' # pdf("removeme.pdf")
 #' print(plot_rROC_part(ret_procs, fpr = .5))
 #' # dev.off()
-#'
-plot_rROC_part <- function(rROC_res,
+plot_rROC_part <- function(rROC_result,
                            p_full_density_ROC = NA,
                            threshold = NA,
                            fpr = NA,
                            color_high = default_part_colors["high"],
                            color_low = default_part_colors["low"],
                            include_part_auc_text = FALSE) {
+    UseMethod("plot_rROC_part")
+}
+#' @export
+plot_rROC_part.default <- function(rROC_result, ...) {
+    plot_rROC_part.rROC(rROC_result, ...)
+}
+#' @export
+plot_rROC_part.simple_rROC <- function(simple_rROC_result, ...) {
+    plot_rROC_part_single(
+        simple_rROC_result,
+        ...
+    )
+}
+
+#' @export
+plot_rROC_part.restrictedROC <- function(interpreted_simple_rROC_result, ...) {
+    plot_rROC_part_single(
+        interpreted_simple_rROC_result,
+        ...
+    )
+}
+
+#' @export
+plot_rROC_part.rROC <- function(rROC_result, current_level = 0, title = "", ...) {
+    if (all(is.null(rROC_result)) || all(is.na(rROC_result))) {
+        return(NULL)
+    } else if (!"permutation" %in% names(rROC_result)) {
+        current_level <- current_level + 1
+        l_results <- sapply(
+            names(rROC_result), function(x) {
+                plot_rROC_part.rROC(
+                    rROC_result[[x]],
+                    current_level = current_level,
+                    title = paste0(title, " --- ", x),
+                    ...
+                )
+            },
+            USE.NAMES = TRUE, simplify = FALSE
+        )
+        return(l_results)
+    } else {
+        all_returned_plots <- plot_rROC_part_single(
+            rROC_result[["permutation"]],
+            ...
+        )
+        if ("plotlist" %in% names(all_returned_plots)) {
+            all_returned_plots[["plotlist"]] <- lapply(
+                all_returned_plots[["plotlist"]], function(x) {
+                    x + ggplot2::ggtitle(title)
+                }
+            )
+        }
+        all_returned_plots[
+            !names(all_returned_plots) %in% c("plotlist")
+        ] <- lapply(
+            all_returned_plots[!names(all_returned_plots) %in% c("plotlist")], function(x) {
+                x + ggplot2::ggtitle(title)
+            }
+        )
+        return(all_returned_plots)
+    }
+}
+
+
+plot_rROC_part_single <- function(rROC_res,
+                                  p_full_density_ROC = NA,
+                                  threshold = NA,
+                                  fpr = NA,
+                                  color_high = default_part_colors["high"],
+                                  color_low = default_part_colors["low"],
+                                  include_part_auc_text = FALSE) {
     if ("joined_aucs" %in% names(rROC_res)) {
         rroc_perf <- rROC_res[["joined_aucs"]]
     } else {
