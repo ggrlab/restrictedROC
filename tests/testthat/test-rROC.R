@@ -320,3 +320,37 @@ test_that("rROC direction", {
         direction = "<"
     )
 })
+
+
+test_that("rROC vs simple_rROC", {
+    library(restrictedROC)
+    data("aSAH", package = "pROC")
+    set.seed(100)
+
+
+    rroc <- restrictedROC::rROC(
+        aSAH,
+        dependent_vars = "outcome",
+        independent_vars = "ndka",
+        positive_label = "Good",
+        direction = "<",
+        return_proc = TRUE,
+        n_permutations = 0
+    )[["outcome"]][["ndka"]][["permutation"]]
+    rroc_2 <- restrictedROC::simple_rROC(
+        response = aSAH[["outcome"]],
+        predictor = aSAH[["ndka"]],
+        positive_label = "Good",
+        direction = "<",
+        return_proc = TRUE,
+    )
+    rroc_2_tmp <- restrictedROC::simple_rROC_interpret(rroc_2)
+    testthat::expect_true(all.equal(rroc_2_tmp, rroc), info = "rROC and simple_rROC_interpret(simple_rROC()) do not return the same results")
+    testthat::expect_true(all(
+        all.equal(rroc[["performances"]], rroc_2[["joined_aucs"]]),
+        all.equal(rroc[["positive_label"]], rroc_2[["positive_label"]]),
+        all.equal(rroc[["pROC_full"]], rroc_2[["pROC_full"]]),
+        is.na(rroc_2[["pROC_lowpart"]]),
+        is.na(rroc_2[["pROC_highpart"]])
+    ), info = "rROC and simple_rROC are almost the same, just nicer formatted")
+})
