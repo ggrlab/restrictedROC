@@ -7,7 +7,7 @@
 \method{summary}{rROC}(
   object,
   relevant_cols_regex = c("pval.twoside.*", "n_permutations", "positive_label",
-    ".*\\\\.auc$", "part"),
+    ".*\\\\.auc$", "part", "restriction", "informative_range.*"),
   current_level = 0,
   ...
 )

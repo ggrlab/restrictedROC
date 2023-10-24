@@ -12,7 +12,9 @@
 summary.rROC <- function(object,
                          relevant_cols_regex = c(
                              "pval.twoside.*", "n_permutations",
-                             "positive_label", ".*\\.auc$", "part"
+                             "positive_label", ".*\\.auc$", "part",
+                             "restriction",
+                             "informative_range.*"
                          ),
                          current_level = 0,
                          ...) {
@@ -34,6 +36,19 @@ summary.rROC <- function(object,
             object["max_total"],
             object["global"]
         )))
+        restriction <- object[["max_total"]][["threshold"]]
+        restriction_part <- object[["max_total"]][["part"]]
+        if (restriction_part == "low") {
+            informative_range <- c(-Inf, restriction)
+        } else if (restriction_part == "high") {
+            informative_range <- c(restriction, Inf)
+        } else {
+            informative_range <- c(-Inf, Inf)
+        }
+        single_summary[["restriction"]] <- restriction
+        single_summary[["informative_range.min"]] <- min(informative_range)
+        single_summary[["informative_range.max"]] <- max(informative_range)
+
         keeping_cols <- c()
         if (!all(is.na(relevant_cols_regex))) {
             for (regex_x in c(relevant_cols_regex, "^level_")) {
