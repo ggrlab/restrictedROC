@@ -306,3 +306,17 @@ test_that("rROC without permutation", {
         )
     )
 })
+
+test_that("rROC direction", {
+    library(restrictedROC)
+    data("aSAH", package = "pROC")
+    set.seed(100)
+    res_df <- rROC(
+        aSAH,
+        dependent_vars = "outcome",
+        independent_vars = "ndka",
+        n_permutations = 2,
+        positive_label = "Good",
+        direction = "<"
+    )
+})
