@@ -356,6 +356,7 @@ test_that("rROC vs simple_rROC", {
 
 test_that("rROC too long independent var names", {
     library(restrictedROC)
+    devtools::load_all()
     data("aSAH", package = "pROC")
     set.seed(100)
     ultra_long_feature_name <- paste0(rep("a", 255), collapse = "")

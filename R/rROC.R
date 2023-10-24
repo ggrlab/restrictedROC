@@ -199,16 +199,37 @@ rROC.data.frame <- function(x,
             )
         }
         reslist[[dv]] <- list()
+        iv_i <- 0
         for (iv in independent_vars) {
+            iv_i <- iv_i + 1
             if (verbose) {
-                cat(date(), "    ", dv, iv, "\n")
+                cat(date(), "    ", dv, iv, "(", iv_i, ")", "\n")
             }
-            current_file <- file.path(paste0(save_path, "_partial_directory"), paste0(dv, "_____", gsub("/", ".", iv), ".qs"))
+            file_stump <- paste0(save_path, "_partial_directory")
+            current_file <- file.path(file_stump, paste0(dv, "_____", iv_i, ".qs"))
+            current_file_oldversion <- file.path(file_stump, paste0(dv, "_____", iv, ".qs"))
             if (file.exists(current_file) && load_existing_intermediate) {
+                if (current_file_oldversion) {
+                    warning(
+                        "Using intermediate file with old naming convention. ",
+                        "Please re-run rROC with save_intermediate=TRUE to update ",
+                        "the naming convention."
+                    )
+                    reslist[[dv]][[iv]] <- qs::qread(current_file_oldversion)
+                } else {
+                    tmp <- qs::qread(current_file)
+                    if (length(tmp) != 1) {
+                        stop(
+                            "The loaded file is not a single list. This is deprecated.",
+                            "Each intermediate file should be a single list named with ",
+                            "the independent feature name."
+                        )
+                    }
+                    reslist[[dv]][[names(tmp)]] <- tmp
+                }
                 if (verbose) {
                     cat("    loaded\n")
                 }
-                reslist[[dv]][[iv]] <- qs::qread(current_file)
             } else {
                 reslist[[dv]][[iv]] <- list()
                 df <- tibble::tibble(
@@ -247,7 +268,9 @@ rROC.data.frame <- function(x,
                 reslist[[dv]][[iv]][["permutation"]] <- rroc_permutation
                 if (save_intermediate) {
                     dir.create(paste0(save_path, "_partial_directory"), showWarnings = FALSE, recursive = TRUE)
-                    qs::qsave(reslist[[dv]][[iv]], current_file)
+                    # Note the single brackets around iv, then it is used as LIST
+                    # with the name of the current independent variable (iv)
+                    qs::qsave(reslist[[dv]][iv], current_file)
                     if (verbose) {
                         cat("    Calculated + wrote", current_file, "\n")
                     }
