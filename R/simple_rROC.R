@@ -254,20 +254,23 @@ simple_rROC <- function(response,
     colnames(joined_aucs)[(ncol(joined_aucs) - 1):ncol(joined_aucs)] <- paste0(
         colnames(joined_aucs)[(ncol(joined_aucs) - 1):ncol(joined_aucs)], "_global"
     )
-    if (return_proc) {
-        return(list(
+    if (!return_proc) {
+        reslist <- list(
             "joined_aucs" = joined_aucs,
+            "positive_label" = positive_label
+        )
+    } else {
+        reslist <- list(
+            "joined_aucs" = joined_aucs,
+            "positive_label" = positive_label,
             "pROC_lowpart" = aucs_lowpart[["pROC"]],
             "pROC_highpart" = aucs_highpart[["pROC"]],
-            "pROC_full" = full_roc,
-            "positive_label" = positive_label
-        ))
-    } else {
-        return(list(
-            "joined_aucs" = joined_aucs,
-            "positive_label" = positive_label
-        ))
+            "pROC_full" = full_roc
+        )
     }
+
+    class(reslist) <- c("simple_rROC", class(reslist))
+    return(reslist)
 }
 
 
