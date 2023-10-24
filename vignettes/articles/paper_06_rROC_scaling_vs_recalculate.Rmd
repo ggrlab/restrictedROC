@@ -58,13 +58,15 @@ simdata_melted <- restrictedROC::melt_gendata(simdata)
 colnames(simdata_melted) <- c("predictions", "response")
 simdata_melted$labels <- as.numeric(simdata_melted$response == "Positive")
 simple_df <- simdata_melted
-rroc <- restrictedROC::simple_rROC(
-    response = simple_df[["response"]],
-    predictor = simple_df[["predictions"]],
+rroc <- restrictedROC::rROC(
+    simple_df,
     positive_label = "Positive",
     direction = "<",
     return_proc = TRUE,
-)
+    independent_vars = "predictions",
+    dependent_vars = "response",
+    n_permutations = 0
+)[["response"]][["predictions"]][["permutation"]]
 
 include_part_auc_text <- TRUE
 plot_scale <- 1.5
