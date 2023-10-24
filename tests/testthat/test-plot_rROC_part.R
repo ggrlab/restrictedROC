@@ -8,13 +8,7 @@ test_that("plot_rROC_part", {
         return_proc = TRUE
     )
     pdf("removeme.pdf")
-    # In this here are three warnings:
-    # Warning messages:
-    # 1: In get_all_aucs_fun(full_roc = full_roc, true_pred_df = true_pred_df,  :
-    #   get_all_aucs_norecalculation() does not calculate single ROC curves, therefore cannot return them
-    # 2: In get_all_aucs_fun(full_roc = full_roc, true_pred_df = true_pred_df,  :
-    #   get_all_aucs_norecalculation() does not calculate single ROC curves, therefore cannot return them
-    # 3: In plot_rROC_part(ret_procs) :
+    # In plot_rROC_part(ret_procs) :
     # Threshold
     #   10
     # not found, using the closest instead:
