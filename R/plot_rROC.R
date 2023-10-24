@@ -1,3 +1,64 @@
+# All S3 methods must be exported https://github.com/r-lib/devtools/issues/2293
+
+#' @export
+plot_rROC <- function(rROC_result,
+                      col_rzAUC = "#999999",
+                      part = c("high", "low"),
+                      part_colors = default_part_colors,
+                      split_roc_score = FALSE) {
+    UseMethod("plot_rROC")
+}
+#' @export
+plot_rROC.default <- function(rROC_result, ...) {
+    plot_rROC.rROC(rROC_result, ...)
+}
+#' @export
+plot_rROC.simple_rROC <- function(simple_rROC_result, ...) {
+    plot_rROC_single(
+        simple_rROC_interpret(simple_rROC_result),
+        ...
+    )
+}
+
+#' @export
+plot_rROC.restrictedROC <- function(interpreted_simple_rROC_result, ...) {
+    plot_rROC_single(
+        interpreted_simple_rROC_result,
+        ...
+    )
+}
+
+#' @export
+plot_rROC.rROC <- function(rROC_result, current_level = 0, title = "", ...) {
+    if (all(is.null(rROC_result)) || all(is.na(rROC_result))) {
+        return(NULL)
+    } else if (!"permutation" %in% names(rROC_result)) {
+        current_level <- current_level + 1
+        l_results <- sapply(
+            names(rROC_result), function(x) {
+                plot_rROC.rROC(
+                    rROC_result[[x]],
+                    current_level = current_level,
+                    title = paste0(title, " --- ", x),
+                    ...
+                )
+            },
+            USE.NAMES = TRUE, simplify = FALSE
+        )
+        return(l_results)
+    } else {
+        all_returned_plots <- plot_rROC.restrictedROC(
+            rROC_result[["permutation"]],
+            ...
+        )
+        all_returned_plots_titles <- lapply(all_returned_plots, function(x) {
+            x + ggplot2::ggtitle(title)
+        })
+        return(all_returned_plots_titles)
+    }
+}
+
+
 #' plot ROC including AUC significance
 #'
 #' Plot the complete ROC curve and the corresponding AUCs.
@@ -22,15 +83,14 @@
 #' @return
 #' List of multiple ggplot elements, always "roc",
 #' if split_roc_score=TRUE also a single "rzAUC" plot
-#' @export
-#'
 #' @examples
 #'
 #' data(aSAH, package = "pROC")
-#' single_rROC <- simple_rROC_interpret(simple_rROC(
+#' simple_rROC_res <- simple_rROC(
 #'     response = aSAH$outcome,
 #'     predictor = aSAH$ndka
-#' ))
+#' )
+#' single_rROC <- simple_rROC_interpret(simple_rROC_res)
 #' plot_rROC(
 #'     single_rROC,
 #'     split_roc_score = TRUE
@@ -50,11 +110,11 @@
 #'     part = "low"
 #' )
 #'
-plot_rROC <- function(rROC_result,
-                      col_rzAUC = "#999999",
-                      part = c("high", "low"),
-                      part_colors = default_part_colors,
-                      split_roc_score = FALSE) {
+plot_rROC_single <- function(rROC_result,
+                             col_rzAUC = "#999999",
+                             part = c("high", "low"),
+                             part_colors = default_part_colors,
+                             split_roc_score = FALSE) {
     df <- rROC_result$perf
     roc_part <- plot_ROC(tpr = df[["tpr_global"]], fpr = df[["fpr_global"]])
     if (split_roc_score) {

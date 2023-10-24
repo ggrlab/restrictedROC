@@ -17,6 +17,9 @@ The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/
     e.g. .github/workflows/*, README.md, etc. Infrastructure updates increase
     the patch version.
 
+# 3.3.2.004
+    - `Added`: plot_rROC
+
 # 3.3.2
     - `Fixed`: devtools::check() now passes
 
