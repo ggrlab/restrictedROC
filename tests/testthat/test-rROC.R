@@ -327,7 +327,6 @@ test_that("rROC vs simple_rROC", {
     data("aSAH", package = "pROC")
     set.seed(100)
 
-
     rroc <- restrictedROC::rROC(
         aSAH,
         dependent_vars = "outcome",
@@ -353,4 +352,24 @@ test_that("rROC vs simple_rROC", {
         is.na(rroc_2[["pROC_lowpart"]]),
         is.na(rroc_2[["pROC_highpart"]])
     ), info = "rROC and simple_rROC are almost the same, just nicer formatted")
+})
+
+test_that("rROC too long independent var names", {
+    library(restrictedROC)
+    data("aSAH", package = "pROC")
+    set.seed(100)
+    ultra_long_feature_name <- paste0(rep("a", 255), collapse = "")
+    aSAH[[ultra_long_feature_name]] <- aSAH[["ndka"]]
+    rroc <- restrictedROC::rROC(
+        aSAH,
+        dependent_vars = "outcome",
+        independent_vars = ultra_long_feature_name,
+        positive_label = "Good",
+        direction = "<",
+        return_proc = TRUE,
+        n_permutations = 1,
+        save_intermediate = TRUE,
+        # ".qs" is appended automatically to make clear it was saved with qs::qsave()
+        save_path = paste0("removeme_tests")
+    )
 })
