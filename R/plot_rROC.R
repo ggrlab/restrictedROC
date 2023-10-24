@@ -1,6 +1,45 @@
 # All S3 methods must be exported https://github.com/r-lib/devtools/issues/2293
 
+#' plot ROC including AUC significance
+#'
+#' Plot the complete ROC curve and the corresponding AUCs.
+#'
+#' @inheritParams plot_rROC_single
+#' @param rROC_result
+#' 	rROC result from \code{\link{simple_rROC}}, \code{\link{simple_rROC_interpret}} or \code{\link{rROC}}.
+#'
 #' @export
+#'
+#' @return
+#' List of multiple ggplot elements, always "roc",
+#' if split_roc_score=TRUE also a single "rzAUC" plot
+#' @examples
+#' # See also test-plot_rROC()
+#' data(aSAH, package = "pROC")
+#' simple_rROC_res <- simple_rROC(
+#'     response = aSAH$outcome,
+#'     predictor = aSAH$ndka
+#' )
+#' single_rROC <- simple_rROC_interpret(simple_rROC_res)
+#' plot_rROC(
+#'     single_rROC,
+#'     split_roc_score = TRUE
+#' )
+#' plot_rROC(
+#'     single_rROC,
+#'     split_roc_score = FALSE
+#' )
+#' plot_rROC(
+#'     single_rROC,
+#'     split_roc_score = FALSE,
+#'     part = "high"
+#' )
+#' plot_rROC(
+#'     single_rROC,
+#'     split_roc_score = FALSE,
+#'     part = "low"
+#' )
+#'
 plot_rROC <- function(rROC_result,
                       col_rzAUC = "#999999",
                       part = c("high", "low"),
