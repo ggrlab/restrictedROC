@@ -86,7 +86,7 @@ plot_rROC.rROC <- function(rROC_result, current_level = 0, title = "", ...) {
         )
         return(l_results)
     } else {
-        all_returned_plots <- plot_rROC.restrictedROC(
+        all_returned_plots <- plot_rROC_single(
             rROC_result[["permutation"]],
             ...
         )
