@@ -209,7 +209,7 @@ rROC.data.frame <- function(x,
             current_file <- file.path(file_stump, paste0(dv, "_____", iv_i, ".qs"))
             current_file_oldversion <- file.path(file_stump, paste0(dv, "_____", iv, ".qs"))
             if (file.exists(current_file) && load_existing_intermediate) {
-                if (current_file_oldversion) {
+                if (file.exists(current_file_oldversion)) {
                     warning(
                         "Using intermediate file with old naming convention. ",
                         "Please re-run rROC with save_intermediate=TRUE to update ",
