@@ -78,11 +78,7 @@ plot_distributions_multiple <- function(df_melted, ...) {
 #' @examples
 #' # See e.g. plot_density_ROC_empirical()
 plot_distributions_2 <- function(df,
-                                 colors_pos_neg_both = c(
-                                     "+" = "#008B45FF",
-                                     "+/-" = "#3B4992FF",
-                                     "-" = "#EE0000FF"
-                                 ),
+                                 colors_pos_neg_both = colors_pos_neg_both_default,
                                  name_dist_1 = "Positive",
                                  name_dist_2 = "Negative") {
     # Code hints of dataframe

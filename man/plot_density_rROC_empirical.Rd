@@ -14,7 +14,8 @@ plot_density_rROC_empirical(
   direction = "<",
   part_colors = default_part_colors,
   plot_thresholds = TRUE,
-  plot_thresholds_fpr = TRUE
+  plot_thresholds_fpr = TRUE,
+  plot_n_points = NA
 )
 }
 \arguments{

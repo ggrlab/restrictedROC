@@ -137,7 +137,8 @@ plot_density_rROC_empirical <- function(values_grouped,
                                         direction = "<",
                                         part_colors = default_part_colors,
                                         plot_thresholds = TRUE,
-                                        plot_thresholds_fpr = TRUE) {
+                                        plot_thresholds_fpr = TRUE,
+                                        plot_n_points = NA) {
     threshold <- fpr_global <- NULL # linting
     sim_samples_melted <- melt_gendata(values_grouped)
     if (is.null(single_rROC)) {
@@ -168,6 +169,25 @@ plot_density_rROC_empirical <- function(values_grouped,
         length.out = length.out,
         positive_label = single_rROC$positive_label
     )
+
+    if (!is.na(plot_n_points)) {
+        plotted_density <- geom_jitter_scaling(
+            plotted_density,
+            values_grouped = values_grouped,
+            current_label = single_rROC$positive_label,
+            color = colors_pos_neg_both_default[["+"]],
+            n_points = plot_n_points
+        )
+        plotted_density <- geom_jitter_scaling(
+            plotted_density,
+            values_grouped = values_grouped,
+            current_label = names(values_grouped)[which(
+                names(values_grouped) != single_rROC$positive_label
+            )[1]],
+            color = colors_pos_neg_both_default[["-"]],
+            n_points = plot_n_points
+        )
+    }
 
     max_thresholds <- lapply(
         single_rROC[-which(names(single_rROC) %in% c("performances", "positive_label"))],

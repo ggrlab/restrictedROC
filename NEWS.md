@@ -17,6 +17,9 @@ The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/
     e.g. .github/workflows/*, README.md, etc. Infrastructure updates increase
     the patch version.
 
+# 3.3.2.0009
+    - `Added`: plot_density_rROC_empirical with points now!
+
 # 3.3.2.008
     - `Fixed`: Bug when "current_file_oldversion" has been used
 

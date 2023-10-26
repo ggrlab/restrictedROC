@@ -10,7 +10,7 @@ plot_density_empirical(
   xmax = NULL,
   n_density = 512,
   length.out = 250,
-  colors_pos_neg_both = c(`+` = "#008B45FF", `+/-` = "#3B4992FF", `-` = "#EE0000FF"),
+  colors_pos_neg_both = colors_pos_neg_both_default,
   positive_label = NULL,
   ...
 )

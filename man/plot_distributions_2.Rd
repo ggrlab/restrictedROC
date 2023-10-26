@@ -6,7 +6,7 @@
 \usage{
 plot_distributions_2(
   df,
-  colors_pos_neg_both = c(`+` = "#008B45FF", `+/-` = "#3B4992FF", `-` = "#EE0000FF"),
+  colors_pos_neg_both = colors_pos_neg_both_default,
   name_dist_1 = "Positive",
   name_dist_2 = "Negative"
 )

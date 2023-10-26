@@ -12,7 +12,7 @@ plot_density_ROC(
   length.out = 500,
   xmin = -3,
   xmax = 3,
-  colors_pos_neg_both = c(`+` = "#008B45FF", `+/-` = "#3B4992FF", `-` = "#EE0000FF")
+  colors_pos_neg_both = colors_pos_neg_both_default
 )
 }
 \arguments{
