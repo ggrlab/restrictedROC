@@ -28,6 +28,8 @@ repos:
         -    tibble
         -    tidyr
         -    qs
+        -    data.table
+        -    devtools
     # # codemeta must be above use-tidy-description when both are used
     # # -   id: codemeta-description-updated
     # -   id: use-tidy-description
@@ -105,6 +107,8 @@ repos:
       -    tibble
       -    tidyr
       -    qs
+      -    data.table
+      -    devtools
       # entry: Rscript -e 'if(!require(devtools)){install.packages("devtools")}; devtools::check()'
       entry: Rscript -e 'devtools::check()'
       language: r
