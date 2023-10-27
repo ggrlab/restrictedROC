@@ -65,15 +65,55 @@ The most convenient usage of restrictedROC is via the
 ``` r
 # library(restrictedROC)
 set.seed(412)
-res_rroc <- restrictedROC::simple_rROC_permutation(
-    response = biodata$outcome,
-    predictor = biodata$biomarker,
+res_rroc <- restrictedROC::rROC(
+    x = biodata$biomarker,
+    y = biodata$outcome,
     positive_label = "Good",
     n_permutations = 100 # increase that in real data!
 )
+#> Fri Oct 27 13:23:12 2023      y x ( 1 )
 ```
 
-`res_rroc$permutation_pval` refers to the permutation p-values of:
+`res_rroc` is a nested list where the first level contains all dependent
+variables (Here only `y`). The second level contains the results for
+each independent variable (here only `x`).
+
+Each dependent + independent variable combination has the following
+results:
+
+  - `plots`: Plots, only if enabled, otherwise NA
+  - `permutation`: A `restrictedROC` class element containing each
+    permutation result
+
+<!-- end list -->
+
+``` r
+single_result <- res_rroc[["y"]][["x"]][["permutation"]]
+```
+
+Given a dataframe, you can use arbitrary dependent and independent
+variables (within the dataframe) and calculate the restricted ROC curve
+for each combination. Additionally, the list names will be set to the
+respective dependent (first level) and independent (second level)
+variable names.
+
+``` r
+set.seed(412)
+res_rroc <- restrictedROC::rROC(
+    x = biodata,
+    dependent_vars = c("outcome"),
+    independent_vars = c("biomarker"),
+    positive_label = "Good",
+    n_permutations = 100 # increase that in real data!
+)
+#> Fri Oct 27 13:23:15 2023      outcome biomarker ( 1 )
+```
+
+``` r
+single_result <- res_rroc[["outcome"]][["biomarker"]][["permutation"]]
+```
+
+`single_result$permutation_pval` refers to the permutation p-values of:
 
   - `pval.twoside.global`: The global AUC when all samples are used.
     This is the usually known AUC with a calculated permutation p-value.
@@ -83,9 +123,9 @@ res_rroc <- restrictedROC::simple_rROC_permutation(
 <!-- end list -->
 
 ``` r
-print(round(res_rroc$permutation_pval, 3))
+print(round(single_result$permutation_pval, 3))
 #>    pval.twoside.max pval.twoside.global      n_permutations 
-#>               0.010               0.099             100.000
+#>               0.010               0.069             100.000
 ```
 
 In this particular example we see that at a significance level of 0.05,
@@ -93,12 +133,12 @@ the global AUC is insignificant, but the maximal AUC is significant.
 This tells that the data should be restricted and has a **limited
 informative range**.
 
-`res_rroc$global` refers to the AUC, its variance under H0, the
+`single_result$global` refers to the AUC, its variance under H0, the
 standardized AUC, and its (asymptotic, not permutation\!) p-value when
 using all samples without restriction.
 
 ``` r
-print(res_rroc$global)
+print(single_result$global)
 #>      auc auc_var_H0   rzAUC pval_asym
 #> 1 0.6016     0.6016 1.75103 0.0799407
 ```
@@ -106,13 +146,13 @@ print(res_rroc$global)
 We see that the AUC is 0.6016, with a p-value of 0.08. This is not
 significant at a significance level of 0.05.
 
-`res_rroc$max_total` refers to the AUC, its variance under H0, the
+`single_result$max_total` refers to the AUC, its variance under H0, the
 standardized AUC, its (asymptotic, not permutation\!) p-value, the
 threshold(=restriction value) and which part of the data is **kept** and
 therefore **within the informative range**.
 
 ``` r
-print(res_rroc$max_total)
+print(single_result$max_total)
 #>         auc  auc_var_H0    rzAUC    pval_asym threshold part
 #> 1 0.9089069 0.007759784 4.641941 3.451517e-06  9.377944 high
 ```
@@ -189,7 +229,7 @@ print(
 #> Area under the curve: 0.6016
 #> 
 #> attr(,"class")
-#> [1] "list"          "restrictedROC"
+#> [1] "restrictedROC" "list"
 dev.off()
 #> png 
 #>   2
@@ -301,6 +341,8 @@ usethis::use_package("tidyr")
 usethis::use_package("statmod")
 usethis::use_package("future.apply")
 usethis::use_package("readxl", type = "Suggests")
+usethis::use_package("h2o", type = "Suggests")
+usethis::use_package("data.table", type = "Suggests")
 precommit::snippet_generate("additional-deps-roxygenize")
 ```
 
