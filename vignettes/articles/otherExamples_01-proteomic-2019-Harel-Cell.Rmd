@@ -31,40 +31,12 @@ library(restrictedROC)
 ```{r download data}
 library(dplyr)
 dir.create("intermediate_data/2019-harel", recursive = TRUE)
-download.file(
-    url = "https://ars.els-cdn.com/content/image/1-s2.0-S0092867419309006-mmc1.xlsx",
-    destfile = "intermediate_data/2019-harel/1-s2.0-S0092867419309006-mmc1.xlsx",
-    method = "wget"
-)
-harel_pheno <- readxl::read_excel("intermediate_data/2019-harel/1-s2.0-S0092867419309006-mmc1.xlsx", sheet = "S1A", skip = 1, na = "NaN")
-# Metadata contains spaces in the sample names
-# the actual data always "_" instead of spaces
-harel_pheno[["Sample ID"]] <- gsub(" ", "_", harel_pheno[["Sample ID"]])
-
-
-# Patients were categorized into responders (complete or partial regression) and
-# non-responders (progressive disease) according to RECIST v1.0 guidelines
-# "Response" contains "PD", "PR", "CR" or "SD" (stable disease)
-harel_pheno <- harel_pheno |>
-    # Filter out stable disease
-    dplyr::filter(Response %in% c("PD", "PR", "CR")) |>
-    # Add a column with the response as defined in the paper
-    dplyr::mutate(response_paper = ifelse(Response == "PD", "non-responder", "responder"))
-outcome_noSD <- harel_pheno[["response_paper"]]
-names(outcome_noSD) <- harel_pheno[["Sample ID"]]
+harel_pheno <- dataMelanoma::harel2019_pheno
+outcome_noSD <- dataMelanoma::harel2019_responder_noSD
 ```
 
 ```{r, Read S1C(TIL) and S1D(aPD1), filtered for 70% valid values and gene names median-merged}
-data_70 <- list(
-    aPD1 = readxl::read_excel("intermediate_data/harel2019-s1.xlsx", sheet = "S1D", skip = 1, na = "NaN"),
-    til = readxl::read_excel("intermediate_data/harel2019-s1.xlsx", sheet = "S1C", skip = 1, na = "NaN")
-)
-data_mats <- lapply(data_70, function(x) {
-    datapart_x_samples <- as.matrix(x[, grepl("^(PD1_)|(TIL_)", colnames(x))])
-    genename_column <- grepl("Gene name", colnames(x))
-    rownames(datapart_x_samples) <- x[genename_column][[1]]
-    return(datapart_x_samples)
-})
+data_mats <- dataMelanoma::harel2019_protmats
 
 lapply(data_mats, colnames)
 lapply(data_mats, dim)
@@ -179,11 +151,11 @@ rroc_res <- sapply(
         x <- data_mats[[x_name]]
         x_noNArownames <- x[!is.na(rownames(x)), ]
         restrictedROC::rROC(
-            x = t(x_noNArownames),
+            x = t(x_noNArownames)[, 1:3],
             y = list("responder" = outcome_noSD[colnames(x)]),
             n_permutations = n_permutations,
             positive_label = "responder",
-            save_path = file.path(int_dir, paste0("harel_nPERM", n_permutations, "_", x_name)),
+            save_path = file.path(int_dir, paste0("harel_nPERM_v2", n_permutations, "_", x_name, ".qs")),
             parallel_permutations = TRUE,
             verbose = TRUE
         )
@@ -194,9 +166,15 @@ rroc_res <- sapply(
 # 10k permutations took 14s for one feature.
 # There are 4620 (aPD1) and 4588 (TIL) features
 # Therefore that takes 35h.
-rroc_res <- sapply(names(data_mats), function(x_name) {
-    qs::qread(file.path(int_dir, paste0("harel_nPERM", n_permutations, "_", x_name, ".qrds")))
+rroc_res_tmp <- sapply(names(data_mats), function(x_name) {
+    qs::qread(file.path(int_dir, paste0("harel_nPERM", n_permutations, "_", x_name, ".qs")))
 }, USE.NAMES = TRUE, simplify = FALSE)
+rroc_res <- lapply(rroc_res_tmp, function(x) {
+    summarized <- restrictedROC:::summary.rROC(x)
+    summarized[["qval.twoside.max"]] <- p.adjust(summarized[["pval.twoside.max"]], method = "BH")
+    summarized[["qval.twoside.global"]] <- p.adjust(summarized[["pval.twoside.global"]], method = "BH")
+    summarized
+})
 ```
 
 
@@ -204,8 +182,8 @@ rroc_res <- sapply(names(data_mats), function(x_name) {
 library(ggplot2)
 pdf("intermediate_data/2019-harel/global_max_pval.pdf")
 for (name_x in names(rroc_res)) {
-    p1 <- ggplot(rroc_res[[name_x]], aes(x = global_p.value, y = max_p.value))
-    p2 <- ggplot(rroc_res[[name_x]], aes(x = global_q.value, y = max_q.value))
+    p1 <- ggplot(rroc_res[[name_x]], aes(x = pval.twoside.global, y = pval.twoside.max))
+    p2 <- ggplot(rroc_res[[name_x]], aes(x = qval.twoside.global, y = qval.twoside.max))
     for (plot_x in list(p1, p2)) {
         print(
             plot_x +
@@ -219,9 +197,9 @@ for (name_x in names(rroc_res)) {
                 ggrepel::geom_text_repel(
                     data = subset(
                         rroc_res[[name_x]],
-                        global_q.value > 0.05 & max_q.value < 0.05
+                        qval.twoside.global > 0.05 & qval.twoside.max < 0.05
                     ),
-                    aes(label = feature),
+                    aes(label = level_2),
                     size = 1.5, col = "darkgreen",
                     min.segment.length = 0,
                     max.overlaps = 5
@@ -259,8 +237,17 @@ for (feature_outcome in list(
         p1
     ) + patchwork::wrap_elements(
         gridExtra::tableGrob(
-            rroc_res[[outcome_x]] |> dplyr::filter(feature == feature_x),
-            theme = gridExtra::ttheme_default(base_size = 8)
+            rroc_res[[outcome_x]] |>
+                dplyr::filter(level_2 == feature_x) |>
+                dplyr::select(1:9),
+            theme = gridExtra::ttheme_default(base_size = 5)
+        )
+    ) + patchwork::wrap_elements(
+        gridExtra::tableGrob(
+            rroc_res[[outcome_x]] |>
+                dplyr::filter(level_2 == feature_x) |>
+                dplyr::select(9:ncol(rroc_res[[outcome_x]])),
+            theme = gridExtra::ttheme_default(base_size = 5)
         )
     ) + patchwork::wrap_elements(
         gridExtra::tableGrob(
@@ -268,7 +255,7 @@ for (feature_outcome in list(
             theme = gridExtra::ttheme_default(base_size = 8)
         )
     ) +
-        patchwork::plot_layout(nrow = 3, height = c(.8, .1, .1)))
+        patchwork::plot_layout(ncol = 1, height = c(.8, .06, .06, .06)))
 }
 dev.off()
 ```
