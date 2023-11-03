@@ -370,7 +370,7 @@ test_that("rROC too long independent var names", {
         return_proc = TRUE,
         n_permutations = 1,
         save_intermediate = TRUE,
-        # ".qs" is appended automatically to make clear it was saved with qs::qsave()
-        save_path = paste0("removeme_tests")
+        # Results are saved with qs::qsave()
+        save_path = paste0("removeme_tests.qs")
     )
 })

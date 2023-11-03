@@ -17,6 +17,9 @@ The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/
     e.g. .github/workflows/*, README.md, etc. Infrastructure updates increase
     the patch version.
 
+# 3.3.2.0010
+    - `Changed`: rROC save_path is now the actual savepath, no ".qs" is added anymore
+  
 # 3.3.2.0009
     - `Added`: plot_density_rROC_empirical with points now!
 
