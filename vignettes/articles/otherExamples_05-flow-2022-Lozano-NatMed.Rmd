@@ -19,25 +19,7 @@ library(restrictedROC)
 ```{r data}
 library(dplyr)
 dir.create("intermediate_data")
-# Data downloaded manually from
-
-#  - https://anlab.stanford.edu/irae
-#  - https://static-content.springer.com/esm/art%3A10.1038%2Fs41591-021-01623-z/MediaObjects/41591_2021_1623_MOESM3_ESM.xlsx
-pheno <- readxl::read_excel(
-    "intermediate_data/2022-Lozano/41591_2021_1623_MOESM3_ESM.xlsx",
-    sheet = "Table S1", na = "NA", skip = 3
-)
-pheno_discovery <- readxl::read_excel(
-    "intermediate_data/2022-Lozano/41591_2021_1623_MOESM3_ESM.xlsx",
-    sheet = "Table S3", na = "NA", skip = 3
-)
-cytof <- readxl::read_excel(
-    "intermediate_data/2022-Lozano/CyTOF_overview.xlsx",
-    skip = 3
-)
-colnames(cytof)[-1] <- paste0("cytof_", colnames(cytof)[-1])
-data_joint <- dplyr::right_join(pheno_discovery, cytof, by = c("Patient ID" = "PID")) |>
-    dplyr::filter(!is.na(`Severe irAE status (1=Yes, 0=No)d`))
+data_joint <- dataMelanoma::lozano2022_pheno_cytof
 table(data_joint[["Severe irAE status (1=Yes, 0=No)d"]])
 ```
 
@@ -59,48 +41,32 @@ dev.off()
 ```
 
 ```{r, permutation tests}
-cytof_permutation_rroc <- sapply(cytof_features, function(x) {
-    print(x)
-    data_single_feature <- data_joint[[x]]
-    restrictedROC::simple_rROC_permutation(
-        response = data_joint[["Severe irAE status (1=Yes, 0=No)d"]],
-        predictor = data_single_feature,
-        n_permutations = 1000,
-        positive_label = 1,
-        direction = "<",
-        parallel_permutations = FALSE
-    )
-}, USE.NAMES = TRUE, simplify = FALSE)
+cytof_permutation_rroc <- restrictedROC::rROC(
+    data_joint,
+    dependent_vars = "Severe irAE status (1=Yes, 0=No)d",
+    independent_vars = cytof_features,
+    n_permutations = 1000,
+    positive_label = 1,
+    direction = "<",
+    parallel_permutations = FALSE
+)
 qs::qsave(cytof_permutation_rroc, file = "intermediate_data/2022-Lozano/cytof_permutation_rroc.RData")
+cytof_permutation_rroc <- qs::qread("intermediate_data/2022-Lozano/cytof_permutation_rroc.RData")
 ```
 
 ```{r, Re-plot Fig 2c}
 library(ggplot2)
-permpvals <- do.call(
-    rbind,
-    lapply(cytof_permutation_rroc, function(x) x[["permutation_pval"]])
-) |>
-    as.data.frame() |>
-    tibble::rownames_to_column("feature") |>
-    dplyr::mutate(
-        "qval.twoside.max" = p.adjust(p = pval.twoside.max, method = "BH"),
-        "qval.twoside.global" = p.adjust(p = pval.twoside.global, method = "BH"),
-        "neg.log10.qval.max" = -log10(qval.twoside.max),
-        "neg.log10.qval.global" = -log10(qval.twoside.global)
-    )
-aucs <- do.call(
-    rbind,
-    lapply(cytof_permutation_rroc, function(x) c("auc.global" = x[["global"]][["auc"]], "auc.max" = x[["max_total"]][["auc"]]))
-) |> tibble::as_tibble()
+permpvals <- restrictedROC:::summary.rROC(cytof_permutation_rroc)
+permpvals[["qval.twoside.max"]] <- p.adjust(permpvals[["pval.twoside.max"]], method = "BH")
+permpvals[["qval.twoside.global"]] <- p.adjust(permpvals[["pval.twoside.global"]], method = "BH")
 
-permpvals_aucs <- tibble::as_tibble(cbind(permpvals, aucs))
-pdf("2022-Lozano-NatMed_volcano.pdf")
+pdf("intermediate_data/2022-Lozano/2022-Lozano-NatMed_volcano.pdf")
 print(
-    ggplot(permpvals_aucs, aes(x = auc.global, y = neg.log10.qval.global)) +
+    ggplot(permpvals, aes(x = global.auc, y = -log10(qval.twoside.global))) +
         geom_point() +
         geom_hline(yintercept = -log10(0.05), color = "red") +
         geom_vline(xintercept = 0.5, color = "red") +
-        geom_text(aes(label = feature), size = .75, col = "darkgreen") +
+        geom_text(aes(label = level_2), size = .75, col = "darkgreen") +
         theme_bw() +
         theme(
             axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
@@ -109,11 +75,11 @@ print(
         ggtitle("Global AUC")
 )
 print(
-    ggplot(permpvals_aucs, aes(x = auc.max, y = neg.log10.qval.max)) +
+    ggplot(permpvals, aes(x = max_total.auc, y = -log10(qval.twoside.max))) +
         geom_point() +
         geom_hline(yintercept = -log10(0.05), color = "red") +
         geom_vline(xintercept = 0.5, color = "red") +
-        geom_text(aes(label = feature), size = .75, col = "darkgreen") +
+        geom_text(aes(label = level_2), size = .75, col = "darkgreen") +
         theme_bw() +
         theme(
             axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
@@ -124,15 +90,26 @@ print(
 dev.off()
 
 
-pdf("2022-Lozano-NatMed_maxVSglobal.pdf")
+pdf("intermediate_data/2022-Lozano/2022-Lozano-NatMed_maxVSglobal.pdf")
 print(
-    ggplot(permpvals_aucs, aes(x=qval.twoside.max, y=qval.twoside.global)) + 
+    ggplot(permpvals, aes(x = qval.twoside.global, y = qval.twoside.max)) +
         geom_point() +
         geom_hline(yintercept = 0.05, color = "red") +
         geom_vline(xintercept = 0.05, color = "red") +
-        scale_x_log10() + scale_y_log10()+ 
-        geom_text(aes(label = feature), size = 1.5, col = "darkgreen") +
-        theme_bw() +
+        scale_x_log10() +
+        scale_y_log10() +
+        # label feature with q.value < 0.05
+        ggrepel::geom_text_repel(
+            data = subset(
+                permpvals,
+                qval.twoside.global > 0.05 & qval.twoside.max < 0.05
+            ),
+            aes(label = level_2),
+            size = 1.5, col = "darkgreen",
+            min.segment.length = 0,
+            max.overlaps = 5
+        ) +
+        ggpubr::theme_pubr() +
         theme(
             axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
             legend.position = "none"
