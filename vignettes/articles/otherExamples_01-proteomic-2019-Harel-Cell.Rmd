@@ -168,25 +168,28 @@ dev.off()
 ```
 
 ```{r, Restriction}
-n_permutations <- 50000
-source("vignettes/articles/utils.R")
+n_permutations <- 10000
 int_dir <- "intermediate_data/2019-harel/rroc_intermediate"
 dir.create(int_dir, recursive = TRUE)
 library(future)
 plan(multisession)
-rroc_res <- sapply(names(data_mats), function(x_name) {
-    x <- data_mats[[x_name]]
-    x_noNArownames <- x[!is.na(rownames(x)), ]
-    rroc_permutation_many_features(
-        x = x_noNArownames,
-        response = outcome_noSD[colnames(x)],
-        save_intermediate_file = file.path(int_dir, paste0("harel_nPERM", n_permutations, "_", x_name, ".qrds")),
-        n_permutations = n_permutations,
-        positive_label = "responder",
-        parallel_permutations = TRUE,
-        verbose = TRUE
-    )
-}, USE.NAMES = TRUE, simplify = FALSE)
+rroc_res <- sapply(
+    names(data_mats),
+    function(x_name) {
+        x <- data_mats[[x_name]]
+        x_noNArownames <- x[!is.na(rownames(x)), ]
+        restrictedROC::rROC(
+            x = t(x_noNArownames),
+            y = list("responder" = outcome_noSD[colnames(x)]),
+            n_permutations = n_permutations,
+            positive_label = "responder",
+            save_path = file.path(int_dir, paste0("harel_nPERM", n_permutations, "_", x_name)),
+            parallel_permutations = TRUE,
+            verbose = TRUE
+        )
+    },
+    USE.NAMES = TRUE, simplify = FALSE
+)
 
 # 10k permutations took 14s for one feature.
 # There are 4620 (aPD1) and 4588 (TIL) features
