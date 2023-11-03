@@ -17,224 +17,201 @@ options(warn = 1)
 library(restrictedROC)
 ```
 ```{r data}
-# sudo apt install libgsl-dev   # DirichletMultinomial needs this
-pacman::p_install("DirichletMultinomial", force = FALSE)
-pacman::p_install("curatedMetagenomicData", force = FALSE)
+pacman::p_install("BiocManager", force = FALSE)
+pacman::p_install("mia", force = FALSE)
 
-pacman::p_load(dplyr)
-curatedMetagenomicData::sampleMetadata |>
-    dplyr::filter(grepl("melanoma", disease, ignore.case = TRUE)) |>
-    pull(study_name) |>
-    unique()
-# "FrankelAE_2017"       "GopalakrishnanV_2018" "LeeKA_2022"
-# "MatsonV_2018"         "PetersBA_2019"        "WindTT_2020"
+lee_tse <- dataMelanoma::lee2022_treesummarizedexperiment
+data_lee <- t(dataMelanoma::lee2022_relative_abundance_preprocessed)
+pheno_lee <- dataMelanoma::lee2022_pheno_curated
+rownames(data_lee) == pheno_lee$subject_id
 
-melanoma_studies_lee <-
-    tibble::as_tibble(sampleMetadata) |>
-    dplyr::filter(grepl("melanoma", disease, ignore.case = TRUE)) |>
-    # We excluded any samples taken
-    # [EXCLUDED:] after the start of ICI therapy
-    # Not in metadata
-    # [EXCLUDED:] nonmetagenomic samples
-    # ??
-    # [EXCLUDED:] nonfecal samples
-    dplyr::filter(body_site == "stool") |>
-    # [EXCLUDED:] samples with low sequencing depth(<1 million reads)
-    dplyr::filter(number_reads > 1e6)
+pheno_lee_pfs <- pheno_lee[!is.na(pheno_lee$PFS12), ]
+data_lee_pfs <- data_lee[pheno_lee_pfs$subject_id, ]
 
-data_lee <- melanoma_studies_lee |> curatedMetagenomicData::returnSamples(dataType = "relative_abundance")
-# colnames(melanoma_studies_lee)
-# melanoma_studies_lee$days_from_first_collection
-# melanoma_studies_lee$visit_number
-# melanoma_studies_lee |> writexl::write_xlsx("melanoma_studies_lee.xlsx")
-
-SummarizedExperiment::colData(data_lee) |>
-    tibble::as_tibble() |>
-    select(study_name, location) |>
-    table(useNA = "always")
-SummarizedExperiment::colData(data_lee) |>
-    tibble::as_tibble() |>
-    select(study_name, subcohort) |>
-    table(useNA = "always")
-
-sample_subcohort_info <- SummarizedExperiment::colData(data_lee) |>
-    tibble::as_tibble() |>
-    select(study_name, subcohort, location)
-sample_subcohort_info[["lee_subcohort"]] <- NA_character_
-for (sample_i in 1:nrow(sample_subcohort_info)) {
-    current <- sample_subcohort_info[sample_i, ]
-    if ((is.na(current["subcohort"]) && is.na(current["location"])) || current["study_name"] == "PetersBA_2019") {
-        sample_subcohort_info[sample_i, ][["lee_subcohort"]] <- current[["study_name"]]
-    } else if (current["study_name"] == "LeeKA_2022") {
-        if (!is.na(current["location"])) {
-            sample_subcohort_info[sample_i, ][["lee_subcohort"]] <- current[["location"]]
-        } else {
-            sample_subcohort_info[sample_i, ][["lee_subcohort"]] <- current[["subcohort"]]
-        }
-    } else {
-        print(current)
-        stop("I do not know the current sample's subcohort.")
-    }
-}
-data_lee[["lee_subcohort"]] <- sample_subcohort_info[["lee_subcohort"]]
-
-print(table(
-    SummarizedExperiment::colData(data_lee)[["lee_subcohort"]],
-    factor(SummarizedExperiment::colData(data_lee)[["ORR"]], levels = c("yes", "no")),
-    useNA = "always"
-))
-print(table(
-    SummarizedExperiment::colData(data_lee)[["lee_subcohort"]],
-    factor(SummarizedExperiment::colData(data_lee)[["PFS12"]], levels = c("yes", "no")),
-    useNA = "always"
-))
-print(apply(table(
-    SummarizedExperiment::colData(data_lee)[["lee_subcohort"]],
-    factor(SummarizedExperiment::colData(data_lee)[["PFS12"]], levels = c("yes", "no")),
-    useNA = "always"
-), 2, sum))
-SummarizedExperiment::colData(data_lee) |>
-    tibble::as_tibble() |>
-    select(study_name, subcohort, location) |>
-    print(n = 1000)
-
-# data_lee[["subcohort_lee"]] <- SummarizedExperiment::colData(data_lee)[["subcohort"]]
-# data_relab <- SummarizedExperiment::assay(data_lee) |>
-#     tibble::as_tibble() |>
-#     tibble::rownames_to_column()
-# data_relab[["rowname"]] <- SummarizedExperiment::rownames(data_lee)
-
-
-
-# pheno_orr <- melanoma_studies_lee |>
-#     dplyr::filter(!is.na(ORR))
-
-# pheno_orr |>
-#     select(subcohort, ORR) |>
-#     table(useNA = "always")
-# pheno_noORR <- melanoma_studies_lee |>
-#     dplyr::filter(is.na(ORR))
-# pheno_noORR
-```
-```{r, helper functions}
-#' @param x A matrix of features, rows = features, cols=samples
-#'
-#' @param response A vector of responses, length = samples
-#' @param save_intermediate_file A file to save intermediate results to
-#' @param ...
-#' Further parameters to pass to \code{\link{restrictedROC::simple_rROC_permutation}}
-#'
-rroc_permutation_many_features <- function(x,
-                                           response,
-                                           save_intermediate_file = NA,
-                                           verbose = FALSE,
-                                           ...) {
-    if (ncol(x) != length(response)) {
-        stop("Number of columns in x must equal length of response")
-    }
-
-    tmp_reslist <- list()
-    for (feature in rownames(x)) {
-        cat("Feature: ", feature, "\n")
-        tmp_reslist[[feature]] <- restrictedROC::simple_rROC_permutation(
-            response = response,
-            predictor = x[feature, ],
-            ...
-        )
-    }
-    tmp_reslist_formatted <- tibble::as_tibble(do.call(rbind, lapply(
-        tmp_reslist, function(x) {
-            return(c(
-                "max_neglog_p.value" = -log10(x$permutation_pval[["pval.twoside.max"]]),
-                "global_neglog_p.value" = -log10(x$permutation_pval[["pval.twoside.global"]]),
-                "max_p.value" = (x$permutation_pval[["pval.twoside.max"]]),
-                "global_p.value" = (x$permutation_pval[["pval.twoside.global"]]),
-                "avg.FC" = x[["avg.FC"]]
-            ))
-        }
-    )))
-    tmp_reslist_formatted[["max_q.value"]] <- p.adjust(tmp_reslist_formatted[["max_p.value"]], method = "BH")
-    tmp_reslist_formatted[["global_q.value"]] <- p.adjust(tmp_reslist_formatted[["global_p.value"]], method = "BH")
-    tmp_reslist_formatted[["feature"]] <- names(tmp_reslist)
-    if (!is.na(save_intermediate_file)) {
-        qs::qsave(tmp_reslist_formatted, file = save_intermediate_file)
-        cat("\nSaved ", save_intermediate_file, "\n")
-    }
-}
-```
-
-```{r, Fig2 - PFS12 univariate analysis (Fig 3d)}
-# qs::qsavem(data_lee, sample_subcohort_info, melanoma_studies_lee, rroc_permutation_many_features, file = "intermediate_data/2022-lee/dev-data_lee.rds")
-outdir <- "intermediate_data/2022-lee"
-dir.create(outdir, showWarnings = FALSE, recursive = TRUE)
-
-data_pfs <- data_lee[, !is.na(SummarizedExperiment::colData(data_lee)[["PFS12"]])]
-table_lsubcohort_pfs <- table(
-    SummarizedExperiment::colData(data_lee)[["lee_subcohort"]],
-    factor(SummarizedExperiment::colData(data_lee)[["PFS12"]], levels = c("yes", "no"))
-)
+outdir_base <- "intermediate_data/2022-lee"
 library(future)
 plan(multisession)
-for (n_permutations in c(1e3, 25e3, 1e5)) {
-    for (subcohort_XX in c("PRIMM-NL", "PRIMM-UK")) {
-        cat("\n\nn_permutations: ", n_permutations, "- subcohort: ", subcohort_XX, "\n")
-        samples_boolean <- SummarizedExperiment::colData(data_pfs)[["lee_subcohort"]] == subcohort_XX
-        pheno_pfs_part <- SummarizedExperiment::colData(data_pfs)[samples_boolean, ]
-        data_pfs_part <- data_pfs[, samples_boolean]
-        rroc_permutation_many_features(
-            x = SummarizedExperiment::assay(data_pfs_part)[1:3, ],
-            response = pheno_pfs_part[["PFS12"]],
-            save_intermediate_file = file.path(outdir, paste0(
-                "lee2022_pfs_rroc_nperm.", n_permutations,
-                "_SUB.", subcohort_XX, ".qrds"
-            )),
-            n_permutations = n_permutations,
-            positive_label = "yes",
-            parallel_permutations = TRUE,
-            verbose = TRUE
-        )
+for (n_permutations in c(10e3, 25e3, 50e3)) {
+    all_taxa_results <- list()
+    for (taxonomy in c(mia::taxonomyRanks(lee_tse), "paper_species_preprocessed")) {
+        if (taxonomy == "paper_species_preprocessed") {
+            x <- data_lee_pfs
+        } else {
+            x <- SummarizedExperiment::assay(mia::agglomerateByRank(lee_tse, rank = taxonomy))
+            rownames(x)[is.na(rownames(x)) | rownames(x) == "NA"] <- paste(
+                taxonomy,
+                rownames(x)[is.na(rownames(x)) | rownames(x) == "NA"],
+                sep = "_"
+            )
+            x <- t(x[, pheno_lee_pfs[["subject_id"]]])
+        }
+        outdir <- file.path(outdir_base, "pfs12", taxonomy)
+        outfile <- file.path(outdir, paste0("rroc_", n_permutations))
+        saved_qs_file <- paste0(outfile, ".qs")
+        if (file.exists(saved_qs_file)) {
+            all_taxa_results[[taxonomy]] <- qs::qread(saved_qs_file)
+        } else {
+            all_taxa_results[[taxonomy]] <- restrictedROC::rROC(
+                x = x,
+                y = pheno_lee_pfs["PFS12"],
+                n_permutations = n_permutations,
+                parallel_permutations = TRUE,
+                positive_label = "yes",
+                save_intermediate = TRUE,
+                # ".qs" is appended automatically to make clear it was saved with qs::qsave()
+                save_path = outfile
+            )
+        }
+        print(summary(all_taxa_results[[taxonomy]]) |> dplyr::arrange(pval.twoside.max))
     }
 }
 
-read_lee <- qs::qread("intermediate_data/lee2022_pfs_rroc_1e+05.rds")
+
+all_taxa_results_summary <- lapply(all_taxa_results, summary)
+lapply(all_taxa_results_summary, function(x) {
+    x |>
+        dplyr::arrange(pval.twoside.max) |>
+        head()
+})
+bound_taxas <- dplyr::bind_rows(
+    all_taxa_results_summary[-which(names(all_taxa_results_summary) == "paper_species_preprocessed")],
+    .id = "taxonomy"
+)
+bound_taxas[["qval.twoside.max"]] <- p.adjust(bound_taxas[["pval.twoside.max"]], method = "BH")
+bound_taxas[["qval.twoside.global"]] <- p.adjust(bound_taxas[["pval.twoside.global"]], method = "BH")
+
+
+only_species <- all_taxa_results_summary[["paper_species_preprocessed"]]
+only_species[["qval.twoside.max"]] <- p.adjust(only_species[["pval.twoside.max"]], method = "BH")
+only_species[["qval.twoside.global"]] <- p.adjust(only_species[["pval.twoside.global"]], method = "BH")
+# rroc_lee <- qs::qread(file.path(outdir, "rroc_pfs12_v2_10000.qs"))
+# s_lee <- summary(rroc_lee)
+# s_lee[["qval.twoside.max"]] <- p.adjust(s_lee[["pval.twoside.max"]], method = "BH")
+# s_lee[["qval.twoside.global"]] <- p.adjust(s_lee[["pval.twoside.global"]], method = "BH")
+
+# s_lee |>
+#     dplyr::arrange(qval.twoside.max) |>
+#     dplyr::select(level_1, level_2, qval.twoside.max, qval.twoside.global)
+# lee_significant_restricted <- s_lee |>
+#     dplyr::filter(qval.twoside.max < 0.05)
+# lee_significant_restricted_additional <- s_lee |>
+#     dplyr::filter(qval.twoside.max < 0.05, qval.twoside.global > .05) |>
+#     dplyr::pull(level_2)
 ```
 
-```{r leave-one-out loop}
-wrapper <- function(
-    summarized_experiment,
-    boolean_train,
-    boolean_test) {
-    if (length(boolean_train) != length(boolean_test)) {
-        stop("boolean_train and boolean_test must be the same length")
-    }
-    if (length(booleant_train) != ncol(summarized_experiment)) {
-        stop("boolean_train must be the same length as the number of columns in summarized_experiment")
-    }
-}
 
-for (data_x in list(data_pfs)) {
-    for (subcohort_XX in rownames(table_lsubcohort_pfs)) {
-        cat("\n\nsubcohort: ", subcohort_XX, "\n")
-        samples_boolean_test <- SummarizedExperiment::colData(data_x)[["lee_subcohort"]] != subcohort_XX
-        samples_boolean_train <- SummarizedExperiment::colData(data_x)[["lee_subcohort"]] == subcohort_XX
-
-        stop()
-        pheno_pfs_part <- SummarizedExperiment::colData(data_x)[samples_boolean, ]
-        data_x_part <- data_x[, samples_boolean]
-        rroc_permutation_many_features(
-            x = SummarizedExperiment::assay(data_x_part)[1:3, ],
-            response = pheno_pfs_part[["PFS12"]],
-            save_intermediate_file = file.path(outdir, paste0(
-                "dev-lee2022_pfs_rroc_nperm.", n_permutations,
-                "_SUB.", subcohort_XX, ".qrds"
-            )),
-            n_permutations = n_permutations,
-            positive_label = "yes",
-            parallel_permutations = TRUE,
-            verbose = TRUE
+```{r, plots}
+bound_taxas |>
+    dplyr::arrange(qval.twoside.max) |>
+    dplyr::select(taxonomy, level_2, qval.twoside.max, qval.twoside.global)
+only_species |>
+    dplyr::arrange(qval.twoside.max) |>
+    dplyr::select(level_2, qval.twoside.max, qval.twoside.global)
+library(ggplot2)
+pval_cutoff <- .1
+pdf("removeme.pdf", width = 12, height = 10)
+print(
+    ggplot(bound_taxas, aes(x = pval.twoside.max, y = pval.twoside.global, col = taxonomy)) +
+        geom_point() +
+        geom_vline(xintercept = pval_cutoff, linetype = "dashed") +
+        geom_hline(yintercept = pval_cutoff, linetype = "dashed") +
+        scale_x_log10() +
+        scale_y_log10() +
+        theme_bw() +
+        theme(
+            axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+            axis.text.y = element_text(angle = 0, hjust = 1, vjust = 0.5),
+            legend.position = "none"
         )
-    }
-}
+)
+print(
+    ggplot(only_species, aes(x = pval.twoside.max, y = pval.twoside.global, col = taxonomy)) +
+        geom_point() +
+        geom_vline(xintercept = pval_cutoff, linetype = "dashed") +
+        geom_hline(yintercept = pval_cutoff, linetype = "dashed") +
+        scale_x_log10() +
+        scale_y_log10() +
+        theme_bw() +
+        theme(
+            axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+            axis.text.y = element_text(angle = 0, hjust = 1, vjust = 0.5),
+            legend.position = "none"
+        )
+)
+print(
+    ggplot(bound_taxas, aes(x = qval.twoside.max, y = qval.twoside.global, col = taxonomy)) +
+        geom_point() +
+        geom_vline(xintercept = pval_cutoff, linetype = "dashed") +
+        geom_hline(yintercept = pval_cutoff, linetype = "dashed") +
+        scale_x_log10() +
+        scale_y_log10() +
+        theme_bw() +
+        theme(
+            axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+            axis.text.y = element_text(angle = 0, hjust = 1, vjust = 0.5),
+            legend.position = "none"
+        )
+)
+print(
+    ggplot(only_species, aes(x = qval.twoside.max, y = qval.twoside.global, col = taxonomy)) +
+        geom_point() +
+        geom_vline(xintercept = pval_cutoff, linetype = "dashed") +
+        geom_hline(yintercept = pval_cutoff, linetype = "dashed") +
+        scale_x_log10() +
+        scale_y_log10() +
+        theme_bw() +
+        theme(
+            axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+            axis.text.y = element_text(angle = 0, hjust = 1, vjust = 0.5),
+            legend.position = "none"
+        )
+)
+dev.off()
+print(only_species$level_2)
 ```
+
+```{r}
+only_species |> dplyr::filter(level_2 == "k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f__Lachnospiraceae.g__Lachnospiraceae_unclassified.s__Eubacterium_rectale")
+found_bound <- bound_taxas |>
+    dplyr::filter(
+        grepl(".Eubacterium..rectale", level_2)
+    )
+
+found_preproc <- c(
+    "k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f__Lachnospiraceae.g__Lachnospiraceae_unclassified.s__Eubacterium_rectale"
+)
+found_preproc <- gsub("\\.", "|", found_preproc)
+found_plain <- c("Firmicutes_Clostridia_Eubacteriales_Lachnospiraceae_NA_.Eubacterium..rectale")
+
+pdf("removeme_density.pdf", width=9, height=8)
+print(
+    restrictedROC::plot_density_rROC_empirical(
+        values_grouped = split(data_lee_pfs[, found_preproc], pheno_lee_pfs[["PFS12"]]),
+        positive_label = "yes",
+        plot_n_points = Inf
+    )[["plots"]] +
+        patchwork::plot_annotation(
+            title = found_preproc, subtitle = "preprocessed: log(x+small) and z-standardized",
+            theme = theme(plot.title = element_text(size = 10)))
+)
+for (bound_taxa_i in seq_len(nrow(found_bound))) {
+    current_found <- found_bound[bound_taxa_i, ]
+    data_x <- SummarizedExperiment::assay(mia::agglomerateByRank(lee_tse, rank = current_found[["taxonomy"]]))
+    feature <- NULL
+    if (current_found[["level_2"]] == "Firmicutes_Clostridia_Eubacteriales_Lachnospiraceae_NA_.Eubacterium..rectale") {
+        feature <- "Firmicutes_Clostridia_Eubacteriales_Lachnospiraceae_NA_[Eubacterium] rectale"
+    }
+    print(
+        restrictedROC::plot_density_rROC_empirical(
+            values_grouped = split(data_x[feature, pheno_lee_pfs[["subject_id"]]], pheno_lee_pfs[["PFS12"]]),
+            positive_label = "yes",
+            plot_n_points = Inf
+        )[["plots"]] +
+            patchwork::plot_annotation(title = feature)
+    )
+}
+dev.off()
+```
+
 
 [1]: Lee, K.A., Thomas, A.M., Bolte, L.A. et al. Cross-cohort gut microbiome associations with immune checkpoint inhibitor response in advanced melanoma. Nat Med 28, 535–544 (2022). https://doi.org/10.1038/s41591-022-01695-5
