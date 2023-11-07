@@ -31,7 +31,7 @@ data_lee_pfs <- data_lee[pheno_lee_pfs$subject_id, ]
 outdir_base <- "intermediate_data/2022-lee"
 library(future)
 plan(multisession)
-for (n_permutations in c(10e3, 25e3, 50e3)) {
+for (n_permutations in c(50e3)) {
     all_taxa_results <- list()
     for (taxonomy in c(mia::taxonomyRanks(lee_tse), "paper_species_preprocessed")) {
         if (taxonomy == "paper_species_preprocessed") {
@@ -59,7 +59,7 @@ for (n_permutations in c(10e3, 25e3, 50e3)) {
                 positive_label = "yes",
                 save_intermediate = TRUE,
                 # ".qs" is appended automatically to make clear it was saved with qs::qsave()
-                save_path = outfile
+                save_path = outfile,
             )
         }
         print(summary(all_taxa_results[[taxonomy]]) |> dplyr::arrange(pval.twoside.max))
@@ -79,24 +79,6 @@ bound_taxas <- dplyr::bind_rows(
 )
 bound_taxas[["qval.twoside.max"]] <- p.adjust(bound_taxas[["pval.twoside.max"]], method = "BH")
 bound_taxas[["qval.twoside.global"]] <- p.adjust(bound_taxas[["pval.twoside.global"]], method = "BH")
-
-
-only_species <- all_taxa_results_summary[["paper_species_preprocessed"]]
-only_species[["qval.twoside.max"]] <- p.adjust(only_species[["pval.twoside.max"]], method = "BH")
-only_species[["qval.twoside.global"]] <- p.adjust(only_species[["pval.twoside.global"]], method = "BH")
-# rroc_lee <- qs::qread(file.path(outdir, "rroc_pfs12_v2_10000.qs"))
-# s_lee <- summary(rroc_lee)
-# s_lee[["qval.twoside.max"]] <- p.adjust(s_lee[["pval.twoside.max"]], method = "BH")
-# s_lee[["qval.twoside.global"]] <- p.adjust(s_lee[["pval.twoside.global"]], method = "BH")
-
-# s_lee |>
-#     dplyr::arrange(qval.twoside.max) |>
-#     dplyr::select(level_1, level_2, qval.twoside.max, qval.twoside.global)
-# lee_significant_restricted <- s_lee |>
-#     dplyr::filter(qval.twoside.max < 0.05)
-# lee_significant_restricted_additional <- s_lee |>
-#     dplyr::filter(qval.twoside.max < 0.05, qval.twoside.global > .05) |>
-#     dplyr::pull(level_2)
 ```
 
 
@@ -104,28 +86,11 @@ only_species[["qval.twoside.global"]] <- p.adjust(only_species[["pval.twoside.gl
 bound_taxas |>
     dplyr::arrange(qval.twoside.max) |>
     dplyr::select(taxonomy, level_2, qval.twoside.max, qval.twoside.global)
-only_species |>
-    dplyr::arrange(qval.twoside.max) |>
-    dplyr::select(level_2, qval.twoside.max, qval.twoside.global)
 library(ggplot2)
 pval_cutoff <- .1
-pdf("removeme.pdf", width = 12, height = 10)
+pdf(file.path(outdir_base, "pfs12_global_vs_restricted.pdf"), width = 12, height = 10)
 print(
     ggplot(bound_taxas, aes(x = pval.twoside.max, y = pval.twoside.global, col = taxonomy)) +
-        geom_point() +
-        geom_vline(xintercept = pval_cutoff, linetype = "dashed") +
-        geom_hline(yintercept = pval_cutoff, linetype = "dashed") +
-        scale_x_log10() +
-        scale_y_log10() +
-        theme_bw() +
-        theme(
-            axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
-            axis.text.y = element_text(angle = 0, hjust = 1, vjust = 0.5),
-            legend.position = "none"
-        )
-)
-print(
-    ggplot(only_species, aes(x = pval.twoside.max, y = pval.twoside.global, col = taxonomy)) +
         geom_point() +
         geom_vline(xintercept = pval_cutoff, linetype = "dashed") +
         geom_hline(yintercept = pval_cutoff, linetype = "dashed") +
@@ -152,22 +117,7 @@ print(
             legend.position = "none"
         )
 )
-print(
-    ggplot(only_species, aes(x = qval.twoside.max, y = qval.twoside.global, col = taxonomy)) +
-        geom_point() +
-        geom_vline(xintercept = pval_cutoff, linetype = "dashed") +
-        geom_hline(yintercept = pval_cutoff, linetype = "dashed") +
-        scale_x_log10() +
-        scale_y_log10() +
-        theme_bw() +
-        theme(
-            axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
-            axis.text.y = element_text(angle = 0, hjust = 1, vjust = 0.5),
-            legend.position = "none"
-        )
-)
 dev.off()
-print(only_species$level_2)
 ```
 
 ```{r}
@@ -181,18 +131,18 @@ found_preproc <- c(
     "k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f__Lachnospiraceae.g__Lachnospiraceae_unclassified.s__Eubacterium_rectale"
 )
 found_preproc <- gsub("\\.", "|", found_preproc)
-found_plain <- c("Firmicutes_Clostridia_Eubacteriales_Lachnospiraceae_NA_.Eubacterium..rectale")
 
-pdf("removeme_density.pdf", width=9, height=8)
+pdf(file.path(outdir_base, "pfs12_densities.pdf"), width = 9, height = 8)
 print(
     restrictedROC::plot_density_rROC_empirical(
         values_grouped = split(data_lee_pfs[, found_preproc], pheno_lee_pfs[["PFS12"]]),
         positive_label = "yes",
-        plot_n_points = Inf
+        plot_n_points = 0
     )[["plots"]] +
         patchwork::plot_annotation(
             title = found_preproc, subtitle = "preprocessed: log(x+small) and z-standardized",
-            theme = theme(plot.title = element_text(size = 10)))
+            theme = theme(plot.title = element_text(size = 10))
+        )
 )
 for (bound_taxa_i in seq_len(nrow(found_bound))) {
     current_found <- found_bound[bound_taxa_i, ]
@@ -205,11 +155,116 @@ for (bound_taxa_i in seq_len(nrow(found_bound))) {
         restrictedROC::plot_density_rROC_empirical(
             values_grouped = split(data_x[feature, pheno_lee_pfs[["subject_id"]]], pheno_lee_pfs[["PFS12"]]),
             positive_label = "yes",
-            plot_n_points = Inf
+            plot_n_points = 0
         )[["plots"]] +
             patchwork::plot_annotation(title = feature)
     )
 }
+dev.off()
+```
+
+
+```{r, Paper plot}
+library(dplyr)
+preproc_split <- split(data_lee_pfs[, found_preproc], pheno_lee_pfs[["PFS12"]])
+# single_res <- all_taxa_results[["species"]][["PFS12"]][["Firmicutes_Clostridia_Eubacteriales_Lachnospiraceae_NA_.Eubacterium..rectale"]]
+single_res <- restrictedROC::plot_density_rROC_empirical(
+    values_grouped = split(data_lee_pfs[, found_preproc], pheno_lee_pfs[["PFS12"]]),
+    positive_label = "yes",
+    plot_n_points = 0
+)
+p1 <- single_res[["plots"]]
+current_rroc <- bound_taxas |> dplyr::filter(taxonomy == "species", grepl("rectale", level_2))
+# Performance numbers
+
+grouped_vals_df <- rbind(
+    tidyr::pivot_longer(tibble::as_tibble(preproc_split[1]), everything()),
+    tidyr::pivot_longer(tibble::as_tibble(preproc_split[2]), everything())
+)
+rroc_single <- single_res[["single_rROC"]]
+predicted <- restrictedROC:::predict.restrictedROC(
+    rroc_single,
+    newdata = grouped_vals_df,
+    newdata_predictor_column = 2, newdata_response_column = 1,
+    pred_high_label = "yes",
+    pred_low_label = "no"
+)
+perf_df_global <- tibble::tibble(
+    "AUC" = rroc_single$global$auc,
+    "p.value" = current_rroc[["pval.twoside.global"]],
+    "q.value" = current_rroc[["qval.twoside.global"]],
+    "inf_range.min" = -Inf,
+    "inf_range.max" = Inf,
+    "high.median" = grouped_vals_df |>
+        dplyr::group_by(name) |>
+        summarize(m = median(value)) |>
+        arrange(-m) |>
+        slice(1) |>
+        pull(name) |>
+        as.character()
+)
+global_perf <- pROC::coords(
+    rroc_single$pROC_full,
+    x = "best",
+    ret = c("threshold", "npv", "ppv", "tpr", "tnr")
+)
+perf.global <- cbind(
+    "outcome" = "PFS12",
+    "feature" = "Firmicutes_Clostridia_Eubacteriales_Lachnospiraceae_NA_[Eubacterium] rectale",
+    "global_restricted" = "global",
+    perf_df_global,
+    global_perf
+)
+rownames(perf.global) <- NULL
+
+restricted_data <- predicted$pred[predicted$pred[["keep"]], c("response", "predictor")]
+proc_restr <- pROC::roc(restricted_data[["response"]], restricted_data[["predictor"]])
+informative_range <- c(predicted$threshold_and_restriction[["restriction"]], ifelse(predicted$restriction_part == "low", -Inf, Inf))
+perf_df_restr <- tibble::tibble(
+    "AUC" = rroc_single$max_total$auc,
+    "p.value" = current_rroc[["pval.twoside.max"]],
+    "q.value" = current_rroc[["qval.twoside.max"]],
+    "inf_range.min" = min(informative_range),
+    "inf_range.max" = max(informative_range),
+    "high.median" = restricted_data |>
+        dplyr::group_by(response) |>
+        summarize(m = median(predictor)) |>
+        arrange(-m) |>
+        slice(1) |>
+        pull(response) |>
+        as.character()
+)
+if (perf_df_restr$AUC - pROC::auc(proc_restr)[[1]] > 1e-8) {
+    stop("Something's wrong. The AUCs don't match.")
+}
+restricted_perf <- pROC::coords(
+    proc_restr,
+    x = "best",
+    ret = c("threshold", "npv", "ppv", "tpr", "tnr")
+)
+perf.restricted <- cbind(
+    "outcome" = "PFS12",
+    "feature" = "Firmicutes_Clostridia_Eubacteriales_Lachnospiraceae_NA_[Eubacterium] rectale",
+    "global_restricted" = "restricted",
+    perf_df_restr,
+    restricted_perf
+)
+rownames(perf.restricted) <- NULL
+perf.global
+
+pdf(file.path(outdir_base, "pfs12_paper_plot.pdf"), height = 8)
+print(patchwork::wrap_elements(
+    p1
+) + patchwork::wrap_elements(
+    gridExtra::tableGrob(
+        rbind(
+            perf.global,
+            perf.restricted
+        ),
+        theme = gridExtra::ttheme_default(base_size = 3)
+    )
+) +
+    patchwork::plot_layout(ncol = 1, height = c(.85, .04, .04, .04)))
 dev.off()
 ```
 
