@@ -165,106 +165,18 @@ dev.off()
 
 
 ```{r, Paper plot}
+source(file.path("vignettes", "articles", "paper_utils.R"))
 library(dplyr)
-preproc_split <- split(data_lee_pfs[, found_preproc], pheno_lee_pfs[["PFS12"]])
-# single_res <- all_taxa_results[["species"]][["PFS12"]][["Firmicutes_Clostridia_Eubacteriales_Lachnospiraceae_NA_.Eubacterium..rectale"]]
-single_res <- restrictedROC::plot_density_rROC_empirical(
+tmp <- paper_performance(
     values_grouped = split(data_lee_pfs[, found_preproc], pheno_lee_pfs[["PFS12"]]),
     positive_label = "yes",
-    plot_n_points = 0
+    plot_n_points = 0,
+    current_rroc = bound_taxas |> dplyr::filter(taxonomy == "species", grepl("rectale", level_2)),
+    outcome = "PFS12",
+    feature = "Firmicutes_Clostridia_Eubacteriales_Lachnospiraceae_NA_[Eubacterium] rectale"
 )
-p1 <- single_res[["plots"]]
-current_rroc <- bound_taxas |> dplyr::filter(taxonomy == "species", grepl("rectale", level_2))
-# Performance numbers
-
-grouped_vals_df <- rbind(
-    tidyr::pivot_longer(tibble::as_tibble(preproc_split[1]), everything()),
-    tidyr::pivot_longer(tibble::as_tibble(preproc_split[2]), everything())
-)
-rroc_single <- single_res[["single_rROC"]]
-predicted <- restrictedROC:::predict.restrictedROC(
-    rroc_single,
-    newdata = grouped_vals_df,
-    newdata_predictor_column = 2, newdata_response_column = 1,
-    pred_high_label = "yes",
-    pred_low_label = "no"
-)
-perf_df_global <- tibble::tibble(
-    "AUC" = rroc_single$global$auc,
-    "p.value" = current_rroc[["pval.twoside.global"]],
-    "q.value" = current_rroc[["qval.twoside.global"]],
-    "inf_range.min" = -Inf,
-    "inf_range.max" = Inf,
-    "high.median" = grouped_vals_df |>
-        dplyr::group_by(name) |>
-        summarize(m = median(value)) |>
-        arrange(-m) |>
-        slice(1) |>
-        pull(name) |>
-        as.character()
-)
-global_perf <- pROC::coords(
-    rroc_single$pROC_full,
-    x = "best",
-    ret = c("threshold", "npv", "ppv", "tpr", "tnr")
-)
-perf.global <- cbind(
-    "outcome" = "PFS12",
-    "feature" = "Firmicutes_Clostridia_Eubacteriales_Lachnospiraceae_NA_[Eubacterium] rectale",
-    "global_restricted" = "global",
-    perf_df_global,
-    global_perf
-)
-rownames(perf.global) <- NULL
-
-restricted_data <- predicted$pred[predicted$pred[["keep"]], c("response", "predictor")]
-proc_restr <- pROC::roc(restricted_data[["response"]], restricted_data[["predictor"]])
-informative_range <- c(predicted$threshold_and_restriction[["restriction"]], ifelse(predicted$restriction_part == "low", -Inf, Inf))
-perf_df_restr <- tibble::tibble(
-    "AUC" = rroc_single$max_total$auc,
-    "p.value" = current_rroc[["pval.twoside.max"]],
-    "q.value" = current_rroc[["qval.twoside.max"]],
-    "inf_range.min" = min(informative_range),
-    "inf_range.max" = max(informative_range),
-    "high.median" = restricted_data |>
-        dplyr::group_by(response) |>
-        summarize(m = median(predictor)) |>
-        arrange(-m) |>
-        slice(1) |>
-        pull(response) |>
-        as.character()
-)
-if (perf_df_restr$AUC - pROC::auc(proc_restr)[[1]] > 1e-8) {
-    stop("Something's wrong. The AUCs don't match.")
-}
-restricted_perf <- pROC::coords(
-    proc_restr,
-    x = "best",
-    ret = c("threshold", "npv", "ppv", "tpr", "tnr")
-)
-perf.restricted <- cbind(
-    "outcome" = "PFS12",
-    "feature" = "Firmicutes_Clostridia_Eubacteriales_Lachnospiraceae_NA_[Eubacterium] rectale",
-    "global_restricted" = "restricted",
-    perf_df_restr,
-    restricted_perf
-)
-rownames(perf.restricted) <- NULL
-perf.global
-
 pdf(file.path(outdir_base, "pfs12_paper_plot.pdf"), height = 8)
-print(patchwork::wrap_elements(
-    p1
-) + patchwork::wrap_elements(
-    gridExtra::tableGrob(
-        rbind(
-            perf.global,
-            perf.restricted
-        ),
-        theme = gridExtra::ttheme_default(base_size = 3)
-    )
-) +
-    patchwork::plot_layout(ncol = 1, height = c(.85, .04, .04, .04)))
+print(tmp)
 dev.off()
 ```
 
