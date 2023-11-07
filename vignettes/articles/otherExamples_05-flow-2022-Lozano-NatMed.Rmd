@@ -26,7 +26,7 @@ table(data_joint[["Severe irAE status (1=Yes, 0=No)d"]])
 ```{r, initial rROC plots}
 cytof_features <- grep("^cytof", colnames(data_joint), value = TRUE)
 library(ggplot2)
-pdf("2022-Lozano-NatMed_restrictedFeatures.pdf")
+pdf("intermediate_data/2022-Lozano/2022-Lozano-NatMed_restrictedFeatures.pdf")
 tmp <- sapply(cytof_features, function(x) {
     data_single_feature <- data_joint[[x]]
     print(
@@ -118,5 +118,22 @@ print(
 dev.off()
 ```
 
+```{r, Paper plot}
+source(file.path("vignettes", "articles", "paper_utils.R"))
+library(dplyr)
+cool_feature <- "cytof_CD4+ T Cell (EMRA)"
+tmp <- paper_performance(
+    values_grouped = split(data_joint[[cool_feature]], data_joint[["Severe irAE status (1=Yes, 0=No)d"]]),
+    positive_label = "1",
+    plot_n_points = 0,
+    current_rroc = permpvals |> dplyr::filter(level_2 == cool_feature),
+    outcome = "Severe irAE status (1=Yes, 0=No)",
+    feature = cool_feature,
+    heights = c(.9, .1)
+)
+pdf("intermediate_data/2022-Lozano/2022-Lozano-NatMed_foundAdditional.pdf", height = 8)
+print(tmp)
+dev.off()
+```
 
 [1]: Lozano, A.X., Chaudhuri, A.A., Nene, A. et al. T cell characteristics associated with toxicity to immune checkpoint blockade in patients with melanoma. Nat Med 28, 353–362 (2022). https://doi.org/10.1038/s41591-021-01623-z 
