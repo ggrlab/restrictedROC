@@ -176,7 +176,6 @@ li_all_data_ttests_unpaired <- lapply(
 library(future)
 plan(multisession)
 for (n_permutations in c(25000)) {
-# for (n_permutations in c(3)) {
     li_all_data_rroc <- sapply(
         names(li_all_data_measurements),
         function(study_x) {
@@ -206,7 +205,6 @@ named_figs <- list(
     "fig2d" = c("s3_nivo", "week 4", "baseline"),
     "fig2f" = c("s3_ever", "week 4", "baseline")
 )
-# pdf("removeme.pdf", width = 15, height = 4)
 pdf(file.path(outdir, "fig2_redone.pdf"), width = 4, height = 15)
 for (name_all in c(FALSE, TRUE)) {
     for (study_tp1_tp2_x in names(named_figs)) {
@@ -228,13 +226,13 @@ for (name_all in c(FALSE, TRUE)) {
 
         plot_permutation_global <- ggplot(
             li_all_data_rroc[[study_x]][[paste0(tp1, "_", tp2)]],
-            aes(x = avg.FC, y = global_neglog_p.value, label = feature)
+            aes(x = avg.FC, y = -log10(global_q.value), label = feature)
         ) +
             ggtitle(study_tp1_tp2_x, subtitle = paste0("Permutation test on AUC, global"))
 
         plot_permutation_max <- ggplot(
             li_all_data_rroc[[study_x]][[paste0(tp1, "_", tp2)]],
-            aes(x = avg.FC, y = max_neglog_p.value, label = feature)
+            aes(x = avg.FC, y = -log10(max_q.value), label = feature)
         ) +
             ggtitle(study_tp1_tp2_x, subtitle = paste0("Permutation test on AUC, Restriction"))
 
@@ -250,17 +248,12 @@ for (name_all in c(FALSE, TRUE)) {
             if (name_all) {
                 tmp <- tmp + geom_text(size = 1, color = "darkgreen")
             } else {
-                # tmp <- tmp + geom_text(
+                # tmp <- tmp + ggrepel::geom_text_repel(
                 #     data = subset(x$data, x$data[, x$labels$y] > -log10(0.05)),
-                #     size = 1.5, color = "darkgreen"
+                #     size = 2, color = "darkgreen",
+                #     min.segment.length = 0, seed = 42, box.padding = 0.3,
+                #     max.overlaps = 10
                 # )
-                tmp <- tmp + ggrepel::geom_text_repel(
-                    # tmp <- tmp + ggrepel::geom_label_repel(
-                    data = subset(x$data, x$data[, x$labels$y] > -log10(0.05)),
-                    size = 2, color = "darkgreen",
-                    min.segment.length = 0, seed = 42, box.padding = 0.3,
-                    max.overlaps = 10
-                )
             }
             return(
                 tmp +
@@ -272,6 +265,42 @@ for (name_all in c(FALSE, TRUE)) {
         })
         print(patchwork::wrap_plots(plots_done, nrow = 4))
     }
+}
+dev.off()
+
+pdf(file.path(outdir, "fig2_global_vs_restriction.pdf"))
+for (study_tp1_tp2_x in names(named_figs)) {
+    study_tp1_tp2 <- named_figs[[study_tp1_tp2_x]]
+    study_x <- study_tp1_tp2[[1]]
+    tp1 <- study_tp1_tp2[[2]]
+    tp2 <- study_tp1_tp2[[3]]
+    data_part <- li_all_data_rroc[[study_x]][[paste0(tp1, "_", tp2)]]
+    axis_limits <- c(min(c(1e-5, min(data_part[, c("max_p.value", "global_p.value")]))), 1)
+    print(
+        ggplot(
+            data_part,
+            aes(x = global_q.value, y = max_q.value, label = feature)
+        ) +
+            ggtitle(study_tp1_tp2_x, subtitle = paste0("Permutation test on AUC, global")) +
+            geom_point() +
+            ggrepel::geom_text_repel(
+                data = subset(
+                    data_part,
+                    global_p.value > 0.05 & max_p.value < 0.05
+                ),
+                aes(label = feature),
+                size = 1.5, col = "darkgreen",
+                min.segment.length = 0,
+                max.overlaps = 5
+            ) +
+            geom_hline(yintercept = 0.05, linetype = "dashed") +
+            geom_vline(xintercept = 0.05, linetype = "dashed") +
+            geom_abline(slope = 1, intercept = 0) +
+            coord_cartesian(xlim = axis_limits, ylim = axis_limits) +
+            ggpubr::theme_pubr() +
+            scale_x_log10() +
+            scale_y_log10()
+    )
 }
 dev.off()
 ```
