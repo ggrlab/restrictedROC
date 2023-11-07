@@ -151,11 +151,11 @@ rroc_res <- sapply(
         x <- data_mats[[x_name]]
         x_noNArownames <- x[!is.na(rownames(x)), ]
         restrictedROC::rROC(
-            x = t(x_noNArownames)[, 1:3],
+            x = t(x_noNArownames),
             y = list("responder" = outcome_noSD[colnames(x)]),
             n_permutations = n_permutations,
             positive_label = "responder",
-            save_path = file.path(int_dir, paste0("harel_nPERM_v2", n_permutations, "_", x_name, ".qs")),
+            save_path = file.path(int_dir, paste0("harel_nPERM", n_permutations, "_", x_name, ".qs")),
             parallel_permutations = TRUE,
             verbose = TRUE
         )
@@ -169,6 +169,7 @@ rroc_res <- sapply(
 rroc_res_tmp <- sapply(names(data_mats), function(x_name) {
     qs::qread(file.path(int_dir, paste0("harel_nPERM", n_permutations, "_", x_name, ".qs")))
 }, USE.NAMES = TRUE, simplify = FALSE)
+
 rroc_res <- lapply(rroc_res_tmp, function(x) {
     summarized <- restrictedROC:::summary.rROC(x)
     summarized[["qval.twoside.max"]] <- p.adjust(summarized[["pval.twoside.max"]], method = "BH")
@@ -226,36 +227,111 @@ for (feature_outcome in list(
     data_x_noNA <- na.omit(data_x)
     grouped_vals <- split(data_x_noNA, outcome_noSD[names(data_x_noNA)])
     names(grouped_vals) <- gsub("-", "", names(grouped_vals))
-    p1 <- restrictedROC::plot_density_rROC_empirical(
+    rroc_single_result <- restrictedROC::plot_density_rROC_empirical(
         values_grouped = grouped_vals,
         positive_label = "responder"
-    )[["plots"]]
+    )
+    p1 <- rroc_single_result[["plots"]]
     p1 <- p1 + patchwork::plot_annotation(
         title = paste0("Dataset: ", outcome_x, "  --- Feature: ", feature_x)
     )
+
+    current_rroc <- rroc_res[[outcome_x]] |>
+        dplyr::filter(level_2 == feature_x)
+    # Performance numbers
+
+    grouped_vals_df <- rbind(
+        tidyr::pivot_longer(tibble::as_tibble(grouped_vals[1]), everything()),
+        tidyr::pivot_longer(tibble::as_tibble(grouped_vals[2]), everything())
+    )
+    rroc_single <- rroc_single_result[["single_rROC"]]
+    predicted <- restrictedROC:::predict.restrictedROC(
+        rroc_single,
+        newdata = grouped_vals_df,
+        newdata_predictor_column = 2, newdata_response_column = 1,
+        pred_high_label = "responder",
+        pred_low_label = "nonresponder"
+    )
+    perf_df_global <- tibble::tibble(
+        "AUC" = rroc_single$global$auc,
+        "p.value" = current_rroc[["pval.twoside.global"]],
+        "q.value" = current_rroc[["qval.twoside.global"]],
+        "inf_range.min" = -Inf,
+        "inf_range.max" = Inf,
+        "high.median" = names(which.max(lapply(grouped_vals, median)))
+    )
+    global_perf <- pROC::coords(
+        rroc_single$pROC_full,
+        x = "best",
+        ret = c("threshold", "npv", "ppv", "tpr", "tnr")
+    )
+    perf.global <- cbind(
+        "outcome" = outcome_x,
+        "feature" = feature_x,
+        "global_restricted" = "global",
+        perf_df_global,
+        global_perf
+    )
+    rownames(perf.global) <- NULL
+
+    restricted_data <- predicted$pred[predicted$pred[["keep"]], c("response", "predictor")]
+    proc_restr <- pROC::roc(restricted_data[["response"]], restricted_data[["predictor"]])
+    informative_range <- c(predicted$threshold_and_restriction[["restriction"]], ifelse(predicted$restriction_part == "low", -Inf, Inf))
+    perf_df_restr <- tibble::tibble(
+        "AUC" = rroc_single$max_total$auc,
+        "p.value" = current_rroc[["pval.twoside.max"]],
+        "q.value" = current_rroc[["qval.twoside.max"]],
+        "inf_range.min" = min(informative_range),
+        "inf_range.max" = max(informative_range),
+        "high.median" = restricted_data |>
+            dplyr::group_by(response) |>
+            summarize(m = median(predictor)) |>
+            arrange(-m) |>
+            slice(1) |>
+            pull(response) |>
+            as.character()
+    )
+    if (perf_df_restr$AUC - pROC::auc(proc_restr)[[1]] > 1e-8) {
+        stop("Something's wrong. The AUCs don't match.")
+    }
+    restricted_perf <- pROC::coords(
+        proc_restr,
+        x = "best",
+        ret = c("threshold", "npv", "ppv", "tpr", "tnr")
+    )
+    perf.restricted <- cbind(
+        "outcome" = outcome_x,
+        "feature" = feature_x,
+        "global_restricted" = "restricted",
+        perf_df_restr,
+        restricted_perf
+    )
+    rownames(perf.restricted) <- NULL
+
+
     print(patchwork::wrap_elements(
         p1
     ) + patchwork::wrap_elements(
         gridExtra::tableGrob(
             rroc_res[[outcome_x]] |>
-                dplyr::filter(level_2 == feature_x) |>
-                dplyr::select(1:9),
-            theme = gridExtra::ttheme_default(base_size = 5)
-        )
-    ) + patchwork::wrap_elements(
-        gridExtra::tableGrob(
-            rroc_res[[outcome_x]] |>
-                dplyr::filter(level_2 == feature_x) |>
-                dplyr::select(9:ncol(rroc_res[[outcome_x]])),
-            theme = gridExtra::ttheme_default(base_size = 5)
+                dplyr::filter(level_2 == feature_x),
+            theme = gridExtra::ttheme_default(base_size = 2)
         )
     ) + patchwork::wrap_elements(
         gridExtra::tableGrob(
             harel_ttests_q[[outcome_x]] |> dplyr::filter(gene == feature_x),
-            theme = gridExtra::ttheme_default(base_size = 8)
+            theme = gridExtra::ttheme_default(base_size = 2)
+        )
+    )  + patchwork::wrap_elements(
+        gridExtra::tableGrob(
+            rbind(
+                perf.global,
+                perf.restricted
+            ),
+            theme = gridExtra::ttheme_default(base_size = 4)
         )
     ) +
-        patchwork::plot_layout(ncol = 1, height = c(.8, .06, .06, .06)))
+        patchwork::plot_layout(ncol = 1, height = c(.85, .04, .04, .04)))
 }
 dev.off()
 ```
