@@ -181,6 +181,7 @@ rroc_res <- lapply(rroc_res_tmp, function(x) {
 
 ```{r, Plotting global vs restricted}
 library(ggplot2)
+pval_cutoff <- .1
 pdf("intermediate_data/2019-harel/global_max_pval.pdf", width = 4, height = 4)
 for (name_x in names(rroc_res)) {
     p1 <- ggplot(rroc_res[[name_x]], aes(x = pval.twoside.global, y = pval.twoside.max))
@@ -190,15 +191,15 @@ for (name_x in names(rroc_res)) {
             plot_x +
                 geom_point() +
                 geom_abline(slope = 1, intercept = 0, linewidth = .1) +
-                geom_vline(xintercept = 0.05, linetype = "dashed") +
-                geom_hline(yintercept = 0.05, linetype = "dashed") +
+                geom_vline(xintercept = pval_cutoff, linetype = "dashed") +
+                geom_hline(yintercept = pval_cutoff, linetype = "dashed") +
                 scale_x_log10() +
                 scale_y_log10() +
-                # label feature with q.value < 0.05
+                # label feature with q.value < pval_cutoff
                 ggrepel::geom_text_repel(
                     data = subset(
                         rroc_res[[name_x]],
-                        qval.twoside.global > 0.05 & qval.twoside.max < 0.05
+                        qval.twoside.global > pval_cutoff & qval.twoside.max < pval_cutoff
                     ),
                     aes(label = level_2),
                     size = 1.5, col = "darkgreen",
@@ -214,13 +215,12 @@ dev.off()
 
 source(file.path("vignettes", "articles", "paper_utils.R"))
 library(dplyr)
-library(patchwork)
 # Plotting the restricted ROC
-pdf("intermediate_data/2019-harel/rroc_significant.pdf", height = 6.8, width=6.5)
+pdf("intermediate_data/2019-harel/rroc_significant.pdf", height = 6.8, width = 6.5)
 sink("intermediate_data/2019-harel/rroc_significant_booktabs.tex")
 for (feature_outcome in list(
-    c("ERO1L", "aPD1"),
     c("WDR47", "aPD1"),
+    c("RQCD1", "aPD1"),
     c("ETFB", "til"),
     c("CALCOCO2", "til")
 )) {
