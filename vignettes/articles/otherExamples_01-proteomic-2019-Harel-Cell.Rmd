@@ -181,7 +181,7 @@ rroc_res <- lapply(rroc_res_tmp, function(x) {
 
 ```{r, Plotting global vs restricted}
 library(ggplot2)
-pdf("intermediate_data/2019-harel/global_max_pval.pdf")
+pdf("intermediate_data/2019-harel/global_max_pval.pdf", width = 4, height = 4)
 for (name_x in names(rroc_res)) {
     p1 <- ggplot(rroc_res[[name_x]], aes(x = pval.twoside.global, y = pval.twoside.max))
     p2 <- ggplot(rroc_res[[name_x]], aes(x = qval.twoside.global, y = qval.twoside.max))
@@ -214,8 +214,10 @@ dev.off()
 
 source(file.path("vignettes", "articles", "paper_utils.R"))
 library(dplyr)
+library(patchwork)
 # Plotting the restricted ROC
-pdf("intermediate_data/2019-harel/rroc_significant.pdf", height = 8)
+pdf("intermediate_data/2019-harel/rroc_significant.pdf", height = 6.8, width=6.5)
+sink("intermediate_data/2019-harel/rroc_significant_booktabs.tex")
 for (feature_outcome in list(
     c("ERO1L", "aPD1"),
     c("WDR47", "aPD1"),
@@ -229,7 +231,7 @@ for (feature_outcome in list(
     data_x_noNA <- na.omit(data_x)
     grouped_vals <- split(data_x_noNA, outcome_noSD[names(data_x_noNA)])
     names(grouped_vals) <- gsub("-", "", names(grouped_vals))
-    
+
     tmp <- paper_performance(
         values_grouped = grouped_vals,
         positive_label = "responder",
@@ -244,8 +246,10 @@ for (feature_outcome in list(
         title = paste0("Dataset: ", outcome_x, "  --- Feature: ", feature_x)
     )
     print(p1)
+    cat(paperperf_to_tex(tmp[["perf"]]))
 }
 dev.off()
+sink()
 ```
 
 [1]: Harel et al. "Proteomics of melanoma response to immunotherapy reveals mitochondrial dependence." Cell 179.1 (2019): 236-250. https://doi.org/10.1016/j.cell.2019.08.012
