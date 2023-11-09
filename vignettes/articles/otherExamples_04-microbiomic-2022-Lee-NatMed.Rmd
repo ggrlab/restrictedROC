@@ -9,8 +9,19 @@ knitr::opts_chunk$set(
 )
 ```
 
+In <cite>[Lee et al, 2022, Nature Medicine][1]</cite>, the authors investigate 165 ICI-naive advanced cutaneous melanoma patients, analyzing stool samples through shotgun metagenomic sequencing and integrating them with 147 samples from previous studies. It showed a cohort-dependent link between the gut microbiome and ICI response (overall response rates and progression-free survival), with specific microbial species associated with responders. The complexity of this relationship was emphasized, especially limited reproducibility across cohorts. They suggested larger studies that consider clinical factors and treatment duration are needed.
 
+Clinical endpoints were defined as overall response rate and progression free survival (PFS12). 
+Overall response was classified according to RECIST v1.1 criteria into responders (CR, PR or SD) and non-responders (PD).
+PFS12 was defined as "the time from first dose of an ICI to the first event; i.e. disease progression or death from any cause". 
 
+For machine learning analyses, they preprocessed the data with SIAMCAT (v1.6.2). 
+
+    Species relative abundances were filtered to remove markers with low overall abundance
+    (1e-4 maximum abundance cutoff), log10-transformed (after adding a
+    pseudocount of 1e-5 to avoid nonfinite values) and standardized as z-scores.
+
+We here use that preprocessed data (available from [CuratedMetagenomicData](https://bioconductor.org/packages/curatedMetagenomicData/)) to apply restriction univariately across all taxonomic ranks of microbiota. 
 
 ```{r setup}
 options(warn = 1)
@@ -88,7 +99,9 @@ bound_taxas |>
     dplyr::select(taxonomy, level_2, qval.twoside.max, qval.twoside.global)
 library(ggplot2)
 pval_cutoff <- .1
-pdf(file.path(outdir_base, "pfs12_global_vs_restricted.pdf"), width = 12, height = 10)
+# pdf(file.path(outdir_base, "pfs12_global_vs_restricted.pdf"), width = 12, height = 10)
+pdf(file.path(outdir_base, "pfs12_global_vs_restricted.pdf"), width = 4, height = 4)
+
 print(
     ggplot(bound_taxas, aes(x = pval.twoside.max, y = pval.twoside.global, col = taxonomy)) +
         geom_point() +
@@ -117,11 +130,35 @@ print(
             legend.position = "none"
         )
 )
+print(
+    ggplot(bound_taxas, aes(x = qval.twoside.max, y = qval.twoside.global)) +
+        geom_point() +
+        geom_vline(xintercept = pval_cutoff, linetype = "dashed") +
+        geom_hline(yintercept = pval_cutoff, linetype = "dashed") +
+        scale_x_log10() +
+        scale_y_log10() +
+        ggrepel::geom_text_repel(
+            data = subset(
+                bound_taxas,
+                qval.twoside.global > pval_cutoff & qval.twoside.max < pval_cutoff
+            ),
+            aes(label = level_2),
+            size = 1.5, col = "darkgreen",
+            min.segment.length = 0,
+            max.overlaps = 5,
+            force = 10
+        ) +
+        ggpubr::theme_pubr() +
+        theme(
+            axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+            axis.text.y = element_text(angle = 0, hjust = 1, vjust = 0.5),
+            legend.position = "none"
+        )
+)
 dev.off()
 ```
 
 ```{r}
-only_species |> dplyr::filter(level_2 == "k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f__Lachnospiraceae.g__Lachnospiraceae_unclassified.s__Eubacterium_rectale")
 found_bound <- bound_taxas |>
     dplyr::filter(
         grepl(".Eubacterium..rectale", level_2)
@@ -167,17 +204,42 @@ dev.off()
 ```{r, Paper plot}
 source(file.path("vignettes", "articles", "paper_utils.R"))
 library(dplyr)
-tmp <- paper_performance(
-    values_grouped = split(data_lee_pfs[, found_preproc], pheno_lee_pfs[["PFS12"]]),
+x_genus <- SummarizedExperiment::assay(mia::agglomerateByRank(lee_tse, rank = "genus"))
+grep("Lachnospiraceae", rownames(x_genus), value = TRUE)
+x_genus_lach <- x_genus["Firmicutes_Clostridia_Eubacteriales_Lachnospiraceae_NA", ]
+x_genus_lach_proc <- log10(x_genus_lach + 1e-5) |> scale()
+
+x_species <- SummarizedExperiment::assay(mia::agglomerateByRank(lee_tse, rank = "species"))
+grep("Lachnospiraceae", rownames(x_species), value = TRUE)
+x_species_lach <- x_species["Firmicutes_Clostridia_Eubacteriales_Lachnospiraceae_NA_[Eubacterium] rectale", ]
+x_species_lach_proc <- log10(x_species_lach + 1e-5) |> scale()
+
+out_genus <- paper_performance(
+    values_grouped = split(x_genus_lach_proc[pheno_lee_pfs[["subject_id"]], , drop = TRUE], pheno_lee_pfs[["PFS12"]]),
+    positive_label = "yes",
+    plot_n_points = 0,
+    current_rroc = bound_taxas |> dplyr::filter(taxonomy == "genus", grepl("Firmicutes_Clostridia_Eubacteriales_Lachnospiraceae_NA", level_2)),
+    outcome = "PFS12",
+    feature = "Firmicutes_Clostridia_Eubacteriales_Lachnospiraceae_NA"
+)
+out_species <- paper_performance(
+    values_grouped = split(x_species_lach_proc[pheno_lee_pfs[["subject_id"]], , drop = TRUE], pheno_lee_pfs[["PFS12"]]),
     positive_label = "yes",
     plot_n_points = 0,
     current_rroc = bound_taxas |> dplyr::filter(taxonomy == "species", grepl("rectale", level_2)),
     outcome = "PFS12",
     feature = "Firmicutes_Clostridia_Eubacteriales_Lachnospiraceae_NA_[Eubacterium] rectale"
 )
-pdf(file.path(outdir_base, "pfs12_paper_plot.pdf"), height = 8)
-print(tmp)
+
+pdf(file.path(outdir_base, "pfs12_paper_plot.pdf"), height = 6.8, width = 6.5)
+print(out_species)
+print(out_genus)
 dev.off()
+
+sink(file.path(outdir_base, "pfs12_paper_plot.tex"))
+cat(paperperf_to_tex(out_species[["perf"]]))
+cat(paperperf_to_tex(out_genus[["perf"]]))
+sink()
 ```
 
 
