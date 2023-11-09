@@ -1,5 +1,5 @@
 ---
-title: "Datatypes 04: Microbiome"
+title: "Datatypes 05: Cytof"
 ---
 
 ```{r, include = FALSE}
@@ -25,6 +25,8 @@ table(data_joint[["Severe irAE status (1=Yes, 0=No)d"]])
 
 ```{r, initial rROC plots}
 cytof_features <- grep("^cytof", colnames(data_joint), value = TRUE)
+# In the 20 features shown in Supplementary Table 5, activated CD4+ T cells (effector memory) is not present, so I remove it here.
+cytof_features <- cytof_features[cytof_features != "cytof_Activateda CD4+ T Cell (Effector Memory)"]
 library(ggplot2)
 pdf("intermediate_data/2022-Lozano/2022-Lozano-NatMed_restrictedFeatures.pdf")
 tmp <- sapply(cytof_features, function(x) {
@@ -60,11 +62,12 @@ permpvals <- restrictedROC:::summary.rROC(cytof_permutation_rroc)
 permpvals[["qval.twoside.max"]] <- p.adjust(permpvals[["pval.twoside.max"]], method = "BH")
 permpvals[["qval.twoside.global"]] <- p.adjust(permpvals[["pval.twoside.global"]], method = "BH")
 
+pval_cutoff <- .1
 pdf("intermediate_data/2022-Lozano/2022-Lozano-NatMed_volcano.pdf")
 print(
     ggplot(permpvals, aes(x = global.auc, y = -log10(qval.twoside.global))) +
         geom_point() +
-        geom_hline(yintercept = -log10(0.05), color = "red") +
+        geom_hline(yintercept = -log10(pval_cutoff), color = "red") +
         geom_vline(xintercept = 0.5, color = "red") +
         geom_text(aes(label = level_2), size = .75, col = "darkgreen") +
         theme_bw() +
@@ -77,7 +80,7 @@ print(
 print(
     ggplot(permpvals, aes(x = max_total.auc, y = -log10(qval.twoside.max))) +
         geom_point() +
-        geom_hline(yintercept = -log10(0.05), color = "red") +
+        geom_hline(yintercept = -log10(pval_cutoff), color = "red") +
         geom_vline(xintercept = 0.5, color = "red") +
         geom_text(aes(label = level_2), size = .75, col = "darkgreen") +
         theme_bw() +
@@ -90,19 +93,19 @@ print(
 dev.off()
 
 
-pdf("intermediate_data/2022-Lozano/2022-Lozano-NatMed_maxVSglobal.pdf")
+pdf("intermediate_data/2022-Lozano/2022-Lozano-NatMed_maxVSglobal.pdf", width = 4, height = 4)
 print(
     ggplot(permpvals, aes(x = qval.twoside.global, y = qval.twoside.max)) +
         geom_point() +
-        geom_hline(yintercept = 0.05, color = "red") +
-        geom_vline(xintercept = 0.05, color = "red") +
+        geom_vline(xintercept = pval_cutoff, linetype = "dashed") +
+        geom_hline(yintercept = pval_cutoff, linetype = "dashed") +
         scale_x_log10() +
         scale_y_log10() +
-        # label feature with q.value < 0.05
+        # label feature with q.value < pval_cutoff
         ggrepel::geom_text_repel(
             data = subset(
                 permpvals,
-                qval.twoside.global > 0.05 & qval.twoside.max < 0.05
+                qval.twoside.global > pval_cutoff & qval.twoside.max < pval_cutoff
             ),
             aes(label = level_2),
             size = 1.5, col = "darkgreen",
@@ -111,7 +114,7 @@ print(
         ) +
         ggpubr::theme_pubr() +
         theme(
-            axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+            axis.text.y = element_text(angle = 0, hjust = 1, vjust = 0.5),
             legend.position = "none"
         )
 )
@@ -121,19 +124,30 @@ dev.off()
 ```{r, Paper plot}
 source(file.path("vignettes", "articles", "paper_utils.R"))
 library(dplyr)
-cool_feature <- "cytof_CD4+ T Cell (EMRA)"
-tmp <- paper_performance(
-    values_grouped = split(data_joint[[cool_feature]], data_joint[["Severe irAE status (1=Yes, 0=No)d"]]),
-    positive_label = "1",
-    plot_n_points = 0,
-    current_rroc = permpvals |> dplyr::filter(level_2 == cool_feature),
-    outcome = "Severe irAE status (1=Yes, 0=No)",
-    feature = cool_feature,
-    heights = c(.9, .1)
-)
-pdf("intermediate_data/2022-Lozano/2022-Lozano-NatMed_foundAdditional.pdf", height = 8)
-print(tmp)
+paper_perf_res <- sapply(c("cytof_CD4+ T Cell (EMRA)", "cytof_CD8+ T Cell (EMRA)"), function(feature_x) {
+    print(feature_x)
+    paper_performance(
+        values_grouped = split(data_joint[[feature_x]], data_joint[["Severe irAE status (1=Yes, 0=No)d"]]),
+        positive_label = "1",
+        plot_n_points = 0,
+        current_rroc = permpvals |> dplyr::filter(level_2 == feature_x),
+        outcome = "Severe irAE status (1=Yes, 0=No)",
+        feature = feature_x
+    )
+}, USE.NAMES = FALSE, simplify = FALSE)
+
+pdf("intermediate_data/2022-Lozano/2022-Lozano-NatMed_foundAdditional.pdf", height = 6.8, width = 6.5)
+print(paper_perf_res)
 dev.off()
+
+sink("intermediate_data/2022-Lozano/2022-Lozano-NatMed_foundAdditional.txt")
+a <- lapply(paper_perf_res, function(x) {
+    cat(paperperf_to_tex(x[["perf"]]))
+})
+sink()
+
+print(table(data_joint[, 6]))
+print(length(cytof_features))
 ```
 
 [1]: Lozano, A.X., Chaudhuri, A.A., Nene, A. et al. T cell characteristics associated with toxicity to immune checkpoint blockade in patients with melanoma. Nat Med 28, 353–362 (2022). https://doi.org/10.1038/s41591-021-01623-z 
