@@ -45,7 +45,7 @@ for (n_permutations in c(10e3)) {
     )
 }
 rroc_zhang <- qs::qread(file.path(outdir, "rroc_training_10000.qs"))
-class(rroc_zhang) <- c("rROC", class(rroc_zhang))  # needed when restrictedROC 3.3.2 (not 3.3.2.0001) is used
+class(rroc_zhang) <- c("rROC", class(rroc_zhang)) # needed when restrictedROC 3.3.2 (not 3.3.2.0001) is used
 s_zhang <- summary(rroc_zhang)
 s_zhang[["qval.twoside.max"]] <- p.adjust(s_zhang[["pval.twoside.max"]], method = "BH")
 s_zhang[["qval.twoside.global"]] <- p.adjust(s_zhang[["pval.twoside.global"]], method = "BH")
@@ -100,6 +100,44 @@ for (name_x in unique(s_zhang$level_1)) {
     }
 }
 dev.off()
+
+
+source(file.path("vignettes", "articles", "paper_utils.R"))
+library(dplyr)
+# Plotting the restricted ROC
+pdf(file.path(outdir, "rroc_significant.pdf"), height = 6.8, width = 6.5)
+sink(file.path(outdir, "rroc_significant_booktabs.tex"))
+for (feature_x in zhang_additional_significant_features) {
+    outcome_x <- "response"
+
+    current_rroc <- dplyr::filter(
+        s_zhang,
+        level_1 == outcome_x,
+        level_2 == feature_x
+    )
+    data_x <- train[[feature_x]]
+    data_x_noNA <- na.omit(data_x)
+    grouped_vals <- split(data_x_noNA, train[[outcome_x]])
+
+    tmp <- paper_performance(
+        values_grouped = grouped_vals,
+        positive_label = "R",
+        plot_n_points = 0,
+        current_rroc = current_rroc,
+        outcome = outcome_x,
+        feature = feature_x
+    )
+    p1 <- tmp[["plot"]]
+    p1 <- p1 + patchwork::plot_annotation(
+        title = paste0("Dataset: ", outcome_x, "  --- Feature: ", feature_x)
+    )
+    print(p1)
+    cat(paperperf_to_tex(tmp[["perf"]]))
+}
+dev.off()
+sink()
+
+
 
 # Plotting the restricted ROC
 plotlist_1 <- list()
@@ -171,38 +209,15 @@ test_additional <- dataMelanoma::zhang2022_test[
 ]
 datalist <- list("train" = train, "val" = val_additional, "test" = test_additional)
 ```
-```{r, plot density of significant features}
-source(file.path("vignettes", "articles", "paper_utils.R"))
-library(dplyr)
-# Plotting the restricted ROC
-pdf(file.path(outdir, "rroc_significant_2.pdf"), height = 8)
-for (feature_x in zhang_additional_significant_features) {
-    for (tvt in names(datalist)) {
-        tmp <- paper_performance(
-            values_grouped = split(datalist[[tvt]][[feature_x]], datalist[[tvt]][["response"]]),
-            positive_label = "R",
-            plot_n_points = 0,
-            current_rroc = s_zhang |>
-                dplyr::filter(level_2 == feature_x),
-            outcome = "response",
-            feature = feature_x,
-            table_base_size = 4
-        )
-        p1 <- tmp[["plot"]]
-        p1 <- p1 + patchwork::plot_annotation(
-            title = paste0("TVT: ", tvt, "  ----  Feature: ", feature_x)
-        )
-        print(p1)
-    }
-}
-dev.off()
-```
 
 ```{r, Apply found features to validation and test set}
 source("./vignettes/articles/paper_utils.R")
+library(patchwork)
 plots_train <- list()
 plots_applied <- list()
 plots_paperperf <- list()
+perfs_list <- list()
+# for (feature_x in c("LYPD2")) {
 for (feature_x in zhang_additional_significant_features) {
     cat("\n\n\n\n-----------------------------------------------\nFeature: ", feature_x, "\n")
     single_rROC <- restrictedROC::rROC(
@@ -227,33 +242,46 @@ for (feature_x in zhang_additional_significant_features) {
     })
 
     # calculate aucs
-    rocs <- lapply(predicted_tables, function(x) {
-        preds <- x[["pred"]]
-        kept_preds <- preds[preds[["keep"]], ]
-        list(
-            "full" =
-                pROC::roc(
-                    response = preds[["response"]],
-                    predictor = preds[["predictor"]],
-                    direction = "<",
-                    levels = c("NR", "R")
-                ),
-            "restricted" =
-                pROC::roc(
-                    response = kept_preds[["response"]],
-                    predictor = kept_preds[["predictor"]],
-                    direction = "<",
-                    levels = c("NR", "R")
+    rocs_withOUT_direction <- sapply(c("<", "from_train"), function(direction) {
+        if (direction == "from_train") {
+            dir_restricted <- predicted_tables[["train"]][["threshold_and_restriction"]][["classification_direction_restricted_control_X_case"]]
+            dir_full <- predicted_tables[["train"]][["threshold_and_restriction"]][["classification_direction_full_control_X_case"]]
+        } else {
+            dir_restricted <- direction
+            dir_full <- direction
+        }
+        return(
+            lapply(predicted_tables, function(x) {
+                preds <- x[["pred"]]
+                kept_preds <- preds[preds[["keep"]], ]
+                list(
+                    "full" =
+                        pROC::roc(
+                            response = preds[["response"]],
+                            predictor = preds[["predictor"]],
+                            direction = dir_full,
+                            levels = c("NR", "R")
+                        ),
+                    "restricted" =
+                        pROC::roc(
+                            response = kept_preds[["response"]],
+                            predictor = kept_preds[["predictor"]],
+                            direction = dir_restricted,
+                            levels = c("NR", "R")
+                        )
                 )
+            })
         )
-    })
-    aucs <- lapply(rocs, function(x) sapply(x, function(y) y[["auc"]][[1]]))
+    }, USE.NAMES = TRUE, simplify = FALSE)
+    aucs <- lapply(rocs_withOUT_direction[["from_train"]], function(x) sapply(x, function(y) y[["auc"]][[1]]))
     print(aucs)
 
 
     x_limits <- range(lapply(datalist, function(x) range(x[[feature_x]]))) * 1.1
     rroc_plot_train <- restrictedROC::plot_density_rROC_empirical(
-        values_grouped = split(datalist[["train"]][[feature_x]], datalist[["train"]]$response)
+        values_grouped = split(datalist[["train"]][[feature_x]], datalist[["train"]]$response),
+        positive_label = "R",
+        direction = "<"
     )[["plots"]] +
         patchwork::plot_annotation(title = paste0("Dataset: ", "train", "   feature: ", feature_x))
     rroc_plot_train[[1]] <- rroc_plot_train[[1]] +
@@ -265,25 +293,26 @@ for (feature_x in zhang_additional_significant_features) {
     for (data_name_x in names(datalist)) {
         data_x <- datalist[[data_name_x]]
         rroc_plot <- restrictedROC::plot_density_empirical(
-            df = split(data_x[[feature_x]], data_x$response)
+            df = split(data_x[[feature_x]], data_x$response),
+            positive_label = "R"
         ) +
             xlim(x_limits) +
             ggtitle(paste0("Dataset: ", data_name_x, "   feature: ", feature_x)) +
             ggpubr::theme_pubr() +
             geom_vline(
                 xintercept = predicted_tables[["train"]][["threshold_and_restriction"]][["restriction"]],
-                col = "red", linewidth = 1.5
+                col = "red"
             )
         fpr_restriction <- single_rROC[["response"]][[1]][["permutation"]]$performances |>
             dplyr::filter(threshold == predicted_tables[[data_name_x]][["threshold_and_restriction"]][["restriction"]])
         tvt_plots[[data_name_x]] <- patchwork::wrap_plots(
             rroc_plot,
-            pROC::ggroc(rocs[[data_name_x]][[1]], legacy.axes = TRUE) +
+            pROC::ggroc(rocs_withOUT_direction[["<"]][[data_name_x]][[1]], legacy.axes = TRUE) +
                 geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
                 ggpubr::theme_pubr() +
                 coord_fixed() +
                 geom_vline(xintercept = fpr_restriction[["fpr_global"]]),
-            pROC::ggroc(rocs[[data_name_x]][[2]], legacy.axes = TRUE) +
+            pROC::ggroc(rocs_withOUT_direction[["<"]][[data_name_x]][[2]], legacy.axes = TRUE) +
                 geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
                 ggpubr::theme_pubr() +
                 coord_fixed()
@@ -294,9 +323,7 @@ for (feature_x in zhang_additional_significant_features) {
                 data_name_x, " :  Keep ",
                 single_rROC[[1]][[1]]$permutation$max_total[["part"]]
             ))
-
-        plots_paperperf <- c(plots_paperperf, list(
-            paper_performance(
+        tvt_paperperf <- paper_performance(
             values_grouped = split(data_x[[feature_x]], data_x$response),
             positive_label = "R",
             plot_n_points = 0,
@@ -307,11 +334,24 @@ for (feature_x in zhang_additional_significant_features) {
             rroc_single = single_rROC[[1]][[1]][["permutation"]],
             table_base_size = 4,
             customlines = TRUE
-        )[[1]] + patchwork::plot_annotation(title=paste0(
-            feature_x, " -- ",
-            data_name_x, " :  Keep ",
-            single_rROC[[1]][[1]]$permutation$max_total[["part"]]
-        ))))
+        )
+        tmp_perf <- tvt_paperperf[["perf"]]
+        tmp_perf <- tibble::add_column(tmp_perf, "data" = data_name_x, .after = "feature")
+
+        if (data_name_x != "train") {
+            tmp_perf[, c("p.value", "q.value")] <- NA
+        }
+        perfs_list <- c(perfs_list, list(tmp_perf))
+        names(perfs_list)[length(perfs_list)] <- paste0(feature_x, "_", data_name_x)
+
+
+        plots_paperperf <- c(plots_paperperf, list(
+            tvt_paperperf[["plot"]] + patchwork::plot_annotation(title = paste0(
+                feature_x, " -- ",
+                data_name_x, " :  Keep ",
+                single_rROC[[1]][[1]]$permutation$max_total[["part"]]
+            ))
+        ))
         # )
     }
     plots_applied <- c(plots_applied, list(tvt_plots))
@@ -320,12 +360,25 @@ for (feature_x in zhang_additional_significant_features) {
 pdf(file.path(outdir, "applied_train.pdf"), width = 6, height = 6.5)
 plots_train
 dev.off()
-pdf(file.path(outdir, "applied_to_other.pdf"), width = 8, height = 4)
+pdf(file.path(outdir, "applied_to_other.pdf"), width = 7.5, height = 4)
 plots_applied
 dev.off()
-pdf(file.path(outdir, "applied_to_other_paperperf.pdf"))
+pdf(file.path(outdir, "applied_to_other_paperperf.pdf"), width = 6, height = 7)
 plots_paperperf
 dev.off()
+
+tmp <- do.call(rbind, perfs_list)
+rownames(tmp) <- NULL
+tmp <- tmp |>
+    dplyr::arrange(outcome, feature, global_restricted) |>
+    dplyr::relocate(global_restricted, .before = data)
+tmp[tmp$global_restricted == "restricted", c("outcome", "feature")] <- NA
+tmp[tmp$data != "train", c("p.value", "q.value", "inf_range.min", "inf_range.max", "Prediction_Above_Threshold", "threshold", "outcome", "feature", "global_restricted")] <- NA
+
+
+sink(file.path(outdir, "perfs.tex"))
+cat(paperperf_to_tex(tmp, linesep = c(rep("", 5), "\\addlinespace")))
+sink()
 ```
 
 [1]: Zhang, Z., Wang, ZX., Chen, YX. et al. Integrated analysis of single-cell and bulk RNA sequencing data reveals a pan-cancer stemness signature predicting immunotherapy response. Genome Med 14, 45 (2022). https://doi.org/10.1186/s13073-022-01050-w 
