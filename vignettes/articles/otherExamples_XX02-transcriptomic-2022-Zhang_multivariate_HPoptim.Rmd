@@ -1,0 +1,248 @@
+---
+title: "TODO"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+    collapse = TRUE,
+    comment = "#>"
+)
+```
+
+
+
+
+```{r setup}
+options(warn = 1)
+library(restrictedROC)
+```
+```{r, prepare data}
+outdir <- "intermediate_data/2022-zhang_multivariate"
+# data("dataMelanoma")
+# This feature selection follows exactly "data-raw/2022-Zhang-GenomeMedicine/data/GM/Code/Model_Stem.Sig.R"
+# Note that NOT all of the features from zhang2022_Stem.Sig are in the dataset!
+train_stemsig <- dataMelanoma::zhang2022_training[
+    ,
+    colnames(dataMelanoma::zhang2022_training) %in% c("response", dataMelanoma::zhang2022_Stem.Sig)
+]
+val_stemsig <- dataMelanoma::zhang2022_validation[
+    ,
+    colnames(dataMelanoma::zhang2022_validation) %in% c("response", dataMelanoma::zhang2022_Stem.Sig)
+]
+test_stemsig <- dataMelanoma::zhang2022_test[
+    ,
+    colnames(dataMelanoma::zhang2022_test) %in% c("response", dataMelanoma::zhang2022_Stem.Sig)
+]
+data_tvt <- list("train" = train_stemsig, "val" = val_stemsig, "test" = test_stemsig)
+
+rf_seed <- 4233
+```
+```{r, Usual randomforest}
+baseline_rf <- restrictedROC::train_rROC_h2o(
+    x_prepared = train_stemsig[, -1],
+    y = train_stemsig$response,
+    h2o_trainfun = function(df, col_y, cols_x, ...) {
+        # https://rpubs.com/chidungkt/449576
+        hyper_grid.h2o <- list(
+            ntrees = seq(50, 500, by = 50),
+            mtries = seq(3, 5, by = 1),
+            # max_depth = seq(10, 30, by = 10),
+            # min_rows = seq(1, 3, by = 1),
+            # nbins = seq(20, 30, by = 10),
+            sample_rate = c(0.55, 0.632, 0.75),
+            min_rows = 1
+        )
+
+        # Train 6000 Random Forest Models:
+        grid_cartesian <- h2o::h2o.grid(
+            training_frame = df,
+            y = col_y,
+            x = cols_x,
+            seed = rf_seed,
+            algorithm = "randomForest",
+            grid_id = "rf_grid.2",
+            nfolds = 5,
+            stopping_metric = "logloss",
+            hyper_params = hyper_grid.h2o,
+            search_criteria = list(strategy = "RandomDiscrete", max_models = 2)
+        )
+
+        # grid_object <- h2o::h2o.getGrid(grid_id = "rf_grid.2")
+        # Collect the results and sort by our model performance metric of choice:
+        grid_perf <- h2o::h2o.getGrid(
+            grid_id = "rf_grid.2",
+            sort_by = "auc",
+            decreasing = TRUE
+        )
+        # Best model chosen by validation error: 
+        best_model <- h2o::h2o.getModel(grid_perf@model_ids[[1]])
+        return(best_model)
+    }
+)
+rf_base_applied <- lapply(data_tvt, function(data_x) {
+    restrictedROC::predict_rROC_h2o(
+        h2o_model = baseline_rf,
+        x_prepared = data_x[, -1],
+        y = data_x$response
+    )
+})
+```
+
+
+
+```{r, Restriction preprocessing, then randomforest}
+rroc_res <- restrictedROC::rROC(
+    x = train_stemsig[, -1],
+    y = train_stemsig[[1]],
+    independent_vars = NULL,
+    positive_label = "R",
+    n_permutations = 0
+)
+prepared_df <- restrictedROC::prepare_modeldata(
+    x = train_stemsig[, -1],
+    y = train_stemsig[[1]],
+    which_preds = c("bounded"),
+    positive_label = "R",
+    rroc_result = rroc_res
+)
+rf_postRestriction <- restrictedROC::train_rROC_h2o(
+    x_prepared = prepared_df,
+    y = train_stemsig[[1]],
+    h2o_trainfun = function(df, col_y, cols_x, ...) {
+        h2o::h2o.randomForest(
+            training_frame = df,
+            y = col_y,
+            x = cols_x,
+            ntrees = 1000,
+            max_depth = 20,
+            min_rows = 1,
+            nbins = 20,
+            seed = rf_seed, ...
+        )
+    }
+)
+
+rf_postRestriction_applied <- lapply(data_tvt, function(data_x) {
+    prepared_data <- restrictedROC::prepare_modeldata(
+        x = data_x[, -1],
+        y = data_x[[1]],
+        which_preds = c("bounded"),
+        positive_label = "R",
+        rroc_result = rroc_res
+    )
+    restrictedROC::predict_rROC_h2o(
+        h2o_model = rf_postRestriction,
+        x_prepared = prepared_data,
+        y = data_x[[1]],
+    )
+})
+```
+
+
+```{r, Random restriction, then randomforest}
+prepared_df_how_many_keep <- restrictedROC::prepare_modeldata(
+    x = train_stemsig[, -1],
+    y = train_stemsig[[1]],
+    which_preds = c("keep"),
+    positive_label = "R",
+    rroc_result = rroc_res
+)
+n_within_range <- sum(prepared_df_how_many_keep)
+n_outside_range <- sum(!prepared_df_how_many_keep)
+
+prepared_df_randomRestriction <- as.matrix(train_stemsig[, -1])
+randomrestriction_seed <- 827356
+set.seed(randomrestriction_seed) # seet to replace random restricted values
+prepared_df_randomRestriction[sample(length(prepared_df_randomRestriction), n_outside_range)] <- -1
+if (!all(colnames(prepared_df_randomRestriction) == colnames(train_stemsig[, -1]))) {
+    stop("colnames changed")
+}
+rf_post_randomRestriction <- restrictedROC::train_rROC_h2o(
+    x_prepared = tibble::as_tibble(prepared_df_randomRestriction),
+    y = train_stemsig[[1]],
+    h2o_trainfun = function(df, col_y, cols_x, ...) {
+        h2o::h2o.randomForest(
+            training_frame = df,
+            y = col_y,
+            x = cols_x,
+            ntrees = 1000,
+            max_depth = 20,
+            min_rows = 1,
+            nbins = 20,
+            seed = rf_seed, ...
+        )
+    }
+)
+
+rf_post_randomRestriction_applied <- lapply(data_tvt, function(data_x) {
+    restrictedROC::predict_rROC_h2o(
+        h2o_model = rf_post_randomRestriction,
+        x_prepared = data_x,
+        y = data_x[[1]],
+    )
+})
+rf_post_randomRestriction_applied_v2 <- lapply(data_tvt, function(data_x) {
+    data_y <- data_x[[1]]
+    data_x <- as.matrix(data_x[, -1])
+    set.seed(randomrestriction_seed) # seet to replace random restricted values
+    data_x[sample(length(data_x), floor(length(data_x) * (1. * n_outside_range / (n_outside_range + n_within_range))))] <- -1
+    restrictedROC::predict_rROC_h2o(
+        h2o_model = rf_post_randomRestriction,
+        x_prepared = tibble::as_tibble(data_x),
+        y = data_y,
+    )
+})
+```
+
+```{r, Compare results}
+reslist <- list(
+    "base" = rf_base_applied,
+    "restricted" = rf_postRestriction_applied,
+    "randomRestricted" = rf_post_randomRestriction_applied,
+    "randomRestricted_v2" = rf_post_randomRestriction_applied_v2
+)
+lapply(reslist, function(x) {
+    lapply(x, function(y) {
+        y[["metrics"]][["all"]]@metrics[["cm"]][["table"]]
+    })
+})
+sapply(reslist, function(x) {
+    sapply(x, function(y) {
+        y[["metrics"]][["all"]]@metrics[["AUC"]]
+    })
+})
+
+for (tvt_x in names(reslist[["base"]])) {
+    preds_base <- reslist[["base"]][[tvt_x]][["predictions"]]
+    preds_restricted <- reslist[["restricted"]][[tvt_x]][["predictions"]]
+    roc_base <- pROC::roc(response = preds_base$y, predictor = preds_base[["R"]])
+    roc_restricted <- pROC::roc(response = preds_restricted$y, predictor = preds_restricted[["R"]])
+    cat("\n\n", tvt_x, "\n")
+    print(pROC::roc.test(roc_base, roc_restricted, method = "bootstrap", alternative = "less"))
+}
+
+
+
+
+res_tables <- lapply(reslist[c("base", "restricted")], function(x) {
+    lapply(x, function(y) {
+        tmp <- y[["predictions"]][, -c(1:369)][, c("y", "predict")]
+        tmp[["y"]] <- relevel(tmp[["y"]], ref = "R")
+        tmp[["predict"]] <- relevel(tmp[["predict"]], ref = "R")
+        return(
+            list(
+                table(tmp),
+                "acc" = sum(diag(table(tmp))) / nrow(tmp) * 1.
+            )
+        )
+    })
+})
+# Accuracies when taking the predictions of the random forest model.
+# The class is denoted by the bigger probability (= cutoff is 0.5)
+sapply(res_tables, function(x) sapply(x, function(y) y[["acc"]]))
+#            base restricted
+# train 1.0000000  1.0000000
+# val   0.5064935  0.6363636
+# test  0.5100671  0.5637584
+```
+[1]: Zhang, Z., Wang, ZX., Chen, YX. et al. Integrated analysis of single-cell and bulk RNA sequencing data reveals a pan-cancer stemness signature predicting immunotherapy response. Genome Med 14, 45 (2022). https://doi.org/10.1186/s13073-022-01050-w 
