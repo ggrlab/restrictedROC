@@ -13,23 +13,27 @@ Examples of negative binomial distributions with different parameters leading to
 ```{r setup}
 options(warn = 1)
 library(restrictedROC)
+main_plotname <- "res/paper/countDistribution"
+dir.create("res/paper", recursive = TRUE)
 ```
+
 From `stats::qnbinom`:
 
 An alternative parametrization (often used in ecology) is by the mean ``mu`` (see above), and size, the dispersion parameter, where ``prob = size/(size+mu)``. The ``variance`` is ``mu + mu^2/size`` in this parametrization.
 ```{r, fig.fullwidth=TRUE, fig.width=5, fig.height=5}
+n_samples_per_group <- 50 # In publication: 500
 var_alternative <- function(mu, size) {
     return(mu + mu**2 / size)
 }
 text_parameters <- function(mu, size) {
     sprintf(
-        "Mean = %5.1f, Size=%5.1f, Variance: %5.1f",
+        "Mean = %5.1f, Size=%5.3f, Variance: %5.1f",
         mu, size, var_alternative(mu, size)
     )
 }
 
 current_sim <- function(dists) {
-    restrictedROC::sim(dists, do_melt = FALSE, length.out = 250)
+    restrictedROC::sim(dists, do_melt = FALSE, length.out = n_samples_per_group)
 }
 
 # From Ecological Models and Data in R, p. 165: In similar, but own words:
@@ -48,26 +52,35 @@ current_sim <- function(dists) {
 # k is also called size in R, because it is mathematically equivalent to n in
 # the failure-process parameterization.
 
-set.seed(129387)
-# pdf("removeme.pdf")
-for (list_size_mus in c(
-    list(size = c(1, 1), mu = c(700, 100)),
-    list(size = c(.1, .1), mu = c(700, 100)),
-    list(size = c(.25, .25), mu = c(700, 100))
+
+
+# Set a log2 fold-change of 2.5: log2(625/100) == 2.5
+# pdf(paste0(main_plotname, "_examples.pdf"), width = 5.5, height = 5.5)
+for (list_size_mus in list(
+    list(size = c(1, 1), mu = c(625, 100)),
+    list(size = c(.25, .25), mu = c(625, 100)),
+    list(size = c(.1, .1), mu = c(625, 100)),
+    list(size = c(.05, .05), mu = c(625, 100)),
+    list(size = c(.05, .07), mu = c(625, 100)),
+    list(size = c(.1, .05), mu = c(625, 100))
 )
 ) {
+    with_without_log <- function(x) {
+        log2(x + 1)
+    }
     s1 <- list_size_mus[["size"]][[1]]
     s2 <- list_size_mus[["size"]][[2]]
     m1 <- list_size_mus[["mu"]][[1]]
     m2 <- list_size_mus[["mu"]][[2]]
 
+    set.seed(1291387)
     sim_x <- current_sim(
         list(
             "positive" = function(length.out) {
-                rnbinom(length.out, size = s1, mu = m1)
+                with_without_log(rnbinom(length.out, size = s1, mu = m1))
             },
             "negative" = function(length.out) {
-                rnbinom(length.out, size = s2, mu = m2)
+                with_without_log(rnbinom(length.out, size = s2, mu = m2))
             }
         )
     )
