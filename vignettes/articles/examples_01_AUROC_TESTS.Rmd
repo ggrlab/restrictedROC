@@ -13,6 +13,8 @@ knitr::opts_chunk$set(
 options(warn = 1)
 library(restrictedROC)
 library(MASS) # for rnbinom
+main_plotname <- "res/paper/auroc_wilcoxon"
+dir.create("res/paper", recursive = TRUE)
 ```
 From <cite>[Wackerly et al, 2014, Cengage Learning][1]</cite>: The Mann-Whitney U test is a nonparametric test obtained by:
 
@@ -103,8 +105,8 @@ print(u_from_wilcox)
 print(u_total)
 ```
 
-### AUROC is the same as Mann-Whitney U statistic
-```{r, AUROC is the same as Mann-Whitney U statistic}
+### AUROC is the equivalent to Mann-Whitney U statistic
+```{r, AUROC is the equivalent to Mann-Whitney U statistic}
 # Example from Wackerly 2014, p758, 15.6
 values <- c(25, 26, 27, 28, 29, 31, 32, 35)
 names(values) <- c("I", "I", "I", "II", "II", "I", "II", "II")
@@ -179,10 +181,13 @@ plots_rroc <- restrictedROC::plot_density_ROC_empirical(
     direction = "<"
 )
 scaling <- .35
-# pdf("removeme.pdf", width = 30 * scaling, height = 10 * scaling)
+# pdf(paste0(main_plotname, "boxplot_density_rroc.pdf"), width = 30 * scaling, height = 10 * scaling)
 set.seed(51) # for geom_jitter reproducibility
 patchwork::wrap_plots(
-    plot_box, plots_rroc[[1]] + scale_fill_manual(values = c("a" = "#008B4570", "b" = "#ee000070")), plots_rroc[[2]]
+    plot_box,
+    plots_rroc[[1]] +
+        scale_fill_manual(values = c("a" = "#008B4570", "b" = "#ee000070")),
+    plots_rroc[[2]]
 )
 # dev.off()
 ```
@@ -235,7 +240,7 @@ cat("Informative range established from restriction: (", round(rroc_perm$max_tot
 # nolint end
 
 rroc_part_plots <- restrictedROC::plot_rROC_part(
-    rROC_res = rroc_perm, threshold = rroc_perm$max_total[["threshold"]]
+    rroc_perm, threshold = rroc_perm$max_total[["threshold"]]
 )
 informative_range <- c(rroc_perm$max_total[["threshold"]])
 # pdf("removeme_2.pdf", width = 30 * scaling, height = 10 * scaling)

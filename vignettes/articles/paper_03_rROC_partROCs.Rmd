@@ -72,12 +72,12 @@ plots_rzaucs <- tmp_perf %>%
 # pdf("res/paper/rROC_posGTneg_posVARGTneg_completeexample.pdf", width = 8, height = 4)
 print(plot_density)
 a <- plot_rROC_part(
-    rROC_res = tmp[["rroc"]][["single_rROC"]],
+    tmp[["rroc"]][["single_rROC"]],
     fpr = .68,
     include_part_auc_text = FALSE
 )
 b <- plot_rROC_part(
-    rROC_res = tmp[["rroc"]][["single_rROC"]],
+    tmp[["rroc"]][["single_rROC"]],
     fpr = .15,
     include_part_auc_text = FALSE
 )

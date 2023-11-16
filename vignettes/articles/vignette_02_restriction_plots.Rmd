@@ -83,11 +83,11 @@ rroc_interpret <- restrictedROC::simple_rROC_interpret(
 )
 point_25 <- rroc_interpret$performance[which.max(rroc_interpret$performance[["rzAUC_high"]]), ]
 rroc_plots <- plot_rROC_part(
-    rROC_res = rroc,
+    rroc,
     fpr = point_25[["fpr_global"]]
 )
 rroc_plots_threshold <- plot_rROC_part(
-    rROC_res = rroc,
+    rroc,
     threshold = point_25[["threshold"]]
 )
 # pdf("removeme.pdf", width=15)

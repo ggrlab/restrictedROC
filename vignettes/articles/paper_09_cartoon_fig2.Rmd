@@ -60,7 +60,7 @@ rroc_interpret <- restrictedROC::simple_rROC_interpret(
 )
 point_25 <- rroc_interpret$performance[which.max(rroc_interpret$performance[["rzAUC_high"]]), ]
 rroc_plots <- plot_rROC_part(
-    rROC_res = rroc,
+    rroc,
     threshold = point_25[["threshold"]]
 )
 # pdf("cartoon_complete.pdf", height = 3, width = 3)

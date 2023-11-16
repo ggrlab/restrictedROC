@@ -88,7 +88,7 @@ p_full_density_ROC <- plot_density_ROC_empirical(
 # for (threshold_x in rroc$pROC_full$thresholds[5:185]) {  # all valid values
 for (threshold_x in rroc$pROC_full$thresholds[5:185][c(1, 10, 25, 50, 75, 100, 125, 150, 175)]) {
     p_rroc_part <- plot_rROC_part(
-        rROC_res = rroc,
+        rroc,
         p_full_density_ROC = p_full_density_ROC,
         threshold = threshold_x,
         include_part_auc_text = TRUE

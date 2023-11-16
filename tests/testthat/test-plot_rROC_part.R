@@ -51,5 +51,6 @@ test_that("plot_rROC_part different inputs", {
     pdf("removeme.pdf")
     plot_rROC_part(ret_procs_rroc[["outcome"]][["ndka"]][["permutation"]], threshold = 10)[["patchworked"]]
     plot_rROC_part(ret_procs_rroc, threshold = 10)
+    plot_rROC_part(x = ret_procs_rroc, threshold = 10)
     dev.off()
 })

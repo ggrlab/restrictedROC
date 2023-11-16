@@ -16,7 +16,7 @@
 #'       + Color rectangle around the plot
 #' - Densities for selections
 #'
-#' @param rROC_res
+#' @param x
 #' rROC result including full_pROC.
 #' @param p_full_density_ROC
 #' Density plot from plot_density_ROC_empirical of the full data, if not given it is calculated from rROC_res
@@ -46,7 +46,7 @@
 #' # pdf("removeme.pdf")
 #' print(plot_rROC_part(ret_procs, fpr = .5))
 #' # dev.off()
-plot_rROC_part <- function(rROC_result,
+plot_rROC_part <- function(x,
                            p_full_density_ROC = NA,
                            threshold = NA,
                            fpr = NA,
@@ -56,27 +56,28 @@ plot_rROC_part <- function(rROC_result,
     UseMethod("plot_rROC_part")
 }
 #' @export
-plot_rROC_part.default <- function(rROC_result, ...) {
-    plot_rROC_part.rROC(rROC_result, ...)
+plot_rROC_part.default <- function(x, ...) {
+    plot_rROC_part.rROC(x, ...)
 }
 #' @export
-plot_rROC_part.simple_rROC <- function(simple_rROC_result, ...) {
+plot_rROC_part.simple_rROC <- function(x, ...) {
     plot_rROC_part_single(
-        simple_rROC_result,
+        x,
         ...
     )
 }
 
 #' @export
-plot_rROC_part.restrictedROC <- function(interpreted_simple_rROC_result, ...) {
+plot_rROC_part.restrictedROC <- function(x, ...) {
     plot_rROC_part_single(
-        interpreted_simple_rROC_result,
+        x,
         ...
     )
 }
 
 #' @export
-plot_rROC_part.rROC <- function(rROC_result, current_level = 0, title = "", ...) {
+plot_rROC_part.rROC <- function(x, current_level = 0, title = "", ...) {
+    rROC_result <- x
     if (all(is.null(rROC_result)) || all(is.na(rROC_result))) {
         return(NULL)
     } else if (!"permutation" %in% names(rROC_result)) {
@@ -117,13 +118,14 @@ plot_rROC_part.rROC <- function(rROC_result, current_level = 0, title = "", ...)
 }
 
 
-plot_rROC_part_single <- function(rROC_res,
+plot_rROC_part_single <- function(x,
                                   p_full_density_ROC = NA,
                                   threshold = NA,
                                   fpr = NA,
                                   color_high = default_part_colors["high"],
                                   color_low = default_part_colors["low"],
                                   include_part_auc_text = FALSE) {
+    rROC_res <- x
     if ("joined_aucs" %in% names(rROC_res)) {
         rroc_perf <- rROC_res[["joined_aucs"]]
     } else {
