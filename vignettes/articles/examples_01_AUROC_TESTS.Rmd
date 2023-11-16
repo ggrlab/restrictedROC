@@ -172,24 +172,24 @@ df_split <- as.data.frame(split(values, names(values)))
 plot_box <- ggplot(reshape2::melt(df_split), aes(x = variable, y = value, fill = variable)) +
     geom_boxplot() +
     geom_jitter(size = 1, width = .1) +
-    scale_fill_manual(values = c("a" = "#008B4570", "b" = "#ee000070")) +
+    scale_fill_manual(values = c("a" = "#ee000070", "b" = "#008B4570")) +
     ggpubr::theme_pubr()
 plots_rroc <- restrictedROC::plot_density_ROC_empirical(
     values_grouped = df_split,
     xmin = min(values), xmax = max(values),
-    levels = c("b", "a"),
+    levels = c("a", "b"),
     direction = "<"
 )
 scaling <- .35
-# pdf(paste0(main_plotname, "boxplot_density_rroc.pdf"), width = 30 * scaling, height = 10 * scaling)
+pdf(paste0(main_plotname, "boxplot_density_roc.pdf"), width = 30 * scaling, height = 10 * scaling)
 set.seed(51) # for geom_jitter reproducibility
 patchwork::wrap_plots(
     plot_box,
     plots_rroc[[1]] +
-        scale_fill_manual(values = c("a" = "#008B4570", "b" = "#ee000070")),
+        scale_fill_manual(values = c("a" = "#ee000070", "b" = "#008B4570")),
     plots_rroc[[2]]
 )
-# dev.off()
+dev.off()
 ```
 
 ```{r, RestrictedROC permutation test}
@@ -240,22 +240,23 @@ cat("Informative range established from restriction: (", round(rroc_perm$max_tot
 # nolint end
 
 rroc_part_plots <- restrictedROC::plot_rROC_part(
-    rroc_perm, threshold = rroc_perm$max_total[["threshold"]]
+    rroc_perm,
+    threshold = rroc_perm$max_total[["threshold"]]
 )
 informative_range <- c(rroc_perm$max_total[["threshold"]])
-# pdf("removeme_2.pdf", width = 30 * scaling, height = 10 * scaling)
+pdf(paste0(main_plotname, "boxplot_density_roc_restriction.pdf"), width = 30 * scaling, height = 10 * scaling)
 set.seed(51) # for geom_jitter reproducibility
 patchwork::wrap_plots(
     plot_box + geom_hline(yintercept = informative_range, col = "red", linewidth = 1),
     plots_rroc[[1]] +
         geom_vline(xintercept = informative_range, col = "red", linewidth = 1) +
-        scale_fill_manual(values = c("a" = "#008B4570", "b" = "#ee000070")),
+        scale_fill_manual(values = c("a" = "#ee000070", "b" = "#008B4570")),
     plots_rroc[[2]]
 )
-# dev.off()
-# pdf("removeme_3.pdf", height=4, width=4)
+dev.off()
+pdf(paste0(main_plotname, "boxplot_density_roc_restriction_parts.pdf"), height = 4, width = 4)
 print(rroc_part_plots)
-# dev.off()
+dev.off()
 ```
 
 [1]: Wackerly, Dennis, William Mendenhall, and Richard L. Scheaffer. Mathematical statistics with applications. Cengage Learning, 2014.
