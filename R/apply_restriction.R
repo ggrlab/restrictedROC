@@ -41,7 +41,13 @@ apply_restriction <- function(object, newdata, feature = NA, removed_impute = -1
         return(
             sapply(
                 names(object),
-                function(x) apply_restriction(object[[x]], newdata, x),
+                function(x) {
+                    apply_restriction(
+                        object[[x]], newdata,
+                        feature = x,
+                        removed_impute = removed_impute
+                    )
+                },
                 USE.NAMES = TRUE,
                 simplify = FALSE
             )

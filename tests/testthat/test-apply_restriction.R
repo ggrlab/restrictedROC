@@ -48,3 +48,12 @@ test_that("rROC apply restriction missing feature", {
     applied_2 <- apply_restriction(res_df, aSAH[, c("ndka", "s100b"), drop = FALSE])
     testthat::expect_equal(applied_1, applied_2)
 })
+
+test_that("rROC apply different imputation", {
+    library(restrictedROC)
+    data("aSAH", package = "pROC")
+    set.seed(100)
+    applied_1 <- apply_restriction(res_df, aSAH)
+    applied_2 <- apply_restriction(res_df, aSAH, removed_impute = 159)
+    testthat::expect_true(applied_1[[1]][[1]][["thresholds"]][["imputed"]] != applied_2[[1]][[1]][["thresholds"]][["imputed"]])
+})
