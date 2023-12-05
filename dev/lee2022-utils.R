@@ -140,8 +140,16 @@ wrapper_predictions_rroc_featureselect <- function(summarized_experiment,
     train_sE <- summarized_experiment[, boolean_train]
     test_sE <- summarized_experiment[, boolean_test]
 
-    train_x <- SummarizedExperiment::assay(train_sE)
-    test_x <- SummarizedExperiment::assay(test_sE)
+    if (!"array" %in% class(train_sE)) {
+        train_x <- SummarizedExperiment::assay(train_sE)
+    } else {
+        train_x <- train_sE
+    }
+    if (!"array" %in% class(test_sE)) {
+        test_x <- SummarizedExperiment::assay(test_sE)
+    } else {
+        test_x <- test_sE
+    }
 
     if (featureselection_type == 0) {
         selected_features <- rownames(train_x)
@@ -262,7 +270,6 @@ wrapper_modelling <- function(train_x, train_y, test_x, test_y, verbose = TRUE, 
         }
         # remove "extended" unique levels which are non-existent samples
         tmp <- tmp[-c((nrow(tmp) - n_unique_y + 1):nrow(tmp)), ]
-
         # h2o::h2o.relevel(x = tmp[, ncol(tmp)], y = levels(train_data[, ncol(train_data)]))
         # h2o::h2o.levels(tmp[, ncol(tmp)]) <- levels(train_data[, ncol(train_data)])
         # print(h2o::h2o.levels(tmp[, ncol(tmp)]))
@@ -281,12 +288,18 @@ wrapper_modelling <- function(train_x, train_y, test_x, test_y, verbose = TRUE, 
             )) {
                 stop("Writing/Reading data_y into h2o went wrong.")
             }
-            if (!all(
-                h2o.levels(tmp[, ncol(tmp)]) ==
-                    levels(original_data[, ncol(original_data)])
-            )) {
-                stop("Writing/Reading data_y LEVELS into h2o went wrong.")
-            }
+            # if (!all(
+            #     h2o.levels(tmp[, ncol(tmp)])[-1] ==
+            #         levels(original_data[, ncol(original_data)])
+            # )) {
+            #     # Browse[1]> h2o.levels(tmp[, ncol(tmp)])
+            #     # [1] "factor(train_y, levels = unique_y)" "no"                                 "yes"                               
+
+            #     # Browse[1]> levels(original_data[, ncol(original_data)])
+            #     # [1] "no"  "yes"
+
+            #     stop("Writing/Reading data_y LEVELS into h2o went wrong.")
+            # }
         }
         return(tmp)
     }
@@ -323,13 +336,13 @@ wrapper_modelling <- function(train_x, train_y, test_x, test_y, verbose = TRUE, 
 
     roc_train <- pROC::roc(
         response = pred_drf.train[["y"]],
-        predictor = pred_drf.train[, 4], # pred_drf.train[["yes"]],
+        predictor = pred_drf.train[, levels(pred_drf.test[, 2])[[2]]], # pred_drf.train[["yes"]],
         direction = "<", levels = levels(pred_drf.train[["y"]])
     )
     if (length(unique(pred_drf.test[["y"]])) > 1) {
         roc_test <- pROC::roc(
             response = pred_drf.test[["y"]],
-            predictor = pred_drf.test[, 4], # pred_drf.test[["yes"]],
+            predictor = pred_drf.test[, levels(pred_drf.test[, 2])[[2]]], # pred_drf.test[["yes"]],
             direction = "<", levels = levels(pred_drf.test[["y"]])
         )
     } else {

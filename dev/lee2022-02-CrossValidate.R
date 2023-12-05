@@ -1,33 +1,51 @@
+outdir <- file.path("intermediate_data/2022-lee/results")
+dir.create(outdir)
+library(h2o)
+# h2o.shutdown(prompt = FALSE)
+h2o.init()
+
 source("dev/lee2022-utils.R")
 library(Biobase)
 library(TreeSummarizedExperiment)
-qs::qload("intermediate_data/2022-lee/dev-data_lee.rds")
+
+lee_tse <- dataMelanoma::lee2022_treesummarizedexperiment
+data_lee <- t(dataMelanoma::lee2022_relative_abundance_preprocessed)
+pheno_lee <- dataMelanoma::lee2022_pheno_curated
+rownames(data_lee) == pheno_lee$subject_id
+
+pheno_lee_pfs <- pheno_lee[!is.na(pheno_lee[["PFS12"]]), ]
+data_lee_pfs <- data_lee[pheno_lee_pfs$subject_id, ]
+lee_tse_pfs <- lee_tse[, pheno_lee_pfs$subject_id]
+SummarizedExperiment::assay(lee_tse_pfs) <- t(data_lee_pfs)
+
+
 outcome <- "PFS12"
-data_pfs <- data_lee[, !is.na(SummarizedExperiment::colData(data_lee)[[outcome]])]
 table_lsubcohort_pfs <- table(
-    SummarizedExperiment::colData(data_lee)[["lee_subcohort"]],
-    factor(SummarizedExperiment::colData(data_lee)[[outcome]], levels = c("yes", "no"))
+    pheno_lee_pfs[["lee_subcohort"]],
+    factor(pheno_lee_pfs[[outcome]], levels = c("yes", "no"))
 )
-# remove the cohorts without samples
-table_lsubcohort_pfs <- table_lsubcohort_pfs[apply(table_lsubcohort_pfs, 1, sum) != 0, ]
 
 library(future)
 plan(multisession)
-repeated_cv_n <- 1
+repeated_cv_n <- 25
 k_fold_cv <- 5
-for (data_x in list(data_pfs)) {
+for (data_x in list(lee_tse_pfs)) {
     library(ggplot2)
     # for (subcohort_XX in c("all", rownames(table_lsubcohort_pfs))) {
-    for (subcohort_XX in c("all", "PRIMM-NL", "PRIMM-UK")) {
+    for (subcohort_XX in c("PRIMM-NL", "PRIMM-UK")) {
         pdf(
-            paste0(
-                "intermediate_data/2022-lee/results/CrossValidate-",
-                subcohort_XX,
-                "_roccurvesBoundUnbound.pdf"
+            file.path(
+                outdir,
+                paste0(
+                    "CrossValidate-",
+                    subcohort_XX,
+                    "_roccurvesBoundUnbound.pdf"
+                )
             ),
             width = 15, height = 15
         )
-        for (featureselection_type in c(2, 1, 0, 3)) {
+        # for (featureselection_type in c(2, 1, 0, 3)) {
+        for (featureselection_type in c(0)) { # use all features, effectively no feature selection
             for (datatype in c("bounded", "full")) {
                 cat(
                     "\n\nsubcohort: ", subcohort_XX,
@@ -36,7 +54,7 @@ for (data_x in list(data_pfs)) {
                     "\n\n"
                 )
                 savepath <- paste0(
-                    "intermediate_data/2022-lee/CrossValidate_v3/",
+                    "intermediate_data/2022-lee/CrossValidate_v4/",
                     subcohort_XX,
                     "_",
                     datatype,
@@ -128,6 +146,7 @@ for (data_x in list(data_pfs)) {
                             levels = c("no", "yes")
                         )
                     })
+                    qs::qsave(rocs_cv, file = paste0(repeated_cv_results_file, "-rocs_cv.qs"))
                     # extract auc
                     data.labels <- rocs_cv |>
                         purrr::map(~ tibble::tibble(AUC = .x$auc)) |>

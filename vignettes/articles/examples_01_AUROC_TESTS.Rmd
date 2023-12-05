@@ -259,4 +259,239 @@ print(rroc_part_plots)
 dev.off()
 ```
 
+R's two-sample ``wilcoxon.test`` is (by default) calculated "exact" if there are less than 50 observations in both groups. ``n.x`` is the number of samples in the first group, ``n.y`` the number of samples in the second group. 
+
+See https://github.com/SurajGupta/r-source/blob/master/src/library/stats/R/wilcox.test.R for the code. Briefly going through that code: 
+
+ - Line 245 starts the two sample case 
+ - Line 252: If ``exact == NULL`` (default), then `` exact <- (n.x < 50) && (n.y < 50)``
+ - With ties: z-standardization approximization
+ - Without ties: Exact calculation
+
+```{r, eval = FALSE, z-standardization approximization}
+r <- rank(c(x - mu, y))
+STATISTIC <- c("W" = sum(r[seq_along(x)]) - n.x * (n.x + 1) / 2)
+
+NTIES <- table(r)
+z <- STATISTIC - n.x * n.y / 2
+SIGMA <- sqrt((n.x * n.y / 12) * ((n.x + n.y + 1) - sum(NTIES^3 - NTIES) / ((n.x + n.y) * (n.x + n.y - 1))))
+z <- (z - CORRECTION) / SIGMA
+
+if (correct) {
+    CORRECTION <- switch(alternative,
+        "two.sided" = sign(z) * 0.5,
+        "greater" = 0.5,
+        "less" = -0.5
+    )
+    METHOD <- paste(METHOD, "with continuity correction")
+}
+
+PVAL <- switch(alternative,
+    "less" = pnorm(z),
+    "greater" = pnorm(z, lower.tail = FALSE),
+    "two.sided" = 2 * min(
+        pnorm(z),
+        pnorm(z, lower.tail = FALSE)
+    )
+)
+```
+
+```{r, eval = FALSE, Exact calculation WITHOUT ties}
+r <- rank(c(x - mu, y))
+STATISTIC <- c("W" = sum(r[seq_along(x)]) - n.x * (n.x + 1) / 2)
+
+PVAL <- switch(alternative,
+    "two.sided" = {
+        p <- if (STATISTIC > (n.x * n.y / 2)) {
+            pwilcox(STATISTIC - 1, n.x, n.y, lower.tail = FALSE)
+        } else {
+            pwilcox(STATISTIC, n.x, n.y)
+        }
+        min(2 * p, 1)
+    },
+    "greater" = {
+        pwilcox(STATISTIC - 1, n.x, n.y, lower.tail = FALSE)
+    },
+    "less" = pwilcox(STATISTIC, n.x, n.y)
+)
+```
+
+
+
+```{r, Compare rzAUC approximation and wilcoxon statistic}
+set.seed(4)
+values <- c(
+    a = rnorm(55, mean = 8, sd = 1),
+    b = rnorm(55, mean = 8, sd = 1)
+    # b = rnorm(75, mean = 8, sd = 2)
+)
+names(values) <- gsub("[0-9]*", "", names(values))
+rroc_perm_2 <- restrictedROC::rROC(
+    y = names(values),
+    x = values,
+    n_permutations = 0,
+    positive_label = "b",
+    direction = "<",
+    return_proc = TRUE
+)
+rroc_perfs <- rroc_perm_2[[1]][[1]][["permutation"]][["performances"]]
+
+data_df <- tibble::tibble(
+    response = names(values),
+    predictor = values
+)
+wilcox_res <- lapply(rroc_perfs[["threshold"]], function(t_x) {
+    samples_above_threshold <- data_df |> dplyr::filter(predictor > t_x)
+    samples_a <- samples_above_threshold |> dplyr::filter(response == "a")
+    samples_b <- samples_above_threshold |> dplyr::filter(response == "b")
+    if (nrow(samples_b) < 1 || nrow(samples_a) < 1) {
+        return(NULL)
+    }
+    tmp <- wilcox.test(
+        x = samples_a |> dplyr::pull(predictor),
+        y = samples_b |> dplyr::pull(predictor),
+        alternative = "two.sided"
+    )
+    return(tmp)
+})
+w_statistic <- unlist(lapply(wilcox_res, function(x) x$statistic))
+w_pvalue <- unlist(lapply(wilcox_res, function(x) x$p.value))
+
+rroc_perfs[["w.statistic"]] <- NA
+rroc_perfs[["w.pvalue"]] <- NA
+rroc_perfs[seq_along(w_statistic), "w.statistic"] <- w_statistic
+rroc_perfs[seq_along(w_pvalue), "w.pvalue"] <- w_pvalue
+
+rroc_perfs[["u_from_wilcox"]] <- with(rroc_perfs, positives_high * negatives_high - w.statistic)
+rroc_perfs[["auroc_from_u"]] <- with(rroc_perfs, u_from_wilcox / (positives_high * negatives_high))
+
+rroc_perfs[, c(1:8, 20:25)]
+
+rroc_perfs[["fpr_global"]]
+rroc_perfs[["w.pvalue"]] - rroc_perfs[["pval_asym_high"]]
+pdf(paste0(main_plotname, "rzAUC_vs_wilcox.pdf"), width = 6, height = 4)
+print(
+    ggplot(rroc_perfs, aes(x = auc_high, y = round(auroc_from_u - auc_high, 8))) +
+        geom_point() +
+        ggtitle(
+            "Restricted rAUC == (rAUC from wilcoxon test)?",
+            subtitle = "Sanity check if restricted AUC is equivalent to calculated AUC \nfrom multiple wilcoxon test on the corresponding sample subsets"
+        ) +
+        ggpubr::theme_pubr() +
+        theme(
+            plot.title = element_text(size = 6),
+            plot.subtitle = element_text(size = 6)
+        )
+)
+print(
+    ggplot(
+        rroc_perfs |>
+            dplyr::select(fpr_global, pval_asym_high, w.pvalue) |>
+            tidyr::pivot_longer(-fpr_global, names_to = "name", values_to = "p.value"),
+        aes(x = fpr_global, y = (p.value), col = name)
+    ) +
+        geom_point() +
+        ggpubr::theme_pubr()
+)
+print(
+    ggplot(
+        rroc_perfs |>
+            dplyr::select(fpr_global, pval_asym_high, w.pvalue) |>
+            tidyr::pivot_longer(-fpr_global, names_to = "name", values_to = "p.value"),
+        aes(x = fpr_global, y = (p.value), col = name)
+    ) +
+        geom_point() +
+        ggpubr::theme_pubr()
+)
+print(
+    ggplot(
+        rroc_perfs |>
+            dplyr::select(fpr_global, pval_asym_high, w.pvalue) |>
+            tidyr::pivot_longer(-fpr_global, names_to = "name", values_to = "p.value"),
+        aes(x = fpr_global, y = (p.value), col = name)
+    ) +
+        geom_point() +
+        geom_point(data = rroc_perfs[, c("fpr_global", "rzAUC_high")], aes(y = -abs(rzAUC_high), col="black")) +
+        ggpubr::theme_pubr()
+)
+
+print(
+    ggplot(
+        rroc_perfs |>
+            dplyr::select(fpr_global, pval_asym_high, w.pvalue) |>
+            tidyr::pivot_longer(-fpr_global, names_to = "name", values_to = "p.value"),
+        aes(x = fpr_global, y = (p.value), col = name)
+    ) +
+        geom_line() + 
+        geom_line(data = rroc_perfs[, c("fpr_global", "rzAUC_high")], aes(y = -abs(rzAUC_high), col="black")) +
+        ggpubr::theme_pubr()
+)
+
+print(
+    ggplot(
+        rroc_perfs,
+        aes(x = abs(rzAUC_high), y = pval_asym_high)
+    ) +
+        geom_point() +
+        ggpubr::theme_pubr()
+)
+print(
+    ggplot(
+        rroc_perfs,
+        aes(x = abs(rzAUC_high), y = w.pvalue)
+    ) +
+        geom_point() +
+        ggpubr::theme_pubr()
+)
+print(
+    ggplot(
+        rroc_perfs,
+        aes(x = fpr_global, y = w.pvalue)
+    ) +
+        geom_point() +
+        ggpubr::theme_pubr()
+)
+print(
+    ggplot(
+        rroc_perfs,
+        aes(x = fpr_global, y = pval_asym_high)
+    ) +
+        geom_point() +
+        ggpubr::theme_pubr()
+)
+print(
+    ggplot(
+        rroc_perfs,
+        aes(x = fpr_global, y = rzAUC_high)
+    ) +
+        geom_point() +
+        ggpubr::theme_pubr()
+)
+print(
+    ggplot(
+        rroc_perfs,
+        aes(x = pval_asym_high, y = w.pvalue)
+    ) +
+        geom_point() +
+        ggpubr::theme_pubr()
+)
+
+dup_labels <- function(x) {
+    tmp <- apply(rroc_perfs[, c("positives_high", "negatives_high")], 1, sum, na.rm = TRUE)
+    tmp[sapply(x, function(y) {
+        which.min(abs(rroc_perfs[["fpr_global"]] - y))
+    })]
+}
+print(
+    ggplot(
+        rroc_perfs,
+        aes(x = fpr_global, y = pval_asym_high - w.pvalue)
+    ) +
+        geom_point() +
+        ggpubr::theme_pubr() +
+        scale_x_continuous(sec.axis = dup_axis(labels = dup_labels, name = "Total number of samples"))
+)
+dev.off()
+```
+
 [1]: Wackerly, Dennis, William Mendenhall, and Richard L. Scheaffer. Mathematical statistics with applications. Cengage Learning, 2014.
