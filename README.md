@@ -71,7 +71,7 @@ res_rroc <- restrictedROC::rROC(
     positive_label = "Good",
     n_permutations = 100 # increase that in real data!
 )
-#> Tue Dec  5 09:16:34 2023      y x ( 1 )
+#> Tue Dec  5 09:17:45 2023      y x ( 1 )
 ```
 
 `res_rroc` is a nested list where the first level contains all dependent
@@ -106,7 +106,7 @@ res_rroc <- restrictedROC::rROC(
     positive_label = "Good",
     n_permutations = 100 # increase that in real data!
 )
-#> Tue Dec  5 09:16:36 2023      outcome biomarker ( 1 )
+#> Tue Dec  5 09:17:48 2023      outcome biomarker ( 1 )
 ```
 
 ``` r

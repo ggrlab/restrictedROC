@@ -1,5 +1,8 @@
 ---
-output: github_document
+output: 
+    github_document:
+        toc: true
+        toc_depth: 2
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -16,8 +19,8 @@ knitr::opts_chunk$set(
 # restrictedROC
 
 <!-- badges: start -->
-[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
-[![CRAN status](https://www.r-pkg.org/badges/version/restrictedROC)](https://CRAN.R-project.org/package=restrictedROC)
+[![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
+<!-- [![CRAN status](https://www.r-pkg.org/badges/version/restrictedROC)](https://CRAN.R-project.org/package=restrictedROC) -->
 [![R-CMD-check](https://github.com/ggrlab/restrictedROC/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/ggrlab/restrictedROC/actions/workflows/R-CMD-check.yaml)
 [![Codecov test coverage](https://codecov.io/gh/ggrlab/restrictedROC/branch/main/graph/badge.svg)](https://app.codecov.io/gh/ggrlab/restrictedROC?branch=main)
 <!-- badges: end -->
