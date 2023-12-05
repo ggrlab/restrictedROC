@@ -103,7 +103,7 @@ pval_cutoff <- .1
 pdf(file.path(outdir_base, "pfs12_global_vs_restricted.pdf"), width = 4, height = 4)
 
 print(
-    ggplot(bound_taxas, aes(x = pval.twoside.max, y = pval.twoside.global, col = taxonomy)) +
+    ggplot(bound_taxas, aes(x = pval.twoside.global, y = pval.twoside.max, col = taxonomy)) +
         geom_point() +
         geom_vline(xintercept = pval_cutoff, linetype = "dashed") +
         geom_hline(yintercept = pval_cutoff, linetype = "dashed") +
@@ -117,7 +117,7 @@ print(
         )
 )
 print(
-    ggplot(bound_taxas, aes(x = qval.twoside.max, y = qval.twoside.global, col = taxonomy)) +
+    ggplot(bound_taxas, aes(x = qval.twoside.global, y = qval.twoside.max, col = taxonomy)) +
         geom_point() +
         geom_vline(xintercept = pval_cutoff, linetype = "dashed") +
         geom_hline(yintercept = pval_cutoff, linetype = "dashed") +
@@ -131,7 +131,7 @@ print(
         )
 )
 print(
-    ggplot(bound_taxas, aes(x = qval.twoside.max, y = qval.twoside.global)) +
+    ggplot(bound_taxas, aes(x = qval.twoside.global, y = qval.twoside.max)) +
         geom_point() +
         geom_vline(xintercept = pval_cutoff, linetype = "dashed") +
         geom_hline(yintercept = pval_cutoff, linetype = "dashed") +

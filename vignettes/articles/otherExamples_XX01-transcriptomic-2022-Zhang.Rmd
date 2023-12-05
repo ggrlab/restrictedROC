@@ -44,7 +44,7 @@ for (n_permutations in c(50e3, 25e3, 10e3)) {
 }
 
 rroc_zhang <- qs::qread(file.path(outdir, "rroc_training_50000.qs"))
-# class(rroc_zhang) <- c("rROC", class(rroc_zhang))  # needed when restrictedROC 3.3.2 (not 3.3.2.0001) is used
+class(rroc_zhang) <- c("rROC", class(rroc_zhang))  # needed when restrictedROC 3.3.2 (not 3.3.2.0001) is used
 s_zhang <- summary(rroc_zhang)
 s_zhang[["qval.twoside.max"]] <- p.adjust(s_zhang[["pval.twoside.max"]], method = "BH")
 s_zhang[["qval.twoside.global"]] <- p.adjust(s_zhang[["pval.twoside.global"]], method = "BH")
@@ -136,7 +136,7 @@ for (feature_outcome in list(
     ))
 
     p2 <- restrictedROC::plot_rROC_part(
-        rROC_res = rroc_empirical$single_rROC,
+        rroc_empirical$single_rROC,
         threshold = rroc_empirical$single_rROC[["max_total"]][["threshold"]]
     )
     if (rroc_empirical$single_rROC[["max_total"]][["part"]] == "low") {

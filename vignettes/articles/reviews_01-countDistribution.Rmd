@@ -21,7 +21,7 @@ From `stats::qnbinom`:
 
 An alternative parametrization (often used in ecology) is by the mean ``mu`` (see above), and size, the dispersion parameter, where ``prob = size/(size+mu)``. The ``variance`` is ``mu + mu^2/size`` in this parametrization.
 ```{r, fig.fullwidth=TRUE, fig.width=5, fig.height=5}
-n_samples_per_group <- 50 # In publication: 500
+n_samples_per_group <- 50 # In publication: 2500
 var_alternative <- function(mu, size) {
     return(mu + mu**2 / size)
 }
@@ -55,7 +55,7 @@ current_sim <- function(dists) {
 
 
 # Set a log2 fold-change of 2.5: log2(625/100) == 2.5
-# pdf(paste0(main_plotname, "_examples.pdf"), width = 5.5, height = 5.5)
+pdf(paste0(main_plotname, "_examples.pdf"), width = 5.5, height = 5.5)
 for (list_size_mus in list(
     list(size = c(1, 1), mu = c(625, 100)),
     list(size = c(.25, .25), mu = c(625, 100)),
@@ -73,7 +73,7 @@ for (list_size_mus in list(
     m1 <- list_size_mus[["mu"]][[1]]
     m2 <- list_size_mus[["mu"]][[2]]
 
-    set.seed(1291387)
+    set.seed(91387)
     sim_x <- current_sim(
         list(
             "positive" = function(length.out) {
@@ -90,6 +90,7 @@ for (list_size_mus in list(
         direction = "<",
         positive_label = "positive"
     )
+    print(plots_rroc_way_x[["single_rROC"]][["max_total"]])
 
     print(
         plots_rroc_way_x[["plots"]] +
@@ -99,5 +100,65 @@ for (list_size_mus in list(
             )
     )
 }
-# dev.off()
+dev.off()
+```
+
+```{r, Establish realistic parameters for the negative binomial distribution}
+# From https://www.reneshbedre.com/blog/deseq2.html
+# load library
+# DESeq2 version 1.34.0
+pacman::p_load("DESeq2")
+
+# get count dataset
+count_matrix <- as.matrix(read.csv("https://reneshbedre.github.io/assets/posts/gexp/df_sc.csv", row.names = "gene"))
+# view first two rows
+head(count_matrix, 2)
+# drop length column
+count_matrix <- count_matrix[, -7]
+head(count_matrix, 2)
+coldata <- data.frame(
+    sample = c("ctr1", "ctr2", "ctr3", "trt1", "trt2", "trt3"),
+    condition = c("control", "control", "control", "infected", "infected", "infected"),
+    row.names = "sample"
+)
+coldata$condition <- as.factor(coldata$condition)
+
+dds <- DESeqDataSetFromMatrix(
+    countData = count_matrix, colData = coldata,
+    design = ~condition
+)
+
+# Remove genes with low counts
+dds <- dds[rowSums(counts(dds)) >= 10, ]
+
+# set control condition as reference
+dds$condition <- relevel(dds$condition, ref = "control")
+dds_ctrl <- dds[, "control" == colData(dds)$condition]
+dds_inf <- dds[, "infected" == colData(dds)$condition]
+
+dds_results <- lapply(list("full" = dds, "ctrl" = dds_ctrl, "infected" = dds_inf), function(x) {
+    DESeq2::design(x) <- as.formula("~ 1")
+    x <- DESeq2::estimateSizeFactors(x)
+    x <- DESeq2::estimateDispersions(x)
+    return(x)
+})
+dds_results_dispersions <- tibble::as_tibble(sapply(dds_results, DESeq2::dispersions))
+pdf("removeme.pdf")
+boxplot(rnbinom(100, mu = rep(c(5, 100), each = 50), size = 1 / .1) ~ factor(rep(1:2, each = 50)))
+dev.off()
+print(summary(DESeq2::dispersions(dds_results[[1]])))
+dds_res <- DESeq(dds)
+
+str(results(dds_res))
+str(dds_res)
+dds_res$dispModelMatrix
+print(
+    apply(assays(dds_res)[["mu"]], 2, summary) |>
+        as.data.frame() |>
+        tibble::rownames_to_column() |>
+        tibble::as_tibble()
+)
+
+print(summary(dispersions(dds_res)))
+log(700 / 100)
 ```

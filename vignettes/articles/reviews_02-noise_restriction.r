@@ -47,8 +47,10 @@ rroc_result <- restrictedROC::rROC(
 rroc_result <- qs::qread("rroc_result_random_110samples.qs")
 library(restrictedROC)
 s_rroc <- summary(rroc_result)
+s_rroc[["qval.twoside.global"]] <- p.adjust(s_rroc[["pval.twoside.global"]], method = "BH")
+s_rroc[["qval.twoside.max"]] <- p.adjust(s_rroc[["pval.twoside.max"]], method = "BH")
 
-# pdf(paste0(main_plotname, ".pdf"), width = 4, height = 4)
+pdf(paste0(main_plotname, ".pdf"), width = 4, height = 4)
 print(
     ggplot(s_rroc[-1, ], aes(x = pval.twoside.global, y = pval.twoside.max)) +
         geom_point(size = .2) +
@@ -64,10 +66,19 @@ print(
         geom_histogram(boundary = 0, binwidth = 0.1) +
         ggpubr::theme_pubr()
 )
-# dev.off()
+print(
+    ggplot(s_rroc[-1, ], aes(x = qval.twoside.global, y = qval.twoside.max)) +
+        geom_point(size = .2) +
+        ggpubr::theme_pubr() +
+        geom_vline(xintercept = .1, linetype = 2) +
+        geom_hline(yintercept = .1, linetype = 2)
+)
+dev.off()
 
 sum(s_rroc$pval.twoside.global < 0.1)
+# 1033
 sum(s_rroc$pval.twoside.max < 0.1)
+# 987
 
 if (any(p.adjust(s_rroc$pval.twoside.max) < .1)) {
     stop("There are some significant restricted results")

@@ -254,6 +254,9 @@ for (feature_x in zhang_additional_significant_features) {
             lapply(predicted_tables, function(x) {
                 preds <- x[["pred"]]
                 kept_preds <- preds[preds[["keep"]], ]
+                preds_imputed <- preds
+                preds_imputed[["predictor"]][!preds_imputed[["keep"]]] <- -1
+                browser()
                 list(
                     "full" =
                         pROC::roc(
@@ -268,7 +271,8 @@ for (feature_x in zhang_additional_significant_features) {
                             predictor = kept_preds[["predictor"]],
                             direction = dir_restricted,
                             levels = c("NR", "R")
-                        )
+                        ),
+                    "restricted_imputed" = 
                 )
             })
         )

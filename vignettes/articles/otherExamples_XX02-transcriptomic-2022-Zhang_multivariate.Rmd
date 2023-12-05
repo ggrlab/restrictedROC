@@ -17,7 +17,6 @@ options(warn = 1)
 library(restrictedROC)
 ```
 ```{r, prepare data}
-
 outdir <- "intermediate_data/2022-zhang_multivariate"
 # data("dataMelanoma")
 # This feature selection follows exactly "data-raw/2022-Zhang-GenomeMedicine/data/GM/Code/Model_Stem.Sig.R"
@@ -35,8 +34,7 @@ test_stemsig <- dataMelanoma::zhang2022_test[
     colnames(dataMelanoma::zhang2022_test) %in% c("response", dataMelanoma::zhang2022_Stem.Sig)
 ]
 data_tvt <- list("train" = train_stemsig, "val" = val_stemsig, "test" = test_stemsig)
-
-rf_seed <- 4233
+rf_seed <- 4321
 ```
 ```{r, Usual randomforest}
 baseline_rf <- restrictedROC::train_rROC_h2o(
@@ -67,7 +65,7 @@ rf_base_applied <- lapply(data_tvt, function(data_x) {
 
 
 ```{r, Restriction preprocessing, then randomforest}
-
+removed_impute <- -20
 rroc_res <- restrictedROC::rROC(
     x = train_stemsig[, -1],
     y = train_stemsig[[1]],
@@ -80,7 +78,10 @@ prepared_df <- restrictedROC::prepare_modeldata(
     y = train_stemsig[[1]],
     which_preds = c("bounded"),
     positive_label = "R",
-    rroc_result = rroc_res
+    rroc_result = rroc_res,
+    # range(c(test_stemsig[, -1], val_stemsig[, -1], train_stemsig[, -1]))
+    # -18.71309  27.50762
+    removed_impute = removed_impute
 )
 rf_postRestriction <- restrictedROC::train_rROC_h2o(
     x_prepared = prepared_df,
@@ -105,7 +106,8 @@ rf_postRestriction_applied <- lapply(data_tvt, function(data_x) {
         y = data_x[[1]],
         which_preds = c("bounded"),
         positive_label = "R",
-        rroc_result = rroc_res
+        rroc_result = rroc_res,
+        removed_impute = removed_impute
     )
     restrictedROC::predict_rROC_h2o(
         h2o_model = rf_postRestriction,
@@ -116,68 +118,10 @@ rf_postRestriction_applied <- lapply(data_tvt, function(data_x) {
 ```
 
 
-```{r, Random restriction, then randomforest}
-
-prepared_df_how_many_keep <- restrictedROC::prepare_modeldata(
-    x = train_stemsig[, -1],
-    y = train_stemsig[[1]],
-    which_preds = c("keep"),
-    positive_label = "R",
-    rroc_result = rroc_res
-)
-n_within_range <- sum(prepared_df_how_many_keep)
-n_outside_range <- sum(!prepared_df_how_many_keep)
-
-prepared_df_randomRestriction <- as.matrix(train_stemsig[, -1])
-randomrestriction_seed <- 827356
-set.seed(randomrestriction_seed) # seet to replace random restricted values
-prepared_df_randomRestriction[sample(length(prepared_df_randomRestriction), n_outside_range)] <- -1
-if (!all(colnames(prepared_df_randomRestriction) == colnames(train_stemsig[, -1]))) {
-    stop("colnames changed")
-}
-rf_post_randomRestriction <- restrictedROC::train_rROC_h2o(
-    x_prepared = tibble::as_tibble(prepared_df_randomRestriction),
-    y = train_stemsig[[1]],
-    h2o_trainfun = function(df, col_y, cols_x, ...) {
-        h2o::h2o.randomForest(
-            training_frame = df,
-            y = col_y,
-            x = cols_x,
-            ntrees = 1000,
-            max_depth = 20,
-            min_rows = 1,
-            nbins = 20,
-            seed = rf_seed, ...
-        )
-    }
-)
-
-rf_post_randomRestriction_applied <- lapply(data_tvt, function(data_x) {
-    restrictedROC::predict_rROC_h2o(
-        h2o_model = rf_post_randomRestriction,
-        x_prepared = data_x,
-        y = data_x[[1]],
-    )
-})
-rf_post_randomRestriction_applied_v2 <- lapply(data_tvt, function(data_x) {
-    data_y <- data_x[[1]]
-    data_x <- as.matrix(data_x[, -1])
-    set.seed(randomrestriction_seed) # seet to replace random restricted values
-    data_x[sample(length(data_x), floor(length(data_x) * (1. * n_outside_range / (n_outside_range + n_within_range))))] <- -1
-    restrictedROC::predict_rROC_h2o(
-        h2o_model = rf_post_randomRestriction,
-        x_prepared = tibble::as_tibble(data_x),
-        y = data_y,
-    )
-})
-```
-
 ```{r, Compare results}
 reslist <- list(
     "base" = rf_base_applied,
-    "restricted" = rf_postRestriction_applied,
-    "randomRestricted" = rf_post_randomRestriction_applied,
-    "randomRestricted_v2" = rf_post_randomRestriction_applied_v2
+    "restricted" = rf_postRestriction_applied
 )
 lapply(reslist, function(x) {
     lapply(x, function(y) {
@@ -190,14 +134,67 @@ sapply(reslist, function(x) {
     })
 })
 
+pdf(file.path(outdir, "rocs_default_multivariate.pdf"), height = 3.6, width = 3)
 for (tvt_x in names(reslist[["base"]])) {
     preds_base <- reslist[["base"]][[tvt_x]][["predictions"]]
     preds_restricted <- reslist[["restricted"]][[tvt_x]][["predictions"]]
     roc_base <- pROC::roc(response = preds_base$y, predictor = preds_base[["R"]])
     roc_restricted <- pROC::roc(response = preds_restricted$y, predictor = preds_restricted[["R"]])
     cat("\n\n", tvt_x, "\n")
-    print(pROC::roc.test(roc_base, roc_restricted, method = "bootstrap", alternative = "less"))
+    compare_rocs <- pROC::roc.test(roc_base, roc_restricted, method = "delong", alternative = "less")
+    print(compare_rocs)
+    print(
+        pROC::ggroc(roc_base, legacy.axes = TRUE) +
+            ggpubr::theme_pubr() +
+            ggplot2::geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
+            ggplot2::ggtitle(
+                paste0("Multivariate default params; ", tvt_x, " base"),
+                subtitle = paste0(
+                    "pval ROC base < restricted: ", round(compare_rocs$p.value, 4),
+                    " --- AUC: ", round(roc_base$auc, 4)
+                )
+            ) +
+            ggplot2::theme(
+                plot.title = ggplot2::element_text(size = 5),
+                plot.subtitle = ggplot2::element_text(size = 3)
+            )
+    )
+    print(
+        pROC::ggroc(roc_restricted, legacy.axes = TRUE) +
+            ggpubr::theme_pubr() +
+            ggplot2::geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
+            ggplot2::ggtitle(
+                paste0("Multivariate default params; ", tvt_x, " restricted"),
+                subtitle = paste0(
+                    "pval ROC base < restricted: ", round(compare_rocs$p.value, 4),
+                    " --- AUC: ", round(roc_restricted$auc, 4)
+                )
+            ) +
+            ggplot2::theme(
+                plot.title = ggplot2::element_text(size = 5),
+                plot.subtitle = ggplot2::element_text(size = 3)
+            )
+    )
+    print(
+        
+        pROC::ggroc(list("base" = roc_base, "restricted"= roc_restricted), legacy.axes = TRUE) +
+            ggpubr::theme_pubr() +
+            ggplot2::geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
+            ggplot2::ggtitle(
+                paste0("Multivariate default params; ", tvt_x, " restricted"),
+                subtitle = paste0(
+                    "pval ROC base < restricted: ", round(compare_rocs$p.value, 4),
+                    " --- AUC.base: ", round(roc_base$auc, 4),
+                    " --- AUC.restricted: ", round(roc_restricted$auc, 4)
+                )
+            ) +
+            ggplot2::theme(
+                plot.title = ggplot2::element_text(size = 5),
+                plot.subtitle = ggplot2::element_text(size = 3)
+            )
+    )
 }
+dev.off()
 
 
 
