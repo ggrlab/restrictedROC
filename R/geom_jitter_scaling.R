@@ -35,7 +35,7 @@ geom_jitter_scaling <- function(result_plot_density_empirical,
         )
     })
     extreme_vals_sampled <- sapply(extreme_vals, function(x) {
-        runif::runif(1, min = -x, max = x)
+        stats::runif(1, min = -x, max = x)
     })
     data_approxdens[["extreme_vals"]] <- extreme_vals
     data_approxdens[["jitter_height"]] <- extreme_vals_sampled
