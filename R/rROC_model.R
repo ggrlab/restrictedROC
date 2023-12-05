@@ -44,7 +44,8 @@ train_rROC_h2o <- function(x_prepared,
         # library(h2o)
         h2o::h2o.init()
     }
-    train_h2o <- h2o::h2o.importFile("h2o_train.csv")
+    # Without normalizePath(), testthat will not find the file (and fail)
+    train_h2o <- h2o::h2o.importFile(normalizePath("h2o_train.csv"))
 
     h2o_model <- h2o_trainfun(
         df = train_h2o,
@@ -89,7 +90,8 @@ predict_rROC_h2o <- function(h2o_model,
         # library(h2o)
         h2o::h2o.init()
     }
-    df_00_h2o <- h2o::h2o.importFile("h2o_df_00.csv")
+    # Without normalizePath(), testthat will not find the file (and fail)
+    df_00_h2o <- h2o::h2o.importFile(normalizePath("h2o_df_00.csv"))
 
     preds <- tibble::as_tibble(h2o::h2o.predict(h2o_model, newdata = df_00_h2o))
     retdf <- tibble::as_tibble(cbind(df_00, preds))

@@ -34,7 +34,8 @@ test_that("rROC duplicate dependent/independent errors", {
     prepared_df_2 <- prepare_modeldata(
         x = aSAH[, c("ndka", "s100b", "age"), drop = FALSE],
         y = aSAH["outcome"],
-        which_preds = c("bounded")
+        which_preds = c("bounded"),
+        positive_label = "Good"
     )
     pred_original <- predict_rROC_h2o(
         h2o_model = model,
