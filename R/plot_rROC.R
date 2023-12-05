@@ -5,7 +5,7 @@
 #' Plot the complete ROC curve and the corresponding AUCs.
 #'
 #' @inheritParams plot_rROC_single
-#' @param rROC_result
+#' @param x
 #' 	rROC result from \code{\link{simple_rROC}}, \code{\link{simple_rROC_interpret}} or \code{\link{rROC}}.
 #'
 #' @export

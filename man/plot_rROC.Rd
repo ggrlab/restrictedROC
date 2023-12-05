@@ -5,7 +5,7 @@
 \title{plot ROC including AUC significance}
 \usage{
 plot_rROC(
-  rROC_result,
+  x,
   col_rzAUC = "#999999",
   part = c("high", "low"),
   part_colors = default_part_colors,
@@ -13,7 +13,7 @@ plot_rROC(
 )
 }
 \arguments{
-\item{rROC_result}{rROC result from \code{\link{simple_rROC}}, \code{\link{simple_rROC_interpret}} or \code{\link{rROC}}.}
+\item{x}{rROC result from \code{\link{simple_rROC}}, \code{\link{simple_rROC_interpret}} or \code{\link{rROC}}.}
 
 \item{col_rzAUC}{Color for rzAUC points if split_roc_score=FALSE}
 
