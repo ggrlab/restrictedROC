@@ -40,7 +40,7 @@
 #'     part = "low"
 #' )
 #'
-plot_rROC <- function(rROC_result,
+plot_rROC <- function(x,
                       col_rzAUC = "#999999",
                       part = c("high", "low"),
                       part_colors = default_part_colors,
@@ -48,27 +48,28 @@ plot_rROC <- function(rROC_result,
     UseMethod("plot_rROC")
 }
 #' @export
-plot_rROC.default <- function(rROC_result, ...) {
-    plot_rROC.rROC(rROC_result, ...)
+plot_rROC.default <- function(x, ...) {
+    plot_rROC.rROC(x, ...)
 }
 #' @export
-plot_rROC.simple_rROC <- function(simple_rROC_result, ...) {
+plot_rROC.simple_rROC <- function(x, ...) {
     plot_rROC_single(
-        simple_rROC_interpret(simple_rROC_result),
+        simple_rROC_interpret(x),
         ...
     )
 }
 
 #' @export
-plot_rROC.restrictedROC <- function(interpreted_simple_rROC_result, ...) {
+plot_rROC.restrictedROC <- function(x, ...) {
     plot_rROC_single(
-        interpreted_simple_rROC_result,
+        x,
         ...
     )
 }
 
 #' @export
-plot_rROC.rROC <- function(rROC_result, current_level = 0, title = "", ...) {
+plot_rROC.rROC <- function(x, current_level = 0, title = "", ...) {
+    rROC_result <- x
     if (all(is.null(rROC_result)) || all(is.na(rROC_result))) {
         return(NULL)
     } else if (!"permutation" %in% names(rROC_result)) {
@@ -160,7 +161,7 @@ plot_rROC_single <- function(rROC_result,
         resplots <- list(
             "roc" = roc_part,
             "rzAUC" = plot_rzAUCs(
-                rROC_result = rROC_result,
+                rROC_result,
                 part = part,
                 part_colors = part_colors
             )
