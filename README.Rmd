@@ -135,7 +135,7 @@ and the AUC is calculated only on the samples with values within this range.
 We have a convenient way to visualize the data and the results:
 ```{r, out.width="50%"}
 grouped_data <- split(biodata$biomarker, biodata$outcome)
-png("man/figures/example.png", width = 800, height = 800, res = 150)
+png("man/figures/example.png", width = 800, height = 800, res = 120)
 print(
     restrictedROC::plot_density_rROC_empirical(
         values_grouped = grouped_data,
