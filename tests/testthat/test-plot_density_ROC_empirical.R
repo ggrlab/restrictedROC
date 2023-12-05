@@ -14,4 +14,6 @@ test_that("plot_rROC different inputs", {
         )
     )
     dev.off()
+    
+    testthat::expect_true(TRUE)  # Just that the test is not skipped as "empty"
 })

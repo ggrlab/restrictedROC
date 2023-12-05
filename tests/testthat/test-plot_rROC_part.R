@@ -5,7 +5,8 @@ test_that("plot_rROC_part", {
     ret_procs <- simple_rROC(
         response = aSAH$outcome,
         predictor = aSAH$ndka,
-        return_proc = TRUE
+        return_proc = TRUE,
+        positive_label = "Good"
     )
     pdf("removeme.pdf")
     # In plot_rROC_part(ret_procs) :
@@ -13,7 +14,12 @@ test_that("plot_rROC_part", {
     #   10
     # not found, using the closest instead:
     #   9.9
-    plot_rROC_part(ret_procs, threshold = 10)[["patchworked"]]
+    testthat::expect_warning(
+        print(
+            plot_rROC_part(ret_procs, threshold = 10)[["patchworked"]]
+        ),
+        regexp = "not found, using the closest instead:"
+    )
     dev.off()
 
     ret_procs_rroc <- rROC(
@@ -21,13 +27,19 @@ test_that("plot_rROC_part", {
         dependent_vars = "outcome",
         independent_vars = "ndka",
         return_proc = TRUE,
-        n_permutations = 0
+        n_permutations = 0,
+        positive_label = "Good"
     )
     pdf("removeme.pdf")
-    plot_rROC_part(ret_procs_rroc[["outcome"]][["ndka"]][["permutation"]], threshold = 10)[["patchworked"]]
+    testthat::expect_warning(
+        print(
+            plot_rROC_part(ret_procs_rroc[["outcome"]][["ndka"]][["permutation"]], threshold = 10)[["patchworked"]]
+        ),
+        regexp = "not found, using the closest instead:"
+    )
     dev.off()
 
-    testthat::expect_true(TRUE)  # Just that the test is not skipped as "empty"
+    testthat::expect_true(TRUE) # Just that the test is not skipped as "empty"
 })
 test_that("plot_rROC_part different inputs", {
     library(restrictedROC)
@@ -39,8 +51,13 @@ test_that("plot_rROC_part different inputs", {
         return_proc = TRUE
     )
     pdf("removeme.pdf")
-    plot_rROC_part(ret_procs, threshold = 10)[["patchworked"]]
-    plot_rROC_part(simple_rROC_interpret(ret_procs), threshold = 10)[["patchworked"]]
+    testthat::expect_warning(
+        {
+            print(plot_rROC_part(ret_procs, threshold = 10)[["patchworked"]])
+            print(plot_rROC_part(simple_rROC_interpret(ret_procs), threshold = 10)[["patchworked"]])
+        },
+        regexp = "not found, using the closest instead:"
+    )
     dev.off()
 
     ret_procs_rroc <- rROC(
@@ -51,10 +68,15 @@ test_that("plot_rROC_part different inputs", {
         n_permutations = 0
     )
     pdf("removeme.pdf")
-    plot_rROC_part(ret_procs_rroc[["outcome"]][["ndka"]][["permutation"]], threshold = 10)[["patchworked"]]
-    plot_rROC_part(ret_procs_rroc, threshold = 10)
-    plot_rROC_part(x = ret_procs_rroc, threshold = 10)
+    testthat::expect_warning(
+        {
+            print(plot_rROC_part(ret_procs_rroc[["outcome"]][["ndka"]][["permutation"]], threshold = 10)[["patchworked"]])
+            print(plot_rROC_part(ret_procs_rroc, threshold = 10))
+            print(plot_rROC_part(x = ret_procs_rroc, threshold = 10))
+        },
+        regexp = "not found, using the closest instead:"
+    )
     dev.off()
 
-    testthat::expect_true(TRUE)  # Just that the test is not skipped as "empty"
+    testthat::expect_true(TRUE) # Just that the test is not skipped as "empty"
 })
