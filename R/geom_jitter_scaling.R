@@ -12,7 +12,7 @@ geom_jitter_scaling <- function(result_plot_density_empirical,
     plotdata_df_sumdensity[["density_sum"]] <- apply(
         result_plot_density_empirical[["data"]][, 1:2], 1, sum
     )
-    afun <- approxfun(
+    afun <- stats::approxfun(
         x = plotdata_df_sumdensity[["x"]],
         y = plotdata_df_sumdensity[["density_sum"]]
     )
@@ -35,7 +35,7 @@ geom_jitter_scaling <- function(result_plot_density_empirical,
         )
     })
     extreme_vals_sampled <- sapply(extreme_vals, function(x) {
-        runif(1, min = -x, max = x)
+        runif::runif(1, min = -x, max = x)
     })
     data_approxdens[["extreme_vals"]] <- extreme_vals
     data_approxdens[["jitter_height"]] <- extreme_vals_sampled
