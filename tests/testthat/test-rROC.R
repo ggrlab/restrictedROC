@@ -319,6 +319,8 @@ test_that("rROC direction", {
         positive_label = "Good",
         direction = "<"
     )
+
+    testthat::expect_true(TRUE)  # Just that the test is not skipped as "empty"
 })
 
 
@@ -352,6 +354,7 @@ test_that("rROC vs simple_rROC", {
         is.na(rroc_2[["pROC_lowpart"]]),
         is.na(rroc_2[["pROC_highpart"]])
     ), info = "rROC and simple_rROC are almost the same, just nicer formatted")
+
 })
 
 test_that("rROC too long independent var names", {
@@ -372,4 +375,6 @@ test_that("rROC too long independent var names", {
         # Results are saved with qs::qsave()
         save_path = paste0("removeme_tests.qs")
     )
+
+    testthat::expect_true(TRUE)  # Just that the test is not skipped as "empty"
 })

@@ -26,6 +26,8 @@ test_that("plot_rROC_part", {
     pdf("removeme.pdf")
     plot_rROC_part(ret_procs_rroc[["outcome"]][["ndka"]][["permutation"]], threshold = 10)[["patchworked"]]
     dev.off()
+
+    testthat::expect_true(TRUE)  # Just that the test is not skipped as "empty"
 })
 test_that("plot_rROC_part different inputs", {
     library(restrictedROC)
@@ -53,4 +55,6 @@ test_that("plot_rROC_part different inputs", {
     plot_rROC_part(ret_procs_rroc, threshold = 10)
     plot_rROC_part(x = ret_procs_rroc, threshold = 10)
     dev.off()
+
+    testthat::expect_true(TRUE)  # Just that the test is not skipped as "empty"
 })

@@ -7,4 +7,5 @@ test_that("plot_density_ROC", {
         quantile_negative = function(x) qnorm(x, mean = -1, sd = 1.5),
         xmin = -4, xmax = 7
     )
+    testthat::expect_true(TRUE)
 })

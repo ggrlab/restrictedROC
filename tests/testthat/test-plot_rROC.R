@@ -1,6 +1,5 @@
 test_that("plot_rROC different inputs", {
     library(restrictedROC)
-    # devtools::load_all()
     data("aSAH", package = "pROC")
     ret_procs <- simple_rROC(
         response = aSAH$outcome,
@@ -23,4 +22,7 @@ test_that("plot_rROC different inputs", {
     plot_rROC(ret_procs_rroc[["outcome"]][["ndka"]][["permutation"]], part = "high")
     plot_rROC(ret_procs_rroc, part = "high")
     dev.off()
+
+
+    testthat::expect_true(TRUE)  # Just that the test is not skipped as "empty"
 })
