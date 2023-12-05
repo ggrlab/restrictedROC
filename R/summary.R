@@ -6,6 +6,10 @@
 #' @param object A \code{\link{rROC}} result
 #' @param relevant_cols_regex A regex to filter the columns of a single restriction.
 #' @param current_level The current level of the nested list. This is used internally.
+#' @param searchword
+#' If the searchword is not found in the names of the current element, the current level
+#' is increased and the function is called recursively. If the searchword is found, the
+#' summary is returned.
 #' @param ... Additional arguments passed to \code{\link{summary}}.
 #' @export
 #' @return A summary of the result:
