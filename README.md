@@ -71,7 +71,7 @@ res_rroc <- restrictedROC::rROC(
     positive_label = "Good",
     n_permutations = 100 # increase that in real data!
 )
-#> Tue Nov  7 13:40:23 2023      y x ( 1 )
+#> Tue Dec  5 09:07:13 2023      y x ( 1 )
 ```
 
 `res_rroc` is a nested list where the first level contains all dependent
@@ -106,7 +106,7 @@ res_rroc <- restrictedROC::rROC(
     positive_label = "Good",
     n_permutations = 100 # increase that in real data!
 )
-#> Tue Nov  7 13:40:26 2023      outcome biomarker ( 1 )
+#> Tue Dec  5 09:07:16 2023      outcome biomarker ( 1 )
 ```
 
 ``` r
@@ -170,7 +170,7 @@ We have a convenient way to visualize the data and the results:
 
 ``` r
 grouped_data <- split(biodata$biomarker, biodata$outcome)
-png("example.png", width = 800, height = 800, res = 150)
+png("man/figures/example.png", width = 800, height = 800, res = 150)
 print(
     restrictedROC::plot_density_rROC_empirical(
         values_grouped = grouped_data,
@@ -235,7 +235,7 @@ dev.off()
 #>   2
 ```
 
-![aSAH rROC example](example.png)
+![aSAH rROC example](man/figures/example.png)
 
 `plot_density_rROC_empirical()` effectively: 1. Calls `simple_rROC` to
 perform restriction 2. Makes the results readable with
