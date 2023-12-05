@@ -9,7 +9,7 @@ test_that("rROC summary", {
         n_permutations = 2,
         positive_label = "Good"
     )
-    testthat::expect_equal(dim(summary(res_df)), c(1, 10))
+    testthat::expect_equal(dim(summary(res_df)), c(1, 13))
 
 
     res_df <- rROC(
@@ -19,7 +19,7 @@ test_that("rROC summary", {
         n_permutations = 2,
         positive_label = "Good"
     )
-    testthat::expect_equal(dim(summary(res_df)), c(2, 10))
+    testthat::expect_equal(dim(summary(res_df)), c(2, 13))
 
 
     # Two warnings will emerge here, one for every outcome
@@ -32,7 +32,7 @@ test_that("rROC summary", {
             n_permutations = 2
         )
     )
-    testthat::expect_equal(dim(summary(res_df)), c(4, 10))
+    testthat::expect_equal(dim(summary(res_df)), c(4, 13))
 })
 
 
