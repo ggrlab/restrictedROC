@@ -268,7 +268,7 @@ See https://github.com/SurajGupta/r-source/blob/master/src/library/stats/R/wilco
  - With ties: z-standardization approximization
  - Without ties: Exact calculation
 
-```{r, eval = FALSE, z-standardization approximization}
+```{r, z-standardization approximization, eval = FALSE}
 r <- rank(c(x - mu, y))
 STATISTIC <- c("W" = sum(r[seq_along(x)]) - n.x * (n.x + 1) / 2)
 
@@ -296,7 +296,7 @@ PVAL <- switch(alternative,
 )
 ```
 
-```{r, eval = FALSE, Exact calculation WITHOUT ties}
+```{r, Exact calculation WITHOUT ties, eval = FALSE}
 r <- rank(c(x - mu, y))
 STATISTIC <- c("W" = sum(r[seq_along(x)]) - n.x * (n.x + 1) / 2)
 
