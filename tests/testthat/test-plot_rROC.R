@@ -16,7 +16,8 @@ test_that("plot_rROC different inputs", {
         dependent_vars = "outcome",
         independent_vars = "ndka",
         return_proc = TRUE,
-        n_permutations = 0
+        n_permutations = 0,
+        positive_label = "Good"
     )
     pdf("removeme.pdf")
     plot_rROC(ret_procs_rroc[["outcome"]][["ndka"]][["permutation"]], part = "high")
