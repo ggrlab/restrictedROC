@@ -18,3 +18,5 @@ res/paper/*.txt
 docs
 intermediate_data/
 h2o_*
+rroc_result_random*/
+rroc_result*
