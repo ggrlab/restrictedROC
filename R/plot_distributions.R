@@ -84,12 +84,14 @@ plot_distributions_2 <- function(df,
     # Code hints of dataframe
     x <- NULL
     baseplot <- ggplot(df, aes(x = x)) +
-        geom_line(aes_string(y = name_dist_1)) +
-        geom_line(aes_string(y = name_dist_2)) +
-        geom_area(aes_string(
-            y = paste0("pmin(", name_dist_1, ",", name_dist_2, ")"),
+        geom_line(aes(y = .data[[name_dist_1]])) +
+        geom_line(aes(y = .data[[name_dist_2]])) +
+        geom_area(aes(
+            y = pmin(.data[[name_dist_1]], .data[[name_dist_2]]),
             fill = shQuote("+/-")
         ), alpha = 0.3)
+
+
     only_A_df <- df[df[name_dist_1] > df[name_dist_2], ]
     only_B_df <- df[df[name_dist_2] > df[name_dist_1], ]
     if (nrow(only_A_df) > 0) {
