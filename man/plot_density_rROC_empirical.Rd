@@ -50,6 +50,9 @@ and low-value (markerLOW) parts of calculating the restricted ROC.}
 \item{plot_thresholds}{Plot the optimal restrictions for high/low part and the max_total (best overall)}
 
 \item{plot_thresholds_fpr}{Plot the max_total threshold on plots B, C and D}
+
+\item{plot_n_points}{Plot n random actual data points from each distribution with geom_jitter_scaling().
+If NA, no points are plotted. To plot all points use Inf.}
 }
 \value{
 \code{patchwork}'ed ggplots, see Description for their meaning.

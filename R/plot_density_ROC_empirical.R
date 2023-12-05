@@ -98,6 +98,10 @@ plot_density_ROC_empirical <- function(values_grouped,
 #' Plot the optimal restrictions for high/low part and the max_total (best overall)
 #' @param plot_thresholds_fpr
 #' Plot the max_total threshold on plots B, C and D
+#' @param plot_n_points
+#' Plot n random actual data points from each distribution with geom_jitter_scaling().
+#' If NA, no points are plotted. To plot all points use Inf.
+#'
 #' @return `patchwork`'ed ggplots, see Description for their meaning.
 #'
 #' @export
