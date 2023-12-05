@@ -17,6 +17,10 @@ The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/
     e.g. .github/workflows/\*, README.md, etc. Infrastructure updates increase
     the patch version.
 
+# 3.3.3
+
+    - Infrastructure: Pkgdown changes. Documentation is now online. 
+
 # 3.3.2.0012
 
     - `Fixed`: plot_rROC_part(rROC_result, ...) -> plot_rROC_part(x, ...)
