@@ -255,7 +255,7 @@ plot_rROC_joint <- function(roc_part,
             ) +
             geom_segment(
                 aes(x = 1.05, xend = 1.05, y = -Inf, yend = .55),
-                col = col_rzAUC, size = .25
+                col = col_rzAUC, linewidth = .25
             ) +
             coord_cartesian(xlim = c(0, 1.01), clip = "off") +
             theme(
