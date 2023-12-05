@@ -1,5 +1,5 @@
 ---
-title: "AUROC vs Mann-Whitney U"
+title: "AUROC, Mann-Whitney U and Wilcoxon rank-sum"
 ---
 
 ```{r, include = FALSE}
@@ -411,21 +411,21 @@ print(
         aes(x = fpr_global, y = (p.value), col = name)
     ) +
         geom_point() +
-        geom_point(data = rroc_perfs[, c("fpr_global", "rzAUC_high")], aes(y = -abs(rzAUC_high), col="black")) +
+        geom_point(data = rroc_perfs[, c("fpr_global", "rzAUC_high")], aes(y = -abs(rzAUC_high), col = "-abs(rzAUC_high)")) +
         ggpubr::theme_pubr()
 )
 
-print(
-    ggplot(
-        rroc_perfs |>
-            dplyr::select(fpr_global, pval_asym_high, w.pvalue) |>
-            tidyr::pivot_longer(-fpr_global, names_to = "name", values_to = "p.value"),
-        aes(x = fpr_global, y = (p.value), col = name)
-    ) +
-        geom_line() + 
-        geom_line(data = rroc_perfs[, c("fpr_global", "rzAUC_high")], aes(y = -abs(rzAUC_high), col="black")) +
-        ggpubr::theme_pubr()
-)
+# print(
+#     ggplot(
+#         rroc_perfs |>
+#             dplyr::select(fpr_global, pval_asym_high, w.pvalue) |>
+#             tidyr::pivot_longer(-fpr_global, names_to = "name", values_to = "p.value"),
+#         aes(x = fpr_global, y = (p.value), col = name)
+#     ) +
+#         geom_line() +
+#         geom_line(data = rroc_perfs[, c("fpr_global", "rzAUC_high")], aes(y = -abs(rzAUC_high), col = "-abs(rzAUC_high)")) +
+#         ggpubr::theme_pubr()
+# )
 
 print(
     ggplot(
