@@ -189,17 +189,17 @@ plot_rROC_part_single <- function(x,
             xmin = -Inf,
             xmax = onerow[["threshold"]] - 0.005,
             col = default_part_colors["low"],
-            alpha = 0.4, fill = NA, size = 2
+            alpha = 0.4, fill = NA, linewidth = 2
         ),
         annotate("rect",
             ymin = -Inf, ymax = Inf,
             xmin = onerow[["threshold"]] + 0.005,
             xmax = Inf,
             col = default_part_colors["high"],
-            alpha = 0.4, fill = NA, size = 2
+            alpha = 0.4, fill = NA, linewidth = 2
         ),
         p_full_density_restriction[[1]]$layers,
-        geom_vline(xintercept = onerow[["threshold"]], col = "red", size = 1)
+        geom_vline(xintercept = onerow[["threshold"]], col = "red", linewidth = 1)
     )
     p_full_density_restriction[[1]] <- p_full_density_restriction[[1]] +
         scale_y_continuous(labels = function(x) sprintf("%4.1f", x))
@@ -211,7 +211,7 @@ plot_rROC_part_single <- function(x,
             fill = default_part_colors["high"],
             alpha = 0.4,
             col = default_part_colors["high"],
-            size = .4
+            linewidth = .4
         ) +
         annotate("rect",
             xmin = onerow[["fpr_global"]],
@@ -221,7 +221,7 @@ plot_rROC_part_single <- function(x,
             fill = default_part_colors["low"],
             alpha = 0.4,
             col = default_part_colors["low"],
-            size = .4
+            linewidth = .4
         ) +
         geom_segment(
             x = onerow[["fpr_global"]], xend = onerow[["fpr_global"]],
@@ -298,7 +298,7 @@ plot_rROC_part_single <- function(x,
             xmin = onerow[["threshold"]],
             xmax = Inf,
             col = default_part_colors["high"],
-            alpha = 0.4, fill = NA, size = 1.5
+            alpha = 0.4, fill = NA, linewidth = 1.5
         ) +
         annotate("rect",
             ymin = -Inf, ymax = Inf,
@@ -327,13 +327,13 @@ plot_rROC_part_single <- function(x,
             xmin = -Inf,
             xmax = onerow[["threshold"]],
             col = default_part_colors["low"],
-            alpha = 0.4, fill = NA, size = 1.5
+            alpha = 0.4, fill = NA, linewidth = 1.5
         )
 
     all_plots <- list(
         p_full_density_restriction,
         p_density_roc_high +
-            theme(panel.border = element_rect(colour = default_part_colors["high"], fill = NA, size = 4)) +
+            theme(panel.border = element_rect(colour = default_part_colors["high"], fill = NA, linewidth = 4)) +
             annotate("rect",
                 ymin = -Inf, ymax = Inf,
                 xmin = -Inf,
@@ -342,7 +342,7 @@ plot_rROC_part_single <- function(x,
                 alpha = 0.4
             ),
         p_density_roc_low +
-            theme(panel.border = element_rect(colour = default_part_colors["low"], fill = NA, size = 4)) +
+            theme(panel.border = element_rect(colour = default_part_colors["low"], fill = NA, linewidth = 4)) +
             annotate("rect",
                 ymin = -Inf, ymax = Inf,
                 xmin = -Inf,
