@@ -295,7 +295,7 @@ plot_rzAUCs <- function(rROC_result,
     rzauc_part_names <- paste0("rzAUC_", part)
     df_long <- tidyr::pivot_longer(
         df,
-        cols = rzauc_part_names,
+        cols = dplyr::all_of(rzauc_part_names),
         names_to = "restrict_highlow",
         values_to = "rzAUC"
     )
