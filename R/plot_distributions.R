@@ -98,7 +98,11 @@ plot_distributions_2 <- function(df,
         baseplot <- baseplot +
             geom_ribbon(
                 data = df[df[name_dist_1] > df[name_dist_2], ],
-                aes_string(ymin = name_dist_2, ymax = name_dist_1, fill = shQuote(name_dist_1)),
+                aes(
+                    ymin = .data[[name_dist_2]],
+                    ymax = .data[[name_dist_1]],
+                    fill = shQuote(name_dist_1)
+                ),
                 alpha = 0.3
             )
     }
@@ -106,7 +110,11 @@ plot_distributions_2 <- function(df,
         baseplot <- baseplot +
             geom_ribbon(
                 data = df[df[name_dist_2] > df[name_dist_1], ],
-                aes_string(ymin = name_dist_1, ymax = name_dist_2, fill = shQuote(name_dist_2)), alpha = 0.3
+                aes(
+                    ymin = .data[[name_dist_1]],
+                    ymax = .data[[name_dist_2]],
+                    fill = shQuote(name_dist_2)
+                ), alpha = 0.3
             )
     }
     names(colors_pos_neg_both)[names(colors_pos_neg_both) == "+/-"] <- "+/-"
