@@ -16,17 +16,19 @@ summary.rROC <- function(object,
                              "restriction",
                              "informative_range.*"
                          ),
+                         searchword = "permutation_pval",
                          current_level = 0,
                          ...) {
     if (all(is.null(object)) || all(is.na(object))) {
         return(NULL)
-    } else if (!"permutation_pval" %in% names(object)) {
+    } else if (!searchword %in% names(object)) {
         current_level <- current_level + 1
         l_results <- lapply(
             object,
             summary.rROC,
             current_level = current_level,
-            relevant_cols_regex = relevant_cols_regex
+            relevant_cols_regex = relevant_cols_regex,
+            searchword = searchword
         )
         return(dplyr::bind_rows(l_results, .id = paste0("level_", current_level)))
     } else {
