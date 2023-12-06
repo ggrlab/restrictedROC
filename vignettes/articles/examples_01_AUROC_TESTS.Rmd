@@ -169,7 +169,11 @@ print(big_roc)
 # Plot ROC curve
 library(ggplot2)
 df_split <- as.data.frame(split(values, names(values)))
-plot_box <- ggplot(reshape2::melt(df_split), aes(x = variable, y = value, fill = variable)) +
+
+plot_box <- ggplot(
+    tidyr::pivot_longer(df_split, dplyr::everything()),
+    aes(x = name, y = value, fill = name)
+) +
     geom_boxplot() +
     geom_jitter(size = 1, width = .1) +
     scale_fill_manual(values = c("a" = "#ee000070", "b" = "#008B4570")) +
