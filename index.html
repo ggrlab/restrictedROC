@@ -117,7 +117,7 @@
 <span>    positive_label <span class="op">=</span> <span class="st">"Good"</span>,</span>
 <span>    n_permutations <span class="op">=</span> <span class="fl">100</span> <span class="co"># increase that in real data!</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; Wed Dec  6 11:48:34 2023      y x ( 1 )</span></span></code></pre></div>
+<span><span class="co">#&gt; Wed Dec  6 14:06:24 2023      y x ( 1 )</span></span></code></pre></div>
 <p><code>res_rroc</code> is a nested list where the first level contains all dependent variables (Here only <code>y</code>). The second level contains the results for each independent variable (here only <code>x</code>).</p>
 <p>Each dependent + independent variable combination has the following results:</p>
 <ul>
@@ -138,7 +138,7 @@
 <span>    positive_label <span class="op">=</span> <span class="st">"Good"</span>,</span>
 <span>    n_permutations <span class="op">=</span> <span class="fl">100</span> <span class="co"># increase that in real data!</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; Wed Dec  6 11:48:37 2023      outcome biomarker ( 1 )</span></span></code></pre></div>
+<span><span class="co">#&gt; Wed Dec  6 14:06:26 2023      outcome biomarker ( 1 )</span></span></code></pre></div>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">single_result</span> <span class="op">&lt;-</span> <span class="va">res_rroc</span><span class="op">[[</span><span class="st">"outcome"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"biomarker"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"permutation"</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
 <p><code>single_result$permutation_pval</code> refers to the permutation p-values of:</p>
@@ -235,7 +235,13 @@
 <div class="figure">
 <img src="reference/figures/example.png" alt=""><p class="caption">aSAH rROC example</p>
 </div>
-<p><code><a href="reference/plot_density_rROC_empirical.html">plot_density_rROC_empirical()</a></code> effectively: 1. Calls <code>simple_rROC</code> to perform restriction 2. Makes the results readable with <code><a href="reference/simple_rROC_interpret.html">simple_rROC_interpret()</a></code> 3. Plots the original data and the restriction results</p>
+<p><code><a href="reference/plot_density_rROC_empirical.html">plot_density_rROC_empirical()</a></code> effectively:</p>
+<ol style="list-style-type: decimal">
+<li>Calls <code>simple_rROC</code> to perform restriction</li>
+<li>Makes the results readable with <code><a href="reference/simple_rROC_interpret.html">simple_rROC_interpret()</a></code>
+</li>
+<li>Plots the original data and the restriction results</li>
+</ol>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="license">
