@@ -6,16 +6,15 @@
 <!-- badges: start -->
 
 [![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
-[![CRAN
-status](https://www.r-pkg.org/badges/version/restrictedROC)](https://CRAN.R-project.org/package=restrictedROC)
+stable](https://img.shields.io/badge/lifecycle-stable.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
+<!-- [![CRAN status](https://www.r-pkg.org/badges/version/restrictedROC)](https://CRAN.R-project.org/package=restrictedROC) -->
 [![R-CMD-check](https://github.com/ggrlab/restrictedROC/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/ggrlab/restrictedROC/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
 coverage](https://codecov.io/gh/ggrlab/restrictedROC/branch/main/graph/badge.svg)](https://app.codecov.io/gh/ggrlab/restrictedROC?branch=main)
 <!-- badges: end -->
 
-The goal of restrictedROC is to provide a convenient way to calculate
-restricted ROC curves and their permutation p-values.
+restrictedROC calculates restricted ROC curves, their permutation
+p-values, plots and multivariate random forest models with restriction.
 
 ## Installation
 
@@ -52,9 +51,8 @@ Here we use `outcome` and `biomarker` as dependent and independent
 variables, respectively. `outcome` is a factor with two levels,
 `biomarker` is a numeric variable.
 
-The most convenient usage of restrictedROC is via the
-`simple_rROC_permutation()` function. The most important results of
-`restrictedROC::simple_rROC_permutation()` are:
+The most convenient usage of restrictedROC is via the `rROC()` function.
+The most important results of `restrictedROC::rROC()` are:
 
   - (restricted) AUCs for all possible cutoffs of the predictor variable
   - A global and maximal (including all restrictions) AUC
@@ -71,7 +69,7 @@ res_rroc <- restrictedROC::rROC(
     positive_label = "Good",
     n_permutations = 100 # increase that in real data!
 )
-#> Tue Dec  5 09:17:45 2023      y x ( 1 )
+#> Wed Dec  6 11:48:34 2023      y x ( 1 )
 ```
 
 `res_rroc` is a nested list where the first level contains all dependent
@@ -106,7 +104,7 @@ res_rroc <- restrictedROC::rROC(
     positive_label = "Good",
     n_permutations = 100 # increase that in real data!
 )
-#> Tue Dec  5 09:17:48 2023      outcome biomarker ( 1 )
+#> Wed Dec  6 11:48:37 2023      outcome biomarker ( 1 )
 ```
 
 ``` r
@@ -241,194 +239,3 @@ dev.off()
 perform restriction 2. Makes the results readable with
 `simple_rROC_interpret()` 3. Plots the original data and the restriction
 results
-
-# How was this package created?
-
-``` r
-# for VSCode
-install.packages("languageserver")
-install.packages("devtools")
-usethis::create_tidy_package("/home/gugl/clonedgit/ggrlab/restrictedROC")
-usethis::proj_activate("/home/gugl/clonedgit/ggrlab/restrictedROC")
-usethis::use_tidy_style(strict = TRUE)
-usethis::use_git()
-```
-
-`usethis` tells you to envoke further github-related commands. There is
-two ways to continue: 1. Create a personal access token (PAT) and use it
-to authenticate with github 2. Manually push the package to github
-
-Pushing manually works fine, but some advanced `usethis` commands won’t
-work properly, therefore I will continue with the PAT.
-
-``` r
-#
-usethis::create_github_token()
-gitcreds::gitcreds_set() # Then enter the freshly generated token
-usethis::use_github(
-    organisation = "ggrlab",
-    private = FALSE,
-    visibility = "public"
-)
-```
-
-WARNING\!\!\! If an error occurs because e.g. the repository exists
-already at github, use the following instead of `usethis::use_github()`:
-
-``` bash
-git branch -M main_devel
-git remote add origin git@github.com:ggrlab/restrictedROC.git
-git checkout main
-git merge main_devel --allow-unrelated-histories
-git push -u origin main
-git branch --delete main_devel
-```
-
-``` r
-usethis::use_tidy_github()
-usethis::use_tidy_github_actions()
-# overwrite tidy's default "check-full" with "check-standard"
-# to not run so many checks
-usethis::use_github_action("check-standard")
-usethis::use_tidy_github_labels()
-usethis::use_pkgdown_github_pages()
-```
-
-Additional information:
-
-``` r
-usethis::use_author(
-    given = "Gunther",
-    family = "Glehr",
-    email = "gunthergl@gmx.net",
-    role = c("aut", "cre"),
-    comment = c("ORCID" = "0000-0002-1495-9162")
-)
-usethis::use_lifecycle()
-usethis::use_news_md()
-lintr::use_lintr(type = "tidyverse")
-# Change manually to:
-# linters: linters_with_defaults(line_length_linter = line_length_linter(120),indentation_linter = indentation_linter(4)) # see vignette("lintr")
-# encoding: "UTF-8"
-```
-
-precommit is a wonderful tool to check your code before committing it.
-
-``` r
-# https://lorenzwalthert.github.io/precommit/articles/precommit.html
-# install.packages("precommit")
-# bash::$ conda deactivate
-# bash::$ pip3 install pre-commit
-precommit::install_precommit()
-precommit::use_precommit()
-```
-
-Before committing: `pre-commit install --hook-type pre-push`, then
-commit.
-
-Used packages:
-
-``` r
-usethis::use_package("ggplot2")
-usethis::use_package("patchwork")
-usethis::use_package("pROC")
-usethis::use_package("ggpubr")
-usethis::use_package("stats")
-usethis::use_package("tibble")
-usethis::use_package("dplyr")
-usethis::use_package("labeling")
-usethis::use_package("tidyr")
-usethis::use_package("statmod")
-usethis::use_package("future.apply")
-usethis::use_package("readxl", type = "Suggests")
-usethis::use_package("h2o", type = "Suggests")
-usethis::use_package("data.table", type = "Suggests")
-precommit::snippet_generate("additional-deps-roxygenize")
-```
-
-# How to add information
-
-``` r
-# Use pre-commits to check your code before committing it
-remotes::install_github("lorenzwalthert/precommit")
-precommit::install_precommit()
-precommit::use_precommit()
-
-# Increase the versions, manually or by using usethis::use_version()
-usethis::use_version("minor")
-usethis::use_version("dev")
-
-# Add new functionality and document it
-# During development, have a clean R environment and run devtools::load_all() to load the current status of the package
-devtools::load_all()
-
-# After adding new functionality, run devtools::check() to update the documentation
-devtools::check()
-devtools::document()
-
-# Vignettes are a great way to document your package
-# Add a new vignette by running
-usethis::use_vignette("vignette_name")
-# Change the vignette in vignettes/vignette_name.Rmd
-# Build the vignette by running
-devtools::build_vignettes() # This also installs the package
-
-# Articles
-# Instead of a vignette, you can create an article, which is a term used by
-# pkgdown for a vignette-like .Rmd document that is not shipped with the package,
-# but that appears only in the website.
-usethis::use_article("article_name")
-# Further arguments of devtools::build_site() are forwarded to pkgdown::build_site():
-# https://pkgdown.r-lib.org/reference/build_site.html
-devtools::build_site()
-devtools::build_site(devel = TRUE, lazy = TRUE) # Use this for faster iteration during development
-
-devtools::build_readme() # This updates the README.md file from the README.Rmd
-```
-
-  - Disable pre-commit for a single commit: `git commit . -m 'quick fix'
-    --no-verify`
-
-# Troubleshooting:
-
-## `devtools::build_vignettes` fails
-
-    --- re-building 'first_function.Rmd' using rmarkdown
-    Error: processing vignette 'first_function.Rmd' failed with diagnostics:
-    unused argument (resolve_symlink = FALSE)
-    --- failed re-building 'first_function.Rmd'
-    
-    SUMMARY: processing the following file failed:
-      'first_function.Rmd'
-
-Solution:
-
-``` r
-install.packages("xfun")
-```
-
-## Vignette xfun::isFalse() will be deprecated
-
-What: `devtools::check()` throws the following error:
-
-    > checking re-building of vignette outputs ... ERROR
-      Error(s) in re-building vignettes:
-        ...
-      --- re-building 'first_function.Rmd' using rmarkdown
-      Quitting from lines 11-15 (first_function.Rmd) 
-      Error: processing vignette 'first_function.Rmd' failed with diagnostics:
-      The function xfun::isFALSE() will be deprecated in the future. Please consider using base::isFALSE(x) or identical(x, FALSE) instead.
-      --- failed re-building 'first_function.Rmd'
-      
-      SUMMARY: processing the following file failed:
-        'first_function.Rmd'
-      
-      Error: Vignette re-building failed.
-      Execution halted
-
-Solution: See
-<https://stackoverflow.com/questions/76081732/problem-when-converting-r-file-to-r-markdown>
-
-``` r
-install.packages("knitr")
-```
