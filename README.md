@@ -69,7 +69,7 @@ res_rroc <- restrictedROC::rROC(
     positive_label = "Good",
     n_permutations = 100 # increase that in real data!
 )
-#> Wed Dec  6 11:48:34 2023      y x ( 1 )
+#> Wed Dec  6 14:06:24 2023      y x ( 1 )
 ```
 
 `res_rroc` is a nested list where the first level contains all dependent
@@ -104,7 +104,7 @@ res_rroc <- restrictedROC::rROC(
     positive_label = "Good",
     n_permutations = 100 # increase that in real data!
 )
-#> Wed Dec  6 11:48:37 2023      outcome biomarker ( 1 )
+#> Wed Dec  6 14:06:26 2023      outcome biomarker ( 1 )
 ```
 
 ``` r
@@ -235,7 +235,8 @@ dev.off()
 
 ![aSAH rROC example](man/figures/example.png)
 
-`plot_density_rROC_empirical()` effectively: 1. Calls `simple_rROC` to
-perform restriction 2. Makes the results readable with
-`simple_rROC_interpret()` 3. Plots the original data and the restriction
-results
+`plot_density_rROC_empirical()` effectively:
+
+1.  Calls `simple_rROC` to perform restriction
+2.  Makes the results readable with `simple_rROC_interpret()`
+3.  Plots the original data and the restriction results

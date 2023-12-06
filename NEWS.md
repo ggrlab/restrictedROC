@@ -19,7 +19,7 @@ The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/
 
 # 3.3.3
 
-    - Infrastructure: Pkgdown changes. Documentation is now online. 
+    - Infrastructure: Pkgdown changes. Documentation changes. 
 
 # 3.3.2.0012
 

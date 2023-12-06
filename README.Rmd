@@ -151,7 +151,8 @@ dev.off()
 
 
 ``plot_density_rROC_empirical()`` effectively: 
-    1. Calls ``simple_rROC`` to perform restriction
-    2. Makes the results readable with ``simple_rROC_interpret()``
-    3. Plots the original data and the restriction results
+
+1. Calls ``simple_rROC`` to perform restriction
+2. Makes the results readable with ``simple_rROC_interpret()``
+3. Plots the original data and the restriction results
 
