@@ -60,12 +60,16 @@ devtools::build_vignettes() # This also installs the package
 # pkgdown for a vignette-like .Rmd document that is not shipped with the package,
 # but that appears only in the website.
 usethis::use_article("article_name")
+
+
+devtools::build_readme() # This updates the README.md file from the README.Rmd
+
+
 # Further arguments of devtools::build_site() are forwarded to pkgdown::build_site():
 # https://pkgdown.r-lib.org/reference/build_site.html
 devtools::build_site()
 devtools::build_site(devel = TRUE, lazy = TRUE) # Use this for faster iteration during development
 
-devtools::build_readme() # This updates the README.md file from the README.Rmd
 ```
 
 - Disable pre-commit for a single commit: ``git commit . -m 'quick fix' --no-verify``
