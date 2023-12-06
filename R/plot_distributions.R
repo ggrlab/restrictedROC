@@ -81,6 +81,7 @@ plot_distributions_2 <- function(df,
                                  colors_pos_neg_both = colors_pos_neg_both_default,
                                  name_dist_1 = "Positive",
                                  name_dist_2 = "Negative") {
+                                    browser()
     # Code hints of dataframe
     x <- NULL
     baseplot <- ggplot(df, aes(x = x)) +
@@ -88,7 +89,7 @@ plot_distributions_2 <- function(df,
         geom_line(aes(y = .data[[name_dist_2]])) +
         geom_area(aes(
             y = pmin(.data[[name_dist_1]], .data[[name_dist_2]]),
-            fill = shQuote("+/-")
+            fill = "+/-"
         ), alpha = 0.3)
 
 
@@ -101,7 +102,7 @@ plot_distributions_2 <- function(df,
                 aes(
                     ymin = .data[[name_dist_2]],
                     ymax = .data[[name_dist_1]],
-                    fill = shQuote(name_dist_1)
+                    fill = name_dist_1
                 ),
                 alpha = 0.3
             )
@@ -113,7 +114,7 @@ plot_distributions_2 <- function(df,
                 aes(
                     ymin = .data[[name_dist_1]],
                     ymax = .data[[name_dist_2]],
-                    fill = shQuote(name_dist_2)
+                    fill = name_dist_2
                 ), alpha = 0.3
             )
     }
