@@ -81,7 +81,6 @@ plot_distributions_2 <- function(df,
                                  colors_pos_neg_both = colors_pos_neg_both_default,
                                  name_dist_1 = "Positive",
                                  name_dist_2 = "Negative") {
-                                    browser()
     # Code hints of dataframe
     x <- NULL
     baseplot <- ggplot(df, aes(x = x)) +
