@@ -76,7 +76,10 @@ plot_rROC_part.restrictedROC <- function(x, ...) {
 }
 
 #' @export
-plot_rROC_part.rROC <- function(x, current_level = 0, title = "", ...) {
+plot_rROC_part.rROC <- function(x, ...) {
+    plot_rROC_part_recursive(x, ...)
+}
+plot_rROC_part_recursive <- function(x, current_level = 0, title = "", ...) {
     rROC_result <- x
     if (all(is.null(rROC_result)) || all(is.na(rROC_result))) {
         return(NULL)
