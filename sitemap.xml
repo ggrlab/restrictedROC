@@ -19,6 +19,12 @@
     <loc>https://ggrlab.github.io/restrictedROC/SUPPORT.html</loc>
   </url>
   <url>
+    <loc>https://ggrlab.github.io/restrictedROC/Troubleshooting.html</loc>
+  </url>
+  <url>
+    <loc>https://ggrlab.github.io/restrictedROC/articles/examples_01_AUROC_TESTS.html</loc>
+  </url>
+  <url>
     <loc>https://ggrlab.github.io/restrictedROC/articles/index.html</loc>
   </url>
   <url>
@@ -64,6 +70,9 @@
     <loc>https://ggrlab.github.io/restrictedROC/news/index.html</loc>
   </url>
   <url>
+    <loc>https://ggrlab.github.io/restrictedROC/reference/apply_restriction.html</loc>
+  </url>
+  <url>
     <loc>https://ggrlab.github.io/restrictedROC/reference/default_part_colors.html</loc>
   </url>
   <url>
@@ -74,6 +83,9 @@
   </url>
   <url>
     <loc>https://ggrlab.github.io/restrictedROC/reference/melt_gendata.html</loc>
+  </url>
+  <url>
+    <loc>https://ggrlab.github.io/restrictedROC/reference/merge_applied.html</loc>
   </url>
   <url>
     <loc>https://ggrlab.github.io/restrictedROC/reference/perf_ROC.html</loc>
@@ -118,6 +130,9 @@
     <loc>https://ggrlab.github.io/restrictedROC/reference/plot_rROC_part.html</loc>
   </url>
   <url>
+    <loc>https://ggrlab.github.io/restrictedROC/reference/plot_rROC_single.html</loc>
+  </url>
+  <url>
     <loc>https://ggrlab.github.io/restrictedROC/reference/plot_rROC_theoretical.html</loc>
   </url>
   <url>
@@ -125,6 +140,27 @@
   </url>
   <url>
     <loc>https://ggrlab.github.io/restrictedROC/reference/predict.restrictedROC.html</loc>
+  </url>
+  <url>
+    <loc>https://ggrlab.github.io/restrictedROC/reference/predict_rROC_h2o.html</loc>
+  </url>
+  <url>
+    <loc>https://ggrlab.github.io/restrictedROC/reference/prepare_modeldata.data.frame.html</loc>
+  </url>
+  <url>
+    <loc>https://ggrlab.github.io/restrictedROC/reference/prepare_modeldata.html</loc>
+  </url>
+  <url>
+    <loc>https://ggrlab.github.io/restrictedROC/reference/rROC.data.frame.html</loc>
+  </url>
+  <url>
+    <loc>https://ggrlab.github.io/restrictedROC/reference/rROC.html</loc>
+  </url>
+  <url>
+    <loc>https://ggrlab.github.io/restrictedROC/reference/rROC.matrix.html</loc>
+  </url>
+  <url>
+    <loc>https://ggrlab.github.io/restrictedROC/reference/rROC.numeric.html</loc>
   </url>
   <url>
     <loc>https://ggrlab.github.io/restrictedROC/reference/restrictedROC-package.html</loc>
@@ -140,5 +176,11 @@
   </url>
   <url>
     <loc>https://ggrlab.github.io/restrictedROC/reference/simple_rROC_permutation.html</loc>
+  </url>
+  <url>
+    <loc>https://ggrlab.github.io/restrictedROC/reference/summary.rROC.html</loc>
+  </url>
+  <url>
+    <loc>https://ggrlab.github.io/restrictedROC/reference/train_rROC_h2o.html</loc>
   </url>
 </urlset>

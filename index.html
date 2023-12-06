@@ -8,8 +8,8 @@
 <meta name="description" content="Calculate restricted ROC-curves, AUCs and permutation p-values.">
 <title>Calculate restricted ROC curves • restrictedROC</title>
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
-<script src="deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
+<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Calculate restricted ROC curves">
 <meta property="og:description" content="Calculate restricted ROC-curves, AUCs and permutation p-values.">
@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="index.html">restrictedROC</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3.3</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -41,6 +41,7 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="articles/examples_01_AUROC_TESTS.html">AUROC, Mann-Whitney U and Wilcoxon rank-sum</a>
     <a class="dropdown-item" href="articles/paper_01_roccurves.html">Paper 01: ROC curves</a>
     <a class="dropdown-item" href="articles/paper_02_rROC_theoretic.html">Paper 02: rROC theoretic</a>
     <a class="dropdown-item" href="articles/paper_03_rROC_partROCs.html">Paper 03: rROC partROCs</a>
@@ -74,11 +75,11 @@
 </h1></div>
 <!-- badges: start -->
 
-<p>The goal of restrictedROC is to …</p>
+<p>restrictedROC calculates restricted ROC curves, their permutation p-values, plots and multivariate random forest models with restriction.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>You can install the development version of restrictedROC like so:</p>
+<p>You can install the latest version of restrictedROC like so:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"ggrlab/restrictedROC"</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -99,57 +100,76 @@
 <span><span class="co">#&gt; 3    Good 14.676125</span></span>
 <span><span class="co">#&gt; 4    Good 10.211525</span></span>
 <span><span class="co">#&gt; 5    Good 10.387863</span></span>
-<span><span class="co">#&gt; 6    Good 15.145195</span></span>
-<span><span class="co">#   outcome biomarker</span></span>
-<span><span class="co"># 1    Good  8.318573</span></span>
-<span><span class="co"># 2    Good  9.309468</span></span>
-<span><span class="co"># 3    Good 14.676125</span></span>
-<span><span class="co"># 4    Good 10.211525</span></span>
-<span><span class="co"># 5    Good 10.387863</span></span>
-<span><span class="co"># 6    Good 15.145195</span></span></code></pre></div>
+<span><span class="co">#&gt; 6    Good 15.145195</span></span></code></pre></div>
 <p>Here we use <code>outcome</code> and <code>biomarker</code> as dependent and independent variables, respectively. <code>outcome</code> is a factor with two levels, <code>biomarker</code> is a numeric variable.</p>
-<p>The most convenient usage of restrictedROC is via the <code><a href="reference/simple_rROC_permutation.html">simple_rROC_permutation()</a></code> function. The most important results of <code><a href="reference/simple_rROC_permutation.html">restrictedROC::simple_rROC_permutation()</a></code> are:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span> (restricted) AUCs <span class="cf">for</span> all possible cutoffs of the predictor variable</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span> A global and <span class="fu">maximal</span> (including all restrictions) AUC</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span> Permutation p<span class="sc">-</span>values <span class="cf">for</span> the global and maximal AUC</span></code></pre></div>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<p>The most convenient usage of restrictedROC is via the <code><a href="reference/rROC.html">rROC()</a></code> function. The most important results of <code><a href="reference/rROC.html">restrictedROC::rROC()</a></code> are:</p>
+<ul>
+<li>(restricted) AUCs for all possible cutoffs of the predictor variable</li>
+<li>A global and maximal (including all restrictions) AUC</li>
+<li>Permutation p-values for the global and maximal AUC</li>
+</ul>
+<!-- end list --><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># library(restrictedROC)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">412</span><span class="op">)</span></span>
-<span><span class="va">res_rroc</span> <span class="op">&lt;-</span> <span class="fu">restrictedROC</span><span class="fu">::</span><span class="fu"><a href="reference/simple_rROC_permutation.html">simple_rROC_permutation</a></span><span class="op">(</span></span>
-<span>    response <span class="op">=</span> <span class="va">biodata</span><span class="op">$</span><span class="va">outcome</span>,</span>
-<span>    predictor <span class="op">=</span> <span class="va">biodata</span><span class="op">$</span><span class="va">biomarker</span>,</span>
+<span><span class="va">res_rroc</span> <span class="op">&lt;-</span> <span class="fu">restrictedROC</span><span class="fu">::</span><span class="fu"><a href="reference/rROC.html">rROC</a></span><span class="op">(</span></span>
+<span>    x <span class="op">=</span> <span class="va">biodata</span><span class="op">$</span><span class="va">biomarker</span>,</span>
+<span>    y <span class="op">=</span> <span class="va">biodata</span><span class="op">$</span><span class="va">outcome</span>,</span>
 <span>    positive_label <span class="op">=</span> <span class="st">"Good"</span>,</span>
-<span>    n_permutations <span class="op">=</span> <span class="fl">100</span>  <span class="co"># increase that in real data!</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<p><code>res_rroc$permutation_pval</code> refers to the permutation p-values of: - <code>pval.twoside.global</code>: The global AUC when all samples are used. This is the usually known AUC with a calculated permutation p-value. - <code>pval.twoside.max</code>: This is the maximal (restricted or unrestricted) AUC’s permutation p-value.</p>
+<span>    n_permutations <span class="op">=</span> <span class="fl">100</span> <span class="co"># increase that in real data!</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; Wed Dec  6 11:48:34 2023      y x ( 1 )</span></span></code></pre></div>
+<p><code>res_rroc</code> is a nested list where the first level contains all dependent variables (Here only <code>y</code>). The second level contains the results for each independent variable (here only <code>x</code>).</p>
+<p>Each dependent + independent variable combination has the following results:</p>
+<ul>
+<li>
+<code>plots</code>: Plots, only if enabled, otherwise NA</li>
+<li>
+<code>permutation</code>: A <code>restrictedROC</code> class element containing each permutation result</li>
+</ul>
+<!-- end list --><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">single_result</span> <span class="op">&lt;-</span> <span class="va">res_rroc</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"permutation"</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
+<p>Given a dataframe, you can use arbitrary dependent and independent variables (within the dataframe) and calculate the restricted ROC curve for each combination. Additionally, the list names will be set to the respective dependent (first level) and independent (second level) variable names.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">res_rroc</span><span class="op">$</span><span class="va">permutation_pval</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt;    pval.twoside.max pval.twoside.global      n_permutations </span></span>
-<span><span class="co">#&gt;               0.010               0.099             100.000</span></span>
-<span><span class="co">#    pval.twoside.max pval.twoside.global      n_permutations</span></span>
-<span><span class="co">#               0.010               0.099             100.000</span></span></code></pre></div>
-<p>In this particular example we see that at a significance level of 0.05, the global AUC is insignificant, but the maximal AUC is significant. This tells that the data should be restricted and has a <strong>limited informative range</strong>.</p>
-<p><code>res_rroc$global</code> refers to the AUC, its variance under H0, the standardized AUC, and its (asymptotic, not permutation!) p-value when using all samples without restriction.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">412</span><span class="op">)</span></span>
+<span><span class="va">res_rroc</span> <span class="op">&lt;-</span> <span class="fu">restrictedROC</span><span class="fu">::</span><span class="fu"><a href="reference/rROC.html">rROC</a></span><span class="op">(</span></span>
+<span>    x <span class="op">=</span> <span class="va">biodata</span>,</span>
+<span>    dependent_vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"outcome"</span><span class="op">)</span>,</span>
+<span>    independent_vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"biomarker"</span><span class="op">)</span>,</span>
+<span>    positive_label <span class="op">=</span> <span class="st">"Good"</span>,</span>
+<span>    n_permutations <span class="op">=</span> <span class="fl">100</span> <span class="co"># increase that in real data!</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; Wed Dec  6 11:48:37 2023      outcome biomarker ( 1 )</span></span></code></pre></div>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">res_rroc</span><span class="op">$</span><span class="va">global</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">single_result</span> <span class="op">&lt;-</span> <span class="va">res_rroc</span><span class="op">[[</span><span class="st">"outcome"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"biomarker"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"permutation"</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
+<p><code>single_result$permutation_pval</code> refers to the permutation p-values of:</p>
+<ul>
+<li>
+<code>pval.twoside.global</code>: The global AUC when all samples are used. This is the usually known AUC with a calculated permutation p-value.</li>
+<li>
+<code>pval.twoside.max</code>: This is the maximal (restricted or unrestricted) AUC’s permutation p-value.</li>
+</ul>
+<!-- end list --><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">single_result</span><span class="op">$</span><span class="va">permutation_pval</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;    pval.twoside.max pval.twoside.global      n_permutations </span></span>
+<span><span class="co">#&gt;               0.010               0.069             100.000</span></span></code></pre></div>
+<p>In this particular example we see that at a significance level of 0.05, the global AUC is insignificant, but the maximal AUC is significant. This tells that the data should be restricted and has a <strong>limited informative range</strong>.</p>
+<p><code>single_result$global</code> refers to the AUC, its variance under H0, the standardized AUC, and its (asymptotic, not permutation!) p-value when using all samples without restriction.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">single_result</span><span class="op">$</span><span class="va">global</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      auc auc_var_H0   rzAUC pval_asym</span></span>
-<span><span class="co">#&gt; 1 0.6016     0.6016 1.75103 0.0799407</span></span>
-<span><span class="co">#      auc auc_var_H0   rzAUC pval_asym</span></span>
-<span><span class="co"># 1 0.6016     0.6016 1.75103 0.0799407</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 0.6016     0.6016 1.75103 0.0799407</span></span></code></pre></div>
 <p>We see that the AUC is 0.6016, with a p-value of 0.08. This is not significant at a significance level of 0.05.</p>
-<p><code>res_rroc$max_total</code> refers to the AUC, its variance under H0, the standardized AUC, its (asymptotic, not permutation!) p-value, the threshold(=restriction value) and which part of the data is <strong>kept</strong> and therefore <strong>within the informative range</strong>.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">res_rroc</span><span class="op">$</span><span class="va">max_total</span><span class="op">)</span></span>
+<p><code>single_result$max_total</code> refers to the AUC, its variance under H0, the standardized AUC, its (asymptotic, not permutation!) p-value, the threshold(=restriction value) and which part of the data is <strong>kept</strong> and therefore <strong>within the informative range</strong>.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">single_result</span><span class="op">$</span><span class="va">max_total</span><span class="op">)</span></span>
 <span><span class="co">#&gt;         auc  auc_var_H0    rzAUC    pval_asym threshold part</span></span>
-<span><span class="co">#&gt; 1 0.9089069 0.007759784 4.641941 3.451517e-06  9.377944 high</span></span>
-<span><span class="co">#         auc  auc_var_H0    rzAUC    pval_asym threshold part</span></span>
-<span><span class="co"># 1 0.9089069 0.007759784 4.641941 3.451517e-06  9.377944 high</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 0.9089069 0.007759784 4.641941 3.451517e-06  9.377944 high</span></span></code></pre></div>
 <p>In this example, the maximal AUC is 0.9089, with a restriction value of 9.377944 and a focus on the “low” part. Therefore, the informative range is <code>biomarker &lt; 9.378</code>.</p>
 <p>In particular, we observe that the AUC is much higher than the global AUC, and that the p-value is lower. This is because the data is restricted to the informative range and the AUC is calculated only on the samples with values within this range.</p>
 <p>We have a convenient way to visualize the data and the results:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">grouped_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/split.html" class="external-link">split</a></span><span class="op">(</span><span class="va">biodata</span><span class="op">$</span><span class="va">biomarker</span>, <span class="va">biodata</span><span class="op">$</span><span class="va">outcome</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/grDevices/png.html" class="external-link">png</a></span><span class="op">(</span><span class="st">"example.png"</span>, width <span class="op">=</span> <span class="fl">800</span>, height <span class="op">=</span> <span class="fl">800</span>, res <span class="op">=</span> <span class="fl">150</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/grDevices/png.html" class="external-link">png</a></span><span class="op">(</span><span class="st">"man/figures/example.png"</span>, width <span class="op">=</span> <span class="fl">800</span>, height <span class="op">=</span> <span class="fl">800</span>, res <span class="op">=</span> <span class="fl">120</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span></span>
 <span>    <span class="fu">restrictedROC</span><span class="fu">::</span><span class="fu"><a href="reference/plot_density_rROC_empirical.html">plot_density_rROC_empirical</a></span><span class="op">(</span></span>
 <span>        values_grouped <span class="op">=</span> <span class="va">grouped_data</span>,</span>
@@ -208,170 +228,16 @@
 <span><span class="co">#&gt; Area under the curve: 0.6016</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attr(,"class")</span></span>
-<span><span class="co">#&gt; [1] "list"          "restrictedROC"</span></span>
+<span><span class="co">#&gt; [1] "restrictedROC" "list"</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/grDevices/dev.html" class="external-link">dev.off</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; png </span></span>
 <span><span class="co">#&gt;   2</span></span></code></pre></div>
 <div class="figure">
-<img src="example.png" alt=""><p class="caption">aSAH rROC example</p>
+<img src="reference/figures/example.png" alt=""><p class="caption">aSAH rROC example</p>
 </div>
 <p><code><a href="reference/plot_density_rROC_empirical.html">plot_density_rROC_empirical()</a></code> effectively: 1. Calls <code>simple_rROC</code> to perform restriction 2. Makes the results readable with <code><a href="reference/simple_rROC_interpret.html">simple_rROC_interpret()</a></code> 3. Plots the original data and the restriction results</p>
 </div>
 </div>
-<div class="section level1">
-<h1 id="how-was-this-package-created">How was this package created?<a class="anchor" aria-label="anchor" href="#how-was-this-package-created"></a>
-</h1>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="co"># for VSCode</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"languageserver"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span></span>
-<span><span class="fu">usethis</span><span class="fu">::</span><span class="fu">create_tidy_package</span><span class="op">(</span><span class="st">"/home/gugl/clonedgit/ggrlab/restrictedROC"</span><span class="op">)</span></span>
-<span><span class="fu">usethis</span><span class="fu">::</span><span class="fu">proj_activate</span><span class="op">(</span><span class="st">"/home/gugl/clonedgit/ggrlab/restrictedROC"</span><span class="op">)</span></span>
-<span><span class="fu">usethis</span><span class="fu">::</span><span class="fu">use_tidy_style</span><span class="op">(</span>strict <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="fu">usethis</span><span class="fu">::</span><span class="fu">use_git</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><code>usethis</code> tells you to envoke further github-related commands. There is two ways to continue: 1. Create a personal access token (PAT) and use it to authenticate with github 2. Manually push the package to github</p>
-<p>Pushing manually works fine, but some advanced <code>usethis</code> commands won’t work properly, therefore I will continue with the PAT.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">#</span></span>
-<span><span class="fu">usethis</span><span class="fu">::</span><span class="fu">create_github_token</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu">gitcreds</span><span class="fu">::</span><span class="fu">gitcreds_set</span><span class="op">(</span><span class="op">)</span> <span class="co"># Then enter the freshly generated token</span></span>
-<span><span class="fu">usethis</span><span class="fu">::</span><span class="fu">use_github</span><span class="op">(</span></span>
-<span>    organisation <span class="op">=</span> <span class="st">"ggrlab"</span>,</span>
-<span>    private <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>    visibility <span class="op">=</span> <span class="st">"public"</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<p>WARNING!!! If an error occurs because e.g. the repository exists already at github, use the following instead of <code>usethis::use_github()</code>:</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> branch <span class="at">-M</span> main_devel</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> remote add origin git@github.com:ggrlab/restrictedROC.git</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> checkout main</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> merge main_devel <span class="at">--allow-unrelated-histories</span></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> push <span class="at">-u</span> origin main</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> branch <span class="at">--delete</span> main_devel</span></code></pre></div>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">usethis</span><span class="fu">::</span><span class="fu">use_tidy_github</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu">usethis</span><span class="fu">::</span><span class="fu">use_tidy_github_actions</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co"># overwrite tidy's default "check-full" with "check-standard"</span></span>
-<span><span class="co"># to not run so many checks</span></span>
-<span><span class="fu">usethis</span><span class="fu">::</span><span class="fu">use_github_action</span><span class="op">(</span><span class="st">"check-standard"</span><span class="op">)</span></span>
-<span><span class="fu">usethis</span><span class="fu">::</span><span class="fu">use_tidy_github_labels</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu">usethis</span><span class="fu">::</span><span class="fu">use_pkgdown_github_pages</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p>Additional information:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">usethis</span><span class="fu">::</span><span class="fu">use_author</span><span class="op">(</span></span>
-<span>    given<span class="op">=</span><span class="st">"Gunther"</span>, </span>
-<span>    family<span class="op">=</span><span class="st">"Glehr"</span>, </span>
-<span>    email<span class="op">=</span><span class="st">"gunthergl@gmx.net"</span>, </span>
-<span>    role<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"aut"</span>, <span class="st">"cre"</span><span class="op">)</span>, </span>
-<span>    comment <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ORCID"</span><span class="op">=</span><span class="st">"0000-0002-1495-9162"</span><span class="op">)</span></span>
-<span>    <span class="op">)</span></span>
-<span><span class="fu">usethis</span><span class="fu">::</span><span class="fu">use_lifecycle</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu">usethis</span><span class="fu">::</span><span class="fu">use_news_md</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu">lintr</span><span class="fu">::</span><span class="fu">use_lintr</span><span class="op">(</span>type <span class="op">=</span> <span class="st">"tidyverse"</span><span class="op">)</span></span>
-<span><span class="co"># Change manually to: </span></span>
-<span><span class="co"># linters: linters_with_defaults(line_length_linter = line_length_linter(120),indentation_linter = indentation_linter(4)) # see vignette("lintr")</span></span>
-<span><span class="co"># encoding: "UTF-8"</span></span></code></pre></div>
-<p>precommit is a wonderful tool to check your code before committing it.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># https://lorenzwalthert.github.io/precommit/articles/precommit.html</span></span>
-<span><span class="co"># install.packages("precommit")</span></span>
-<span><span class="co"># bash::$ conda deactivate</span></span>
-<span><span class="co"># bash::$ pip3 install pre-commit</span></span>
-<span><span class="fu">precommit</span><span class="fu">::</span><span class="fu">install_precommit</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu">precommit</span><span class="fu">::</span><span class="fu">use_precommit</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p>Before committing: <code>pre-commit install --hook-type pre-push</code>, then commit.</p>
-<p>Used packages:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">usethis</span><span class="fu">::</span><span class="fu">use_package</span><span class="op">(</span><span class="st">"ggplot2"</span><span class="op">)</span></span>
-<span><span class="fu">usethis</span><span class="fu">::</span><span class="fu">use_package</span><span class="op">(</span><span class="st">"patchwork"</span><span class="op">)</span></span>
-<span><span class="fu">usethis</span><span class="fu">::</span><span class="fu">use_package</span><span class="op">(</span><span class="st">"pROC"</span><span class="op">)</span></span>
-<span><span class="fu">usethis</span><span class="fu">::</span><span class="fu">use_package</span><span class="op">(</span><span class="st">"ggpubr"</span><span class="op">)</span></span>
-<span><span class="fu">usethis</span><span class="fu">::</span><span class="fu">use_package</span><span class="op">(</span><span class="st">"stats"</span><span class="op">)</span></span>
-<span><span class="fu">usethis</span><span class="fu">::</span><span class="fu">use_package</span><span class="op">(</span><span class="st">"tibble"</span><span class="op">)</span></span>
-<span><span class="fu">usethis</span><span class="fu">::</span><span class="fu">use_package</span><span class="op">(</span><span class="st">"dplyr"</span><span class="op">)</span></span>
-<span><span class="fu">usethis</span><span class="fu">::</span><span class="fu">use_package</span><span class="op">(</span><span class="st">"labeling"</span><span class="op">)</span></span>
-<span><span class="fu">usethis</span><span class="fu">::</span><span class="fu">use_package</span><span class="op">(</span><span class="st">"tidyr"</span><span class="op">)</span></span>
-<span><span class="fu">usethis</span><span class="fu">::</span><span class="fu">use_package</span><span class="op">(</span><span class="st">"statmod"</span><span class="op">)</span></span>
-<span><span class="fu">usethis</span><span class="fu">::</span><span class="fu">use_package</span><span class="op">(</span><span class="st">"future.apply"</span><span class="op">)</span></span>
-<span><span class="fu">precommit</span><span class="fu">::</span><span class="fu">snippet_generate</span><span class="op">(</span><span class="st">'additional-deps-roxygenize'</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level1">
-<h1 id="how-to-add-information">How to add information<a class="anchor" aria-label="anchor" href="#how-to-add-information"></a>
-</h1>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="co"># Use pre-commits to check your code before committing it</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"lorenzwalthert/precommit"</span><span class="op">)</span></span>
-<span><span class="fu">precommit</span><span class="fu">::</span><span class="fu">install_precommit</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu">precommit</span><span class="fu">::</span><span class="fu">use_precommit</span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Increase the versions, manually or by using usethis::use_version()</span></span>
-<span><span class="fu">usethis</span><span class="fu">::</span><span class="fu">use_version</span><span class="op">(</span><span class="st">"minor"</span><span class="op">)</span></span>
-<span><span class="fu">usethis</span><span class="fu">::</span><span class="fu">use_version</span><span class="op">(</span><span class="st">"dev"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Add new functionality and document it</span></span>
-<span><span class="co"># During development, have a clean R environment and run devtools::load_all() to load the current status of the package</span></span>
-<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">load_all</span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># After adding new functionality, run devtools::check() to update the documentation</span></span>
-<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">check</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">document</span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Vignettes are a great way to document your package</span></span>
-<span><span class="co"># Add a new vignette by running </span></span>
-<span><span class="fu">usethis</span><span class="fu">::</span><span class="fu">use_vignette</span><span class="op">(</span><span class="st">"vignette_name"</span><span class="op">)</span></span>
-<span><span class="co"># Change the vignette in vignettes/vignette_name.Rmd</span></span>
-<span><span class="co"># Build the vignette by running</span></span>
-<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">build_vignettes</span><span class="op">(</span><span class="op">)</span> <span class="co"># This also installs the package</span></span>
-<span></span>
-<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">build_readme</span><span class="op">(</span><span class="op">)</span> <span class="co"># This updates the README.md file from the README.Rmd</span></span></code></pre></div>
-<ul>
-<li>Disable pre-commit for a single commit: <code>git commit . -m 'quick fix'     --no-verify</code>
-</li>
-</ul>
-</div>
-<div class="section level1">
-<h1 id="troubleshooting">Troubleshooting:<a class="anchor" aria-label="anchor" href="#troubleshooting"></a>
-</h1>
-<div class="section level2">
-<h2 id="devtoolsbuild_vignettes-fails">
-<code>devtools::build_vignettes</code> fails<a class="anchor" aria-label="anchor" href="#devtoolsbuild_vignettes-fails"></a>
-</h2>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="sc">---</span> re<span class="sc">-</span>building <span class="st">'first_function.Rmd'</span> using rmarkdown</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>Error<span class="sc">:</span> processing vignette <span class="st">'first_function.Rmd'</span> failed with diagnostics<span class="sc">:</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>unused <span class="fu">argument</span> (<span class="at">resolve_symlink =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="sc">---</span> failed re<span class="sc">-</span>building <span class="st">'first_function.Rmd'</span></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>SUMMARY<span class="sc">:</span> processing the following file failed<span class="sc">:</span></span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">'first_function.Rmd'</span></span></code></pre></div>
-<p>Solution:</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"xfun"</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="vignette-xfunisfalse-will-be-deprecated">Vignette xfun::isFalse() will be deprecated<a class="anchor" aria-label="anchor" href="#vignette-xfunisfalse-will-be-deprecated"></a>
-</h2>
-<p>What: <code>devtools::check()</code> throws the following error:</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> checking re<span class="sc">-</span>building of vignette outputs ... ERROR</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">Error</span>(s) <span class="cf">in</span> re<span class="sc">-</span>building vignettes<span class="sc">:</span></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    ...</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="sc">---</span> re<span class="sc">-</span>building <span class="st">'first_function.Rmd'</span> using rmarkdown</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  Quitting from lines <span class="dv">11-15</span> (first_function.Rmd) </span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  Error<span class="sc">:</span> processing vignette <span class="st">'first_function.Rmd'</span> failed with diagnostics<span class="sc">:</span></span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  The <span class="cf">function</span> xfun<span class="sc">::</span><span class="fu">isFALSE</span>() will be deprecated <span class="cf">in</span> the future. Please consider using base<span class="sc">::</span><span class="fu">isFALSE</span>(x) or <span class="fu">identical</span>(x, <span class="cn">FALSE</span>) instead.</span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>  <span class="sc">---</span> failed re<span class="sc">-</span>building <span class="st">'first_function.Rmd'</span></span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>  SUMMARY<span class="sc">:</span> processing the following file failed<span class="sc">:</span></span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">'first_function.Rmd'</span></span>
-<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>  Error<span class="sc">:</span> Vignette re<span class="sc">-</span>building failed.</span>
-<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>  Execution halted</span></code></pre></div>
-<p>Solution: See <a href="https://stackoverflow.com/questions/76081732/problem-when-converting-r-file-to-r-markdown" class="external-link uri">https://stackoverflow.com/questions/76081732/problem-when-converting-r-file-to-r-markdown</a></p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"knitr"</span><span class="op">)</span></span></code></pre></div>
-</div>
-</div>
-
   </main><aside class="col-md-3"><div class="license">
 <h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
@@ -406,8 +272,7 @@
 <div class="dev-status">
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a></li>
-<li><a href="https://CRAN.R-project.org/package=restrictedROC" class="external-link"><img src="https://www.r-pkg.org/badges/version/restrictedROC" alt="CRAN status"></a></li>
+<li><a href="https://lifecycle.r-lib.org/articles/stages.html#stable" class="external-link"><img src="https://img.shields.io/badge/lifecycle-stable.svg" alt="Lifecycle: stable"></a></li>
 <li><a href="https://github.com/ggrlab/restrictedROC/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/ggrlab/restrictedROC/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
 <li><a href="https://app.codecov.io/gh/ggrlab/restrictedROC?branch=main" class="external-link"><img src="https://codecov.io/gh/ggrlab/restrictedROC/branch/main/graph/badge.svg" alt="Codecov test coverage"></a></li>
 </ul>
