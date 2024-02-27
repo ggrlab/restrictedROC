@@ -110,7 +110,7 @@
 <span>        <span class="va">per_resp_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/split.html" class="external-link">split</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">predictor</span>, <span class="va">df</span><span class="op">$</span><span class="va">response</span><span class="op">)</span></span>
 <span>    <span class="op">}</span></span>
 <span><span class="op">}</span></span>
-<span><span class="co">#&gt; Wed Dec  6 13:13:31 2023      response V1</span></span>
+<span><span class="co">#&gt; Tue Feb 27 16:57:46 2024      response V1</span></span>
 <span></span>
 <span></span>
 <span><span class="co"># pdf(file.path("res", "rzAUC_colors.pdf"))</span></span>
@@ -131,16 +131,16 @@
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 101 × 21</span></span></span>
 <span><span class="co">#&gt;    threshold auc_high positives_high negatives_high scaling_high auc_var_H0_high</span></span>
 <span><span class="co">#&gt;        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>   -<span style="color: #BB0000;">Inf</span>       0.485             53             47         1            0.003<span style="text-decoration: underline;">38</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>     -<span style="color: #BB0000;">2.42</span>    0.473             53             46         1.02         0.003<span style="text-decoration: underline;">42</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>     -<span style="color: #BB0000;">2.34</span>    0.462             53             45         1.04         0.003<span style="text-decoration: underline;">46</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>     -<span style="color: #BB0000;">2.21</span>    0.449             53             44         1.07         0.003<span style="text-decoration: underline;">50</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>     -<span style="color: #BB0000;">2.00</span>    0.458             52             44         1.09         0.003<span style="text-decoration: underline;">53</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>     -<span style="color: #BB0000;">1.90</span>    0.467             51             44         1.11         0.003<span style="text-decoration: underline;">57</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>     -<span style="color: #BB0000;">1.77</span>    0.476             50             44         1.13         0.003<span style="text-decoration: underline;">60</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>     -<span style="color: #BB0000;">1.63</span>    0.486             49             44         1.16         0.003<span style="text-decoration: underline;">63</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>     -<span style="color: #BB0000;">1.61</span>    0.496             48             44         1.18         0.003<span style="text-decoration: underline;">67</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>     -<span style="color: #BB0000;">1.48</span>    0.484             48             43         1.21         0.003<span style="text-decoration: underline;">71</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>   -<span style="color: #BB0000;">Inf</span>       0.323             42             58         1            0.003<span style="text-decoration: underline;">46</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>     -<span style="color: #BB0000;">2.08</span>    0.331             41             58         1.02         0.003<span style="text-decoration: underline;">50</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>     -<span style="color: #BB0000;">1.69</span>    0.339             40             58         1.05         0.003<span style="text-decoration: underline;">56</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>     -<span style="color: #BB0000;">1.63</span>    0.348             39             58         1.08         0.003<span style="text-decoration: underline;">61</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>     -<span style="color: #BB0000;">1.60</span>    0.336             39             57         1.10         0.003<span style="text-decoration: underline;">64</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>     -<span style="color: #BB0000;">1.53</span>    0.325             39             56         1.12         0.003<span style="text-decoration: underline;">66</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>     -<span style="color: #BB0000;">1.47</span>    0.333             38             56         1.14         0.003<span style="text-decoration: underline;">72</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>     -<span style="color: #BB0000;">1.43</span>    0.321             38             55         1.17         0.003<span style="text-decoration: underline;">75</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>     -<span style="color: #BB0000;">1.39</span>    0.330             37             55         1.20         0.003<span style="text-decoration: underline;">81</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>     -<span style="color: #BB0000;">1.36</span>    0.317             37             54         1.22         0.003<span style="text-decoration: underline;">84</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 91 more rows</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 15 more variables: rzAUC_high &lt;dbl&gt;, pval_asym_onesided_high &lt;dbl&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   pval_asym_high &lt;dbl&gt;, auc_low &lt;dbl&gt;, positives_low &lt;dbl&gt;,</span></span></span>
@@ -149,20 +149,20 @@
 <span><span class="co">#&gt; <span style="color: #949494;">#   tp &lt;dbl&gt;, fp &lt;dbl&gt;, tpr_global &lt;dbl&gt;, fpr_global &lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $global</span></span>
-<span><span class="co">#&gt;         auc auc_var_H0      rzAUC pval_asym</span></span>
-<span><span class="co">#&gt; 1 0.4845444  0.4845444 -0.2658911 0.7903231</span></span>
+<span><span class="co">#&gt;         auc auc_var_H0     rzAUC   pval_asym</span></span>
+<span><span class="co">#&gt; 1 0.3230706  0.3230706 -3.010014 0.002612354</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $keep_highs</span></span>
-<span><span class="co">#&gt;     auc auc_var_H0    rzAUC pval_asym threshold</span></span>
-<span><span class="co">#&gt; 1 0.125 0.07291667 -1.38873 0.1649148  1.531857</span></span>
+<span><span class="co">#&gt;         auc  auc_var_H0     rzAUC   pval_asym threshold</span></span>
+<span><span class="co">#&gt; 1 0.3044365 0.003867075 -3.144825 0.001661861 -1.217906</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $keep_lows</span></span>
-<span><span class="co">#&gt;   auc auc_var_H0    rzAUC  pval_asym threshold</span></span>
-<span><span class="co">#&gt; 1   1       0.05 2.236068 0.02534732 -1.612391</span></span>
+<span><span class="co">#&gt;         auc  auc_var_H0     rzAUC  pval_asym threshold</span></span>
+<span><span class="co">#&gt; 1 0.2964976 0.004176731 -3.148845 0.00163917 0.9234862</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $max_total</span></span>
-<span><span class="co">#&gt;   auc auc_var_H0    rzAUC  pval_asym threshold part</span></span>
-<span><span class="co">#&gt; 1   1       0.05 2.236068 0.02534732 -1.612391  low</span></span>
+<span><span class="co">#&gt;         auc  auc_var_H0     rzAUC  pval_asym threshold part</span></span>
+<span><span class="co">#&gt; 1 0.2964976 0.004176731 -3.148845 0.00163917 0.9234862  low</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $positive_label</span></span>
 <span><span class="co">#&gt; [1] 1</span></span>
@@ -172,8 +172,8 @@
 <span><span class="co">#&gt; Call:</span></span>
 <span><span class="co">#&gt; roc.default(response = true_pred_df[["true"]], predictor = true_pred_df[["pred"]],     levels = c(FALSE, TRUE), direction = direction)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Data: true_pred_df[["pred"]] in 47 controls (true_pred_df[["true"]] FALSE) &lt; 53 cases (true_pred_df[["true"]] TRUE).</span></span>
-<span><span class="co">#&gt; Area under the curve: 0.4845</span></span>
+<span><span class="co">#&gt; Data: true_pred_df[["pred"]] in 58 controls (true_pred_df[["true"]] FALSE) &lt; 42 cases (true_pred_df[["true"]] TRUE).</span></span>
+<span><span class="co">#&gt; Area under the curve: 0.3231</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attr(,"class")</span></span>
 <span><span class="co">#&gt; [1] "restrictedROC" "list"</span></span>
@@ -195,16 +195,16 @@
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 101 × 21</span></span></span>
 <span><span class="co">#&gt;    threshold auc_high positives_high negatives_high scaling_high auc_var_H0_high</span></span>
 <span><span class="co">#&gt;        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>   -<span style="color: #BB0000;">Inf</span>       0.485             53             47         1            0.003<span style="text-decoration: underline;">38</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>     -<span style="color: #BB0000;">2.42</span>    0.473             53             46         1.02         0.003<span style="text-decoration: underline;">42</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>     -<span style="color: #BB0000;">2.34</span>    0.462             53             45         1.04         0.003<span style="text-decoration: underline;">46</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>     -<span style="color: #BB0000;">2.21</span>    0.449             53             44         1.07         0.003<span style="text-decoration: underline;">50</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>     -<span style="color: #BB0000;">2.00</span>    0.458             52             44         1.09         0.003<span style="text-decoration: underline;">53</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>     -<span style="color: #BB0000;">1.90</span>    0.467             51             44         1.11         0.003<span style="text-decoration: underline;">57</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>     -<span style="color: #BB0000;">1.77</span>    0.476             50             44         1.13         0.003<span style="text-decoration: underline;">60</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>     -<span style="color: #BB0000;">1.63</span>    0.486             49             44         1.16         0.003<span style="text-decoration: underline;">63</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>     -<span style="color: #BB0000;">1.61</span>    0.496             48             44         1.18         0.003<span style="text-decoration: underline;">67</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>     -<span style="color: #BB0000;">1.48</span>    0.484             48             43         1.21         0.003<span style="text-decoration: underline;">71</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>   -<span style="color: #BB0000;">Inf</span>       0.323             42             58         1            0.003<span style="text-decoration: underline;">46</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>     -<span style="color: #BB0000;">2.08</span>    0.331             41             58         1.02         0.003<span style="text-decoration: underline;">50</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>     -<span style="color: #BB0000;">1.69</span>    0.339             40             58         1.05         0.003<span style="text-decoration: underline;">56</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>     -<span style="color: #BB0000;">1.63</span>    0.348             39             58         1.08         0.003<span style="text-decoration: underline;">61</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>     -<span style="color: #BB0000;">1.60</span>    0.336             39             57         1.10         0.003<span style="text-decoration: underline;">64</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>     -<span style="color: #BB0000;">1.53</span>    0.325             39             56         1.12         0.003<span style="text-decoration: underline;">66</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>     -<span style="color: #BB0000;">1.47</span>    0.333             38             56         1.14         0.003<span style="text-decoration: underline;">72</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>     -<span style="color: #BB0000;">1.43</span>    0.321             38             55         1.17         0.003<span style="text-decoration: underline;">75</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>     -<span style="color: #BB0000;">1.39</span>    0.330             37             55         1.20         0.003<span style="text-decoration: underline;">81</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>     -<span style="color: #BB0000;">1.36</span>    0.317             37             54         1.22         0.003<span style="text-decoration: underline;">84</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 91 more rows</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 15 more variables: rzAUC_high &lt;dbl&gt;, pval_asym_onesided_high &lt;dbl&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   pval_asym_high &lt;dbl&gt;, auc_low &lt;dbl&gt;, positives_low &lt;dbl&gt;,</span></span></span>
@@ -213,20 +213,20 @@
 <span><span class="co">#&gt; <span style="color: #949494;">#   tp &lt;dbl&gt;, fp &lt;dbl&gt;, tpr_global &lt;dbl&gt;, fpr_global &lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $global</span></span>
-<span><span class="co">#&gt;         auc auc_var_H0      rzAUC pval_asym</span></span>
-<span><span class="co">#&gt; 1 0.4845444  0.4845444 -0.2658911 0.7903231</span></span>
+<span><span class="co">#&gt;         auc auc_var_H0     rzAUC   pval_asym</span></span>
+<span><span class="co">#&gt; 1 0.3230706  0.3230706 -3.010014 0.002612354</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $keep_highs</span></span>
-<span><span class="co">#&gt;     auc auc_var_H0    rzAUC pval_asym threshold</span></span>
-<span><span class="co">#&gt; 1 0.125 0.07291667 -1.38873 0.1649148  1.531857</span></span>
+<span><span class="co">#&gt;         auc  auc_var_H0     rzAUC   pval_asym threshold</span></span>
+<span><span class="co">#&gt; 1 0.3044365 0.003867075 -3.144825 0.001661861 -1.217906</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $keep_lows</span></span>
-<span><span class="co">#&gt;   auc auc_var_H0    rzAUC  pval_asym threshold</span></span>
-<span><span class="co">#&gt; 1   1       0.05 2.236068 0.02534732 -1.612391</span></span>
+<span><span class="co">#&gt;         auc  auc_var_H0     rzAUC  pval_asym threshold</span></span>
+<span><span class="co">#&gt; 1 0.2964976 0.004176731 -3.148845 0.00163917 0.9234862</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $max_total</span></span>
-<span><span class="co">#&gt;   auc auc_var_H0    rzAUC  pval_asym threshold part</span></span>
-<span><span class="co">#&gt; 1   1       0.05 2.236068 0.02534732 -1.612391  low</span></span>
+<span><span class="co">#&gt;         auc  auc_var_H0     rzAUC  pval_asym threshold part</span></span>
+<span><span class="co">#&gt; 1 0.2964976 0.004176731 -3.148845 0.00163917 0.9234862  low</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $positive_label</span></span>
 <span><span class="co">#&gt; [1] 1</span></span>
@@ -236,8 +236,8 @@
 <span><span class="co">#&gt; Call:</span></span>
 <span><span class="co">#&gt; roc.default(response = true_pred_df[["true"]], predictor = true_pred_df[["pred"]],     levels = c(FALSE, TRUE), direction = direction)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Data: true_pred_df[["pred"]] in 47 controls (true_pred_df[["true"]] FALSE) &lt; 53 cases (true_pred_df[["true"]] TRUE).</span></span>
-<span><span class="co">#&gt; Area under the curve: 0.4845</span></span>
+<span><span class="co">#&gt; Data: true_pred_df[["pred"]] in 58 controls (true_pred_df[["true"]] FALSE) &lt; 42 cases (true_pred_df[["true"]] TRUE).</span></span>
+<span><span class="co">#&gt; Area under the curve: 0.3231</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attr(,"class")</span></span>
 <span><span class="co">#&gt; [1] "restrictedROC" "list"</span></span>
@@ -259,16 +259,16 @@
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 101 × 21</span></span></span>
 <span><span class="co">#&gt;    threshold auc_high positives_high negatives_high scaling_high auc_var_H0_high</span></span>
 <span><span class="co">#&gt;        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>   -<span style="color: #BB0000;">Inf</span>       0.485             53             47         1            0.003<span style="text-decoration: underline;">38</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>     -<span style="color: #BB0000;">2.42</span>    0.473             53             46         1.02         0.003<span style="text-decoration: underline;">42</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>     -<span style="color: #BB0000;">2.34</span>    0.462             53             45         1.04         0.003<span style="text-decoration: underline;">46</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>     -<span style="color: #BB0000;">2.21</span>    0.449             53             44         1.07         0.003<span style="text-decoration: underline;">50</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>     -<span style="color: #BB0000;">2.00</span>    0.458             52             44         1.09         0.003<span style="text-decoration: underline;">53</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>     -<span style="color: #BB0000;">1.90</span>    0.467             51             44         1.11         0.003<span style="text-decoration: underline;">57</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>     -<span style="color: #BB0000;">1.77</span>    0.476             50             44         1.13         0.003<span style="text-decoration: underline;">60</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>     -<span style="color: #BB0000;">1.63</span>    0.486             49             44         1.16         0.003<span style="text-decoration: underline;">63</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>     -<span style="color: #BB0000;">1.61</span>    0.496             48             44         1.18         0.003<span style="text-decoration: underline;">67</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>     -<span style="color: #BB0000;">1.48</span>    0.484             48             43         1.21         0.003<span style="text-decoration: underline;">71</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>   -<span style="color: #BB0000;">Inf</span>       0.323             42             58         1            0.003<span style="text-decoration: underline;">46</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>     -<span style="color: #BB0000;">2.08</span>    0.331             41             58         1.02         0.003<span style="text-decoration: underline;">50</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>     -<span style="color: #BB0000;">1.69</span>    0.339             40             58         1.05         0.003<span style="text-decoration: underline;">56</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>     -<span style="color: #BB0000;">1.63</span>    0.348             39             58         1.08         0.003<span style="text-decoration: underline;">61</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>     -<span style="color: #BB0000;">1.60</span>    0.336             39             57         1.10         0.003<span style="text-decoration: underline;">64</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>     -<span style="color: #BB0000;">1.53</span>    0.325             39             56         1.12         0.003<span style="text-decoration: underline;">66</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>     -<span style="color: #BB0000;">1.47</span>    0.333             38             56         1.14         0.003<span style="text-decoration: underline;">72</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>     -<span style="color: #BB0000;">1.43</span>    0.321             38             55         1.17         0.003<span style="text-decoration: underline;">75</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>     -<span style="color: #BB0000;">1.39</span>    0.330             37             55         1.20         0.003<span style="text-decoration: underline;">81</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>     -<span style="color: #BB0000;">1.36</span>    0.317             37             54         1.22         0.003<span style="text-decoration: underline;">84</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 91 more rows</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 15 more variables: rzAUC_high &lt;dbl&gt;, pval_asym_onesided_high &lt;dbl&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   pval_asym_high &lt;dbl&gt;, auc_low &lt;dbl&gt;, positives_low &lt;dbl&gt;,</span></span></span>
@@ -277,20 +277,20 @@
 <span><span class="co">#&gt; <span style="color: #949494;">#   tp &lt;dbl&gt;, fp &lt;dbl&gt;, tpr_global &lt;dbl&gt;, fpr_global &lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $global</span></span>
-<span><span class="co">#&gt;         auc auc_var_H0      rzAUC pval_asym</span></span>
-<span><span class="co">#&gt; 1 0.4845444  0.4845444 -0.2658911 0.7903231</span></span>
+<span><span class="co">#&gt;         auc auc_var_H0     rzAUC   pval_asym</span></span>
+<span><span class="co">#&gt; 1 0.3230706  0.3230706 -3.010014 0.002612354</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $keep_highs</span></span>
-<span><span class="co">#&gt;     auc auc_var_H0    rzAUC pval_asym threshold</span></span>
-<span><span class="co">#&gt; 1 0.125 0.07291667 -1.38873 0.1649148  1.531857</span></span>
+<span><span class="co">#&gt;         auc  auc_var_H0     rzAUC   pval_asym threshold</span></span>
+<span><span class="co">#&gt; 1 0.3044365 0.003867075 -3.144825 0.001661861 -1.217906</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $keep_lows</span></span>
-<span><span class="co">#&gt;   auc auc_var_H0    rzAUC  pval_asym threshold</span></span>
-<span><span class="co">#&gt; 1   1       0.05 2.236068 0.02534732 -1.612391</span></span>
+<span><span class="co">#&gt;         auc  auc_var_H0     rzAUC  pval_asym threshold</span></span>
+<span><span class="co">#&gt; 1 0.2964976 0.004176731 -3.148845 0.00163917 0.9234862</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $max_total</span></span>
-<span><span class="co">#&gt;   auc auc_var_H0    rzAUC  pval_asym threshold part</span></span>
-<span><span class="co">#&gt; 1   1       0.05 2.236068 0.02534732 -1.612391  low</span></span>
+<span><span class="co">#&gt;         auc  auc_var_H0     rzAUC  pval_asym threshold part</span></span>
+<span><span class="co">#&gt; 1 0.2964976 0.004176731 -3.148845 0.00163917 0.9234862  low</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $positive_label</span></span>
 <span><span class="co">#&gt; [1] 1</span></span>
@@ -300,8 +300,8 @@
 <span><span class="co">#&gt; Call:</span></span>
 <span><span class="co">#&gt; roc.default(response = true_pred_df[["true"]], predictor = true_pred_df[["pred"]],     levels = c(FALSE, TRUE), direction = direction)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Data: true_pred_df[["pred"]] in 47 controls (true_pred_df[["true"]] FALSE) &lt; 53 cases (true_pred_df[["true"]] TRUE).</span></span>
-<span><span class="co">#&gt; Area under the curve: 0.4845</span></span>
+<span><span class="co">#&gt; Data: true_pred_df[["pred"]] in 58 controls (true_pred_df[["true"]] FALSE) &lt; 42 cases (true_pred_df[["true"]] TRUE).</span></span>
+<span><span class="co">#&gt; Area under the curve: 0.3231</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attr(,"class")</span></span>
 <span><span class="co">#&gt; [1] "restrictedROC" "list"</span></span>
