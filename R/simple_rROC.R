@@ -274,6 +274,70 @@ simple_rROC <- function(response,
 }
 
 
+get_all_aucs_presto <- function(true_pred_df,
+                                thresholds,
+                                direction,
+                                high_low = "high",
+                                return_proc = FALSE,
+                                ...) {
+    lapply_fun <- lapply
+
+    res <- lapply_fun(thresholds, function(threshold_x) {
+        if (high_low == "high") {
+            part_df <- true_pred_df[true_pred_df[["pred"]] >= threshold_x, ]
+        } else {
+            part_df <- true_pred_df[true_pred_df[["pred"]] < threshold_x, ]
+        }
+
+        wilcox_res <- NULL
+        wilcox_res <- tryCatch(
+            {
+                # presto:::wilcoxauc.default
+                wilcox_res <- presto::wilcoxauc(
+                    X = t(part_df[["pred"]]),
+                    y = part_df[["true"]]
+                )
+                wilcox_res |>
+                    dplyr::filter(group == "TRUE") |>
+                    dplyr::mutate(threshold = threshold_x, .before = 1)
+            },
+            error = function(err) {
+                one_th_wc <- data.frame(
+                    # "feature"   "group"     "avgExpr"   "logFC"     "statistic" "auc" "pval"      "padj"      "pct_in"    "pct_out"
+                    "threshold" = threshold_x,
+                    "feature" = NA,
+                    "group" = NA,
+                    "avgExpr" = NA,
+                    "logFC" = NA,
+                    "statistic" = NA,
+                    "auc" = NA,
+                    "pval" = NA,
+                    "padj" = NA,
+                    "pct_in" = NA,
+                    "pct_out" = NA
+                )
+                one_th_wc
+            }
+        )
+        wilcox_res[["positives"]] <- sum(part_df$true)
+        wilcox_res[["negatives"]] <- nrow(part_df) - wilcox_res[["positives"]]
+        return(wilcox_res)
+    })
+    full_procs <- tibble::as_tibble(do.call(rbind, res))
+    target_output_columns <- c("threshold", "auc", "positives", "negatives", "auc_var_H0", "rzAUC", "pval_asym_onesided", "pval_asym")
+
+    full_df <- tibble::tibble(
+        threshold = full_procs$threshold,
+        auc = full_procs$auc,
+        positives = full_procs$positives,
+        negatives = full_procs$negatives,
+        rzAUC = full_procs$statistic,
+        pval_asym_onesided = NA_real_,
+        pval_asym = full_procs$pval
+    )
+    return(list("perf" = full_df, "pROC" = NA))
+}
+
 get_all_aucs <- function(true_pred_df,
                          thresholds,
                          direction,
