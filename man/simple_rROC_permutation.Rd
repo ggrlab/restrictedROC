@@ -13,7 +13,8 @@ simple_rROC_permutation(
   fix_seed = 0,
   parallel_permutations = FALSE,
   return_proc = FALSE,
-  verbose = FALSE
+  verbose = FALSE,
+  ...
 )
 }
 \arguments{
