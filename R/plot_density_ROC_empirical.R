@@ -171,7 +171,7 @@ plot_density_rROC_empirical <- function(values_grouped,
         values_grouped,
         xmin = xmin, xmax = xmax,
         length.out = length.out,
-        positive_label = single_rROC$positive_label
+        positive_label = as.character(single_rROC$positive_label)
     )
 
     if (!is.na(plot_n_points)) {

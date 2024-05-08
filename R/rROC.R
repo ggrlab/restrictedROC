@@ -186,6 +186,7 @@ rROC.data.frame <- function(x,
     }
 
     reslist <- list()
+    positive_labels_dv <- list()
     for (dv in dependent_vars) {
         positive_label <- original_positive_label
         if (!positive_label %in% x[[dv]]) {
@@ -198,6 +199,7 @@ rROC.data.frame <- function(x,
                 )
             )
         }
+        positive_labels_dv[[dv]] <- positive_label
         reslist[[dv]] <- list()
         iv_i <- 0
         for (iv in independent_vars) {

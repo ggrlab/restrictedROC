@@ -377,3 +377,26 @@ test_that("rROC too long independent var names", {
 
     testthat::expect_true(TRUE) # Just that the test is not skipped as "empty"
 })
+
+test_that("rROC with plotting and multiple dependent vars", {
+    library(restrictedROC)
+    data("aSAH", package = "pROC")
+    set.seed(100)
+    res_df <- rROC(
+        aSAH,
+        dependent_vars = c("outcome", "gender"),
+        independent_vars = "ndka",
+        n_permutations = 2,
+        positive_label = "Good",
+        do_plots = FALSE
+    )
+    res_df_plots <- rROC(
+        aSAH,
+        dependent_vars = c("outcome", "gender"),
+        independent_vars = "ndka",
+        n_permutations = 2,
+        positive_label = "Good",
+        do_plots = TRUE
+    )
+    testthat::expect_true(TRUE) # Just that the test is not skipped as "empty"
+})
