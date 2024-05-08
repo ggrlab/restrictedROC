@@ -26,6 +26,10 @@ summary.rROC <- function(object,
     if (all(is.null(object)) || all(is.na(object))) {
         return(NULL)
     } else if (!searchword %in% names(object)) {
+        nontraverse_vars <- which(names(object) %in% c("plots"))
+        if(length(nontraverse_vars) > 0) {
+            object <- object[-nontraverse_vars]
+        }
         current_level <- current_level + 1
         l_results <- lapply(
             object,

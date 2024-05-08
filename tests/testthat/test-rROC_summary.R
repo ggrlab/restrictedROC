@@ -62,3 +62,21 @@ test_that("rROC summary results", {
         ) %in% colnames(tmp_s))
     )
 })
+
+
+test_that("rROC with plot summary", {
+    devtools::load_all()
+    library(restrictedROC)
+    data("aSAH", package = "pROC")
+    set.seed(100)
+    res_df <- rROC(
+        aSAH,
+        dependent_vars = "outcome",
+        independent_vars = "ndka",
+        n_permutations = 2,
+        positive_label = "Good",
+        do_plots = TRUE
+    )
+    tmp_s <- summary(res_df)
+    testthat::expect_true(TRUE) # Just that the test is not skipped as "empty"
+})
