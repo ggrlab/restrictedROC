@@ -1,5 +1,5 @@
-pandoc: 2.19.2
-pkgdown: 2.0.7
+pandoc: 3.1.11
+pkgdown: 2.0.9
 pkgdown_sha: ~
 articles:
   examples_01_AUROC_TESTS: examples_01_AUROC_TESTS.html
@@ -14,7 +14,7 @@ articles:
   paper_09_cartoon_fig2: paper_09_cartoon_fig2.html
   vignette_01_rzAUC_colors: vignette_01_rzAUC_colors.html
   vignette_02_restriction_plots: vignette_02_restriction_plots.html
-last_built: 2024-02-27T16:54Z
+last_built: 2024-05-08T16:35Z
 urls:
   reference: https://ggrlab.github.io/restrictedROC/reference
   article: https://ggrlab.github.io/restrictedROC/articles
