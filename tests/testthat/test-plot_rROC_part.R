@@ -43,7 +43,6 @@ test_that("plot_rROC_part", {
 })
 test_that("plot_rROC_part different inputs", {
     library(restrictedROC)
-    # devtools::load_all()
     data("aSAH", package = "pROC")
     ret_procs <- simple_rROC(
         response = aSAH$outcome,

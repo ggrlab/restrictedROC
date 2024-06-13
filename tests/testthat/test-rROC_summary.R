@@ -65,7 +65,6 @@ test_that("rROC summary results", {
 
 
 test_that("rROC with plot summary", {
-    devtools::load_all()
     library(restrictedROC)
     data("aSAH", package = "pROC")
     set.seed(100)
