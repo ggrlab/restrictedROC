@@ -17,19 +17,19 @@
 #' \itemize{
 #'      \item \code{predictions}: A data frame with the original predictor values and the
 #'      imputed values. It has three columns:
-#'      \itemize{
-#'          \item{\code{predictor}} {is the original predictor value.}
-#'          \item{\code{keep}} {is a logical vector that indicates whether the sample is inside the
+#'      \describe{
+#'          \item{\code{predictor}}{is the original predictor value.}
+#'          \item{\code{keep}}{is a logical vector that indicates whether the sample is inside the
 #'          informative range.}
-#'          \item{\code{bounded}} {is the imputed value.}
+#'          \item{\code{bounded}}{is the imputed value.}
 #'      }
 #'      \item \code{thresholds}: A data frame with the feature, threshold, the part of the
 #'      predictor that was used and the imputed value for predictor values outside the
 #'      informative range. The informative range is then:
-#'          \itemize{
-#'              \item \code{low}: \code{(-Inf, threshold]}
-#'              \item \code{high}: \code{(threshold, Inf)}
-#'          }
+#'      \describe{
+#'          \item{\code{low}}{\code{(-Inf, threshold)}}
+#'          \item{\code{high}}{\code{(threshold, Inf)}}
+#'      }
 #' }
 #'
 apply_restriction <- function(object, newdata, feature = NA, removed_impute = -1) {

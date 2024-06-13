@@ -3,17 +3,17 @@
 #' Restriction for multiple dependent and independent variables
 #'
 #' @param x
-#' \itemize{
-#'  \item {data.frame}: {
+#' \describe{
+#'  \item{data.frame}{
 #'      See \code{\link{rROC.data.frame}}. data.frame containing all dependent and
 #'      independent variables as columns. Dependent/independent variable column names
 #'      must be given as "dependent_vars"/"independent_vars" arguments.
 #' }
-#'  \item {matrix}: {
+#'  \item{matrix}{
 #'      See \code{\link{rROC.matrix}}. Matrix of (samples x features).
 #'      Dependent variable(s) must be given as "y" argument.
 #' }
-#'  \item {numeric vector}: {
+#'  \item{numeric vector}{
 #'      See \code{\link{rROC.numeric}}. Numeric vector of independent variable.
 #'      Dependent variable(s) must be given as "y" argument.
 #' }
@@ -133,13 +133,15 @@ rROC.numeric <- function(x, y, ...) {
 #' @inheritDotParams simple_rROC_permutation -response -predictor -direction
 #' @return
 #' A list of lists of simple_rROC_permutation and plot results. It is structured as follows:
-#' \itemize{\item {dependent variable}: {
-#'      \itemize{\item {independent variable}: {
-#'          \itemize{
-#'              \item {"plots"}: {\code{\link{plot_density_rROC_empirical}} result}
-#'              \item {"permutation"}: {\code{\link{simple_rROC_permutation}} result}
-#'          }}
-#'     }}
+#' \itemize{
+#'     \item {dependent variable}:
+#'     \itemize{
+#'         \item {independent variable}:
+#'         \describe{
+#'             \item{"plots"}{\code{\link{plot_density_rROC_empirical}} result}
+#'             \item{"permutation"}{\code{\link{simple_rROC_permutation}} result}
+#'         }
+#'     }
 #' }
 #' @export
 rROC.data.frame <- function(x,

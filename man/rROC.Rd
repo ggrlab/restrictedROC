@@ -7,17 +7,17 @@
 rROC(x, ...)
 }
 \arguments{
-\item{x}{\itemize{
-\item {data.frame}: {
+\item{x}{\describe{
+\item{data.frame}{
 See \code{\link{rROC.data.frame}}. data.frame containing all dependent and
 independent variables as columns. Dependent/independent variable column names
 must be given as "dependent_vars"/"independent_vars" arguments.
 }
-\item {matrix}: {
+\item{matrix}{
 See \code{\link{rROC.matrix}}. Matrix of (samples x features).
 Dependent variable(s) must be given as "y" argument.
 }
-\item {numeric vector}: {
+\item{numeric vector}{
 See \code{\link{rROC.numeric}}. Numeric vector of independent variable.
 Dependent variable(s) must be given as "y" argument.
 }
@@ -51,13 +51,15 @@ not calculate the ROC curves for each restriction separately.
 }
 \value{
 A list of lists of simple_rROC_permutation and plot results. It is structured as follows:
-\itemize{\item {dependent variable}: {
-\itemize{\item {independent variable}: {
 \itemize{
-\item {"plots"}: {\code{\link{plot_density_rROC_empirical}} result}
-\item {"permutation"}: {\code{\link{simple_rROC_permutation}} result}
-}}
-}}
+\item {dependent variable}:
+\itemize{
+\item {independent variable}:
+\describe{
+\item{"plots"}{\code{\link{plot_density_rROC_empirical}} result}
+\item{"permutation"}{\code{\link{simple_rROC_permutation}} result}
+}
+}
 }
 }
 \description{
