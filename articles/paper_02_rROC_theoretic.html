@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">restrictedROC</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3.6</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -92,9 +92,10 @@
 <span><span class="va">main_width</span> <span class="op">&lt;-</span> <span class="fl">20</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.create</a></span><span class="op">(</span><span class="st">"res/paper"</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning in dir.create("res/paper", recursive = TRUE): 'res/paper' already</span></span>
-<span><span class="co">#&gt; exists</span></span>
-<span><span class="va">main_plotname</span> <span class="op">&lt;-</span> <span class="st">"res/paper/rROC"</span></span></code></pre></div>
+<span><span class="co">#&gt; exists</span></span></code></pre></div>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">main_plotname</span> <span class="op">&lt;-</span> <span class="st">"res/paper/rROC"</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">n_positives</span> <span class="op">&lt;-</span> <span class="fl">100</span></span>
 <span><span class="va">n_negatives</span> <span class="op">&lt;-</span> <span class="fl">100</span></span>
 <span></span>
@@ -113,8 +114,9 @@
 <span><span class="co">#&gt; roc.default(response = true_pred_df[["true"]], predictor = true_pred_df[["pred"]],     levels = c(FALSE, TRUE), direction = direction)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Data: true_pred_df[["pred"]] in 100 controls (true_pred_df[["true"]] FALSE) &lt; 100 cases (true_pred_df[["true"]] TRUE).</span></span>
-<span><span class="co">#&gt; Area under the curve: 0.5</span></span>
-<span><span class="co"># Call:</span></span>
+<span><span class="co">#&gt; Area under the curve: 0.5</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Call:</span></span>
 <span><span class="co"># roc.default(response = true_pred_df[["true"]], predictor = true_pred_df[["pred"]],     levels = c(FALSE, TRUE), direction = direction)</span></span>
 <span></span>
 <span><span class="co"># Data: true_pred_df[["pred"]] in 100 controls (true_pred_df[["true"]] FALSE) &lt; 100 cases (true_pred_df[["true"]] TRUE).</span></span>
@@ -123,13 +125,13 @@
 <span><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="va">tmp</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">ylim</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span></span></code></pre></div>
 <p><img src="paper_02_rROC_theoretic_files/figure-html/unnamed-chunk-2-1.png" width="480"></p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">tmp</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="paper_02_rROC_theoretic_files/figure-html/unnamed-chunk-2-2.png" width="480"></p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu">ggpubr</span><span class="fu">::</span><span class="fu"><a href="https://rpkgs.datanovia.com/ggpubr/reference/as_ggplot.html" class="external-link">as_ggplot</a></span><span class="op">(</span><span class="fu">ggpubr</span><span class="fu">::</span><span class="fu"><a href="https://rpkgs.datanovia.com/ggpubr/reference/get_legend.html" class="external-link">get_legend</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="paper_02_rROC_theoretic_files/figure-html/unnamed-chunk-2-3.png" width="480"></p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># dev.off()</span></span>
 <span></span>
 <span></span>
@@ -147,8 +149,9 @@
 <span><span class="co">#&gt; roc.default(response = true_pred_df[["true"]], predictor = true_pred_df[["pred"]],     levels = c(FALSE, TRUE), direction = direction)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Data: true_pred_df[["pred"]] in 100 controls (true_pred_df[["true"]] FALSE) &lt; 100 cases (true_pred_df[["true"]] TRUE).</span></span>
-<span><span class="co">#&gt; Area under the curve: 0.7655</span></span>
-<span><span class="co"># Call:</span></span>
+<span><span class="co">#&gt; Area under the curve: 0.7655</span></span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Call:</span></span>
 <span><span class="co"># roc.default(response = true_pred_df[["true"]], predictor = true_pred_df[["pred"]],     levels = c(FALSE, TRUE), direction = direction)</span></span>
 <span></span>
 <span><span class="co"># Data: true_pred_df[["pred"]] in 100 controls (true_pred_df[["true"]] FALSE) &lt; 100 cases (true_pred_df[["true"]] TRUE).</span></span>
@@ -156,13 +159,13 @@
 <span><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="va">tmp</span><span class="op">[[</span><span class="st">"rroc"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"plots"</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span></span></code></pre></div>
 <p><img src="paper_02_rROC_theoretic_files/figure-html/unnamed-chunk-2-4.png" width="480"></p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">tmp</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="paper_02_rROC_theoretic_files/figure-html/unnamed-chunk-2-5.png" width="480"></p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu">ggpubr</span><span class="fu">::</span><span class="fu"><a href="https://rpkgs.datanovia.com/ggpubr/reference/as_ggplot.html" class="external-link">as_ggplot</a></span><span class="op">(</span><span class="fu">ggpubr</span><span class="fu">::</span><span class="fu"><a href="https://rpkgs.datanovia.com/ggpubr/reference/get_legend.html" class="external-link">get_legend</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="paper_02_rROC_theoretic_files/figure-html/unnamed-chunk-2-6.png" width="480"></p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># dev.off()</span></span>
 <span></span>
 <span></span>
@@ -190,8 +193,9 @@
 <span><span class="co">#&gt; roc.default(response = true_pred_df[["true"]], predictor = true_pred_df[["pred"]],     levels = c(FALSE, TRUE), direction = direction)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Data: true_pred_df[["pred"]] in 100 controls (true_pred_df[["true"]] FALSE) &lt; 100 cases (true_pred_df[["true"]] TRUE).</span></span>
-<span><span class="co">#&gt; Area under the curve: 0.6212</span></span>
-<span><span class="co"># Call:</span></span>
+<span><span class="co">#&gt; Area under the curve: 0.6212</span></span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Call:</span></span>
 <span><span class="co"># roc.default(response = true_pred_df[["true"]], predictor = true_pred_df[["pred"]],     levels = c(FALSE, TRUE), direction = direction)</span></span>
 <span></span>
 <span><span class="co"># Data: true_pred_df[["pred"]] in 100 controls (true_pred_df[["true"]] FALSE) &lt; 100 cases (true_pred_df[["true"]] TRUE).</span></span>
@@ -199,13 +203,13 @@
 <span><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="va">tmp</span><span class="op">[[</span><span class="st">"rroc"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"plots"</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span></span></code></pre></div>
 <p><img src="paper_02_rROC_theoretic_files/figure-html/unnamed-chunk-2-7.png" width="480"></p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">tmp</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="paper_02_rROC_theoretic_files/figure-html/unnamed-chunk-2-8.png" width="480"></p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu">ggpubr</span><span class="fu">::</span><span class="fu"><a href="https://rpkgs.datanovia.com/ggpubr/reference/as_ggplot.html" class="external-link">as_ggplot</a></span><span class="op">(</span><span class="fu">ggpubr</span><span class="fu">::</span><span class="fu"><a href="https://rpkgs.datanovia.com/ggpubr/reference/get_legend.html" class="external-link">get_legend</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="paper_02_rROC_theoretic_files/figure-html/unnamed-chunk-2-9.png" width="480"></p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># dev.off()</span></span>
 <span></span>
 <span></span>
@@ -233,8 +237,9 @@
 <span><span class="co">#&gt; roc.default(response = true_pred_df[["true"]], predictor = true_pred_df[["pred"]],     levels = c(FALSE, TRUE), direction = direction)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Data: true_pred_df[["pred"]] in 100 controls (true_pred_df[["true"]] FALSE) &lt; 100 cases (true_pred_df[["true"]] TRUE).</span></span>
-<span><span class="co">#&gt; Area under the curve: 0.5455</span></span>
-<span><span class="co"># Call:</span></span>
+<span><span class="co">#&gt; Area under the curve: 0.5455</span></span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Call:</span></span>
 <span><span class="co"># roc.default(response = true_pred_df[["true"]], predictor = true_pred_df[["pred"]],     levels = c(FALSE, TRUE), direction = direction)</span></span>
 <span></span>
 <span><span class="co"># Data: true_pred_df[["pred"]] in 100 controls (true_pred_df[["true"]] FALSE) &lt; 100 cases (true_pred_df[["true"]] TRUE).</span></span>
@@ -242,13 +247,13 @@
 <span><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="va">tmp</span><span class="op">[[</span><span class="st">"rroc"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"plots"</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span></span></code></pre></div>
 <p><img src="paper_02_rROC_theoretic_files/figure-html/unnamed-chunk-2-10.png" width="480"></p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">tmp</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="paper_02_rROC_theoretic_files/figure-html/unnamed-chunk-2-11.png" width="480"></p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu">ggpubr</span><span class="fu">::</span><span class="fu"><a href="https://rpkgs.datanovia.com/ggpubr/reference/as_ggplot.html" class="external-link">as_ggplot</a></span><span class="op">(</span><span class="fu">ggpubr</span><span class="fu">::</span><span class="fu"><a href="https://rpkgs.datanovia.com/ggpubr/reference/get_legend.html" class="external-link">get_legend</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="paper_02_rROC_theoretic_files/figure-html/unnamed-chunk-2-12.png" width="480"></p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># dev.off()</span></span>
 <span></span>
 <span></span>
@@ -268,8 +273,9 @@
 <span><span class="co">#&gt; roc.default(response = true_pred_df[["true"]], predictor = true_pred_df[["pred"]],     levels = c(FALSE, TRUE), direction = direction)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Data: true_pred_df[["pred"]] in 100 controls (true_pred_df[["true"]] FALSE) &lt; 100 cases (true_pred_df[["true"]] TRUE).</span></span>
-<span><span class="co">#&gt; Area under the curve: 0.6754</span></span>
-<span><span class="co"># Call:</span></span>
+<span><span class="co">#&gt; Area under the curve: 0.6754</span></span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Call:</span></span>
 <span><span class="co"># roc.default(response = true_pred_df[["true"]], predictor = true_pred_df[["pred"]],     levels = c(FALSE, TRUE), direction = direction)</span></span>
 <span></span>
 <span><span class="co"># Data: true_pred_df[["pred"]] in 100 controls (true_pred_df[["true"]] FALSE) &lt; 100 cases (true_pred_df[["true"]] TRUE).</span></span>
@@ -277,13 +283,13 @@
 <span><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="va">tmp</span><span class="op">[[</span><span class="st">"rroc"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"plots"</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span></span></code></pre></div>
 <p><img src="paper_02_rROC_theoretic_files/figure-html/unnamed-chunk-2-13.png" width="480"></p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">tmp</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="paper_02_rROC_theoretic_files/figure-html/unnamed-chunk-2-14.png" width="480"></p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu">ggpubr</span><span class="fu">::</span><span class="fu"><a href="https://rpkgs.datanovia.com/ggpubr/reference/as_ggplot.html" class="external-link">as_ggplot</a></span><span class="op">(</span><span class="fu">ggpubr</span><span class="fu">::</span><span class="fu"><a href="https://rpkgs.datanovia.com/ggpubr/reference/get_legend.html" class="external-link">get_legend</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="paper_02_rROC_theoretic_files/figure-html/unnamed-chunk-2-15.png" width="480"></p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># dev.off()</span></span>
 <span></span>
 <span></span>
@@ -385,26 +391,28 @@
 <span><span class="co">#&gt; Area under the curve: 0.6754</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attr(,"class")</span></span>
-<span><span class="co">#&gt; [1] "restrictedROC" "list"</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">[[</span><span class="st">"rroc"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"single_rROC"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"pROC_full"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "restrictedROC" "list"</span></span></code></pre>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">[[</span><span class="st">"rroc"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"single_rROC"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"pROC_full"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Call:</span></span>
 <span><span class="co">#&gt; roc.default(response = true_pred_df[["true"]], predictor = true_pred_df[["pred"]],     levels = c(FALSE, TRUE), direction = direction)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Data: true_pred_df[["pred"]] in 100 controls (true_pred_df[["true"]] FALSE) &lt; 100 cases (true_pred_df[["true"]] TRUE).</span></span>
-<span><span class="co">#&gt; Area under the curve: 0.6754</span></span>
-<span><span class="co"># Call:</span></span>
+<span><span class="co">#&gt; Area under the curve: 0.6754</span></span></code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Call:</span></span>
 <span><span class="co"># roc.default(response = true_pred_df[["true"]], predictor = true_pred_df[["pred"]],     levels = c(FALSE, TRUE), direction = direction)</span></span>
 <span></span>
 <span><span class="co"># Data: true_pred_df[["pred"]] in 100 controls (true_pred_df[["true"]] FALSE) &lt; 100 cases (true_pred_df[["true"]] TRUE).</span></span>
 <span><span class="co"># Area under the curve: 0.5</span></span>
 <span><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="va">tmp</span><span class="op">[[</span><span class="st">"rroc"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"plots"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">tmp</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span><span class="op">)</span></span></code></pre>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">tmp</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="paper_02_rROC_theoretic_files/figure-html/unnamed-chunk-2-17.png" width="480"></p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu">ggpubr</span><span class="fu">::</span><span class="fu"><a href="https://rpkgs.datanovia.com/ggpubr/reference/as_ggplot.html" class="external-link">as_ggplot</a></span><span class="op">(</span><span class="fu">ggpubr</span><span class="fu">::</span><span class="fu"><a href="https://rpkgs.datanovia.com/ggpubr/reference/get_legend.html" class="external-link">get_legend</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="paper_02_rROC_theoretic_files/figure-html/unnamed-chunk-2-18.png" width="480"></p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># dev.off()</span></span></code></pre></div>
   </main>
 </div>

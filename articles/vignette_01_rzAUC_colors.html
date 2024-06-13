@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">restrictedROC</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3.6</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -110,8 +110,9 @@
 <span>        <span class="va">per_resp_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/split.html" class="external-link">split</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">predictor</span>, <span class="va">df</span><span class="op">$</span><span class="va">response</span><span class="op">)</span></span>
 <span>    <span class="op">}</span></span>
 <span><span class="op">}</span></span>
-<span><span class="co">#&gt; Wed May  8 17:11:44 2024      response V1</span></span>
-<span></span>
+<span><span class="co">#&gt; Thu Jun 13 06:35:24 2024      response V1</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span></span>
 <span><span class="co"># pdf(file.path("res", "rzAUC_colors.pdf"))</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span></span>
@@ -176,8 +177,9 @@
 <span><span class="co">#&gt; Area under the curve: 0.487</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attr(,"class")</span></span>
-<span><span class="co">#&gt; [1] "restrictedROC" "list"</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span></span>
+<span><span class="co">#&gt; [1] "restrictedROC" "list"</span></span></code></pre>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="../reference/plot_density_rROC_empirical.html">plot_density_rROC_empirical</a></span><span class="op">(</span></span>
 <span>        <span class="fu"><a href="https://rdrr.io/r/base/rev.html" class="external-link">rev</a></span><span class="op">(</span><span class="va">per_resp_list</span><span class="op">)</span>,</span>
 <span>        xmin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">predictor</span><span class="op">)</span>,</span>
@@ -187,7 +189,7 @@
 <span>        part_colors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>high <span class="op">=</span> <span class="st">"#d95f02"</span>, low <span class="op">=</span> <span class="st">"#00BFC4"</span><span class="op">)</span></span>
 <span>    <span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; $plots</span></span></code></pre>
+<span><span class="co">#&gt; $plots</span></span></code></pre></div>
 <p><img src="vignette_01_rzAUC_colors_files/figure-html/unnamed-chunk-2-2.png" width="480"></p>
 <pre><code><span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $single_rROC</span></span>
@@ -240,8 +242,9 @@
 <span><span class="co">#&gt; Area under the curve: 0.487</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attr(,"class")</span></span>
-<span><span class="co">#&gt; [1] "restrictedROC" "list"</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span></span>
+<span><span class="co">#&gt; [1] "restrictedROC" "list"</span></span></code></pre>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="../reference/plot_density_rROC_empirical.html">plot_density_rROC_empirical</a></span><span class="op">(</span></span>
 <span>        <span class="fu"><a href="https://rdrr.io/r/base/rev.html" class="external-link">rev</a></span><span class="op">(</span><span class="va">per_resp_list</span><span class="op">)</span>,</span>
 <span>        xmin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">predictor</span><span class="op">)</span>,</span>
@@ -251,7 +254,7 @@
 <span>        part_colors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>high <span class="op">=</span> <span class="st">"yellow"</span>, low <span class="op">=</span> <span class="st">"brown"</span><span class="op">)</span></span>
 <span>    <span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; $plots</span></span></code></pre>
+<span><span class="co">#&gt; $plots</span></span></code></pre></div>
 <p><img src="vignette_01_rzAUC_colors_files/figure-html/unnamed-chunk-2-3.png" width="480"></p>
 <pre><code><span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $single_rROC</span></span>
@@ -304,8 +307,9 @@
 <span><span class="co">#&gt; Area under the curve: 0.487</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attr(,"class")</span></span>
-<span><span class="co">#&gt; [1] "restrictedROC" "list"</span></span>
-<span><span class="co"># dev.off()</span></span></code></pre>
+<span><span class="co">#&gt; [1] "restrictedROC" "list"</span></span></code></pre>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># dev.off()</span></span></code></pre></div>
   </main>
 </div>
 

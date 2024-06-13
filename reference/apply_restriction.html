@@ -16,7 +16,7 @@ removed_impute."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/
     
     <a class="navbar-brand me-2" href="../index.html">restrictedROC</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3.6</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -101,16 +101,28 @@ rroc_result is detected.</p></dd>
     
 
 <p>A list with three elements:</p><ul><li><p><code>predictions</code>: A data frame with the original predictor values and the
-imputed values. It has three columns:</p><ul><li><p><code>predictor</code> is the original predictor value.</p></li>
-<li><p><code>keep</code> is a logical vector that indicates whether the sample is inside the
-informative range.</p></li>
-<li><p><code>bounded</code> is the imputed value.</p></li>
-</ul></li>
+imputed values. It has three columns:</p><dl><dt><code>predictor</code></dt>
+<dd><p>is the original predictor value.</p></dd>
+
+<dt><code>keep</code></dt>
+<dd><p>is a logical vector that indicates whether the sample is inside the
+informative range.</p></dd>
+
+<dt><code>bounded</code></dt>
+<dd><p>is the imputed value.</p></dd>
+
+
+</dl></li>
 <li><p><code>thresholds</code>: A data frame with the feature, threshold, the part of the
 predictor that was used and the imputed value for predictor values outside the
-informative range. The informative range is then:</p><ul><li><p><code>low</code>: <code>(-Inf, threshold]</code></p></li>
-<li><p><code>high</code>: <code>(threshold, Inf)</code></p></li>
-</ul></li>
+informative range. The informative range is then:</p><dl><dt><code>low</code></dt>
+<dd><p><code>(-Inf, threshold)</code></p></dd>
+
+<dt><code>high</code></dt>
+<dd><p><code>(threshold, Inf)</code></p></dd>
+
+
+</dl></li>
 </ul></div>
 
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

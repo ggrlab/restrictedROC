@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">restrictedROC</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3.6</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -106,8 +106,9 @@
 <p><img src="paper_01_roccurves_files/figure-html/unnamed-chunk-2-1.png" width="480"></p>
 <pre><code><span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $auc</span></span>
-<span><span class="co">#&gt; 0.5 with absolute error &lt; 5.6e-15</span></span>
-<span><span class="co"># pdf(file.path(paste0(main_plotname, "_random.pdf")), height = 10 * size_factor, width = 20 * size_factor)</span></span>
+<span><span class="co">#&gt; 0.5 with absolute error &lt; 5.6e-15</span></span></code></pre>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># pdf(file.path(paste0(main_plotname, "_random.pdf")), height = 10 * size_factor, width = 20 * size_factor)</span></span>
 <span><span class="co"># print(tmp)</span></span>
 <span><span class="co"># # $auc</span></span>
 <span><span class="co"># # 0.5 with absolute error &lt; 5.6e-15</span></span>
@@ -121,12 +122,13 @@
 <span>    xmin <span class="op">=</span> <span class="fl">1.5</span>, xmax <span class="op">=</span> <span class="fl">9.5</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $plot</span></span></code></pre>
+<span><span class="co">#&gt; $plot</span></span></code></pre></div>
 <p><img src="paper_01_roccurves_files/figure-html/unnamed-chunk-2-2.png" width="480"></p>
 <pre><code><span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $auc</span></span>
-<span><span class="co">#&gt; 0.76025 with absolute error &lt; 4.9e-05</span></span>
-<span><span class="co"># pdf(file.path(paste0(main_plotname, "_posGTneg.pdf")), height = 10 * size_factor, width = 20 * size_factor)</span></span>
+<span><span class="co">#&gt; 0.76025 with absolute error &lt; 4.9e-05</span></span></code></pre>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># pdf(file.path(paste0(main_plotname, "_posGTneg.pdf")), height = 10 * size_factor, width = 20 * size_factor)</span></span>
 <span><span class="co"># print(tmp)</span></span>
 <span><span class="co"># # $auc</span></span>
 <span><span class="co"># # 0.76025 with absolute error &lt; 4.9e-05</span></span>
@@ -145,12 +147,13 @@
 <span>    xmin <span class="op">=</span> <span class="fl">1.5</span>, xmax <span class="op">=</span> <span class="fl">15</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $plot</span></span></code></pre>
+<span><span class="co">#&gt; $plot</span></span></code></pre></div>
 <p><img src="paper_01_roccurves_files/figure-html/unnamed-chunk-2-3.png" width="480"></p>
 <pre><code><span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $auc</span></span>
-<span><span class="co">#&gt; 0.6244153 with absolute error &lt; 1e-06</span></span>
-<span><span class="co"># pdf(file.path(paste0(main_plotname, "_pos2norm_highdiff.pdf")), height = 10 * size_factor, width = 20 * size_factor)</span></span>
+<span><span class="co">#&gt; 0.6244153 with absolute error &lt; 1e-06</span></span></code></pre>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># pdf(file.path(paste0(main_plotname, "_pos2norm_highdiff.pdf")), height = 10 * size_factor, width = 20 * size_factor)</span></span>
 <span><span class="co"># print(tmp)</span></span>
 <span><span class="co"># # $auc</span></span>
 <span><span class="co"># # 0.6244153 with absolute error &lt; 1e-06</span></span>
@@ -169,12 +172,13 @@
 <span>    xmin <span class="op">=</span> <span class="fl">1.5</span>, xmax <span class="op">=</span> <span class="fl">15</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $plot</span></span></code></pre>
+<span><span class="co">#&gt; $plot</span></span></code></pre></div>
 <p><img src="paper_01_roccurves_files/figure-html/unnamed-chunk-2-4.png" width="480"></p>
 <pre><code><span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $auc</span></span>
-<span><span class="co">#&gt; 0.5497661 with absolute error &lt; 4.1e-07</span></span>
-<span><span class="co"># pdf(file.path(paste0(main_plotname, "_pos2norm_highdiff_v2.pdf")), height = 10 * size_factor, width = 20 * size_factor)</span></span>
+<span><span class="co">#&gt; 0.5497661 with absolute error &lt; 4.1e-07</span></span></code></pre>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># pdf(file.path(paste0(main_plotname, "_pos2norm_highdiff_v2.pdf")), height = 10 * size_factor, width = 20 * size_factor)</span></span>
 <span><span class="co"># print(tmp)</span></span>
 <span><span class="co"># # $auc</span></span>
 <span><span class="co"># # 0.5497661 with absolute error &lt; 4.1e-07</span></span>
@@ -191,12 +195,13 @@
 <span>    xmin <span class="op">=</span> <span class="fl">0.75</span>, xmax <span class="op">=</span> <span class="fl">11.5</span>, length.out <span class="op">=</span> <span class="fl">2001</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $plot</span></span></code></pre>
+<span><span class="co">#&gt; $plot</span></span></code></pre></div>
 <p><img src="paper_01_roccurves_files/figure-html/unnamed-chunk-2-5.png" width="480"></p>
 <pre><code><span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $auc</span></span>
-<span><span class="co">#&gt; 0.6726396 with absolute error &lt; 1.3e-08</span></span>
-<span><span class="co"># pdf(file.path(paste0(main_plotname, "_posGTneg_posVARGTneg.pdf")), height = 10 * size_factor, width = 20 * size_factor)</span></span>
+<span><span class="co">#&gt; 0.6726396 with absolute error &lt; 1.3e-08</span></span></code></pre>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># pdf(file.path(paste0(main_plotname, "_posGTneg_posVARGTneg.pdf")), height = 10 * size_factor, width = 20 * size_factor)</span></span>
 <span><span class="co"># print(tmp)</span></span>
 <span><span class="co"># # $auc</span></span>
 <span><span class="co"># # 0.6726396 with absolute error &lt; 1.3e-08</span></span>
@@ -211,12 +216,13 @@
 <span>    xmin <span class="op">=</span> <span class="fl">0.75</span>, xmax <span class="op">=</span> <span class="fl">11.5</span>, length.out <span class="op">=</span> <span class="fl">2001</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $plot</span></span></code></pre>
+<span><span class="co">#&gt; $plot</span></span></code></pre></div>
 <p><img src="paper_01_roccurves_files/figure-html/unnamed-chunk-2-6.png" width="480"></p>
 <pre><code><span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $auc</span></span>
-<span><span class="co">#&gt; 0.6726396 with absolute error &lt; 8.8e-07</span></span>
-<span><span class="co"># pdf(file.path(paste0(main_plotname, "_posGTneg_posVARLTneg.pdf")), height = 10 * size_factor, width = 20 * size_factor)</span></span>
+<span><span class="co">#&gt; 0.6726396 with absolute error &lt; 8.8e-07</span></span></code></pre>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># pdf(file.path(paste0(main_plotname, "_posGTneg_posVARLTneg.pdf")), height = 10 * size_factor, width = 20 * size_factor)</span></span>
 <span><span class="co"># print(tmp)</span></span>
 <span><span class="co"># # $auc</span></span>
 <span><span class="co"># # 0.6726396 with absolute error &lt; 8.8e-07</span></span>
@@ -231,16 +237,17 @@
 <span>    xmin <span class="op">=</span> <span class="fl">.5</span>, xmax <span class="op">=</span> <span class="fl">20</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $plot</span></span></code></pre>
+<span><span class="co">#&gt; $plot</span></span></code></pre></div>
 <p><img src="paper_01_roccurves_files/figure-html/unnamed-chunk-2-7.png" width="480"></p>
 <pre><code><span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $auc</span></span>
-<span><span class="co">#&gt; 1 with absolute error &lt; 1.1e-14</span></span>
-<span><span class="co"># pdf(file.path(paste0(main_plotname, "_perfect.pdf")), height = 10 * size_factor, width = 20 * size_factor)</span></span>
+<span><span class="co">#&gt; 1 with absolute error &lt; 1.1e-14</span></span></code></pre>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># pdf(file.path(paste0(main_plotname, "_perfect.pdf")), height = 10 * size_factor, width = 20 * size_factor)</span></span>
 <span><span class="co"># print(tmp)</span></span>
 <span><span class="co"># # $auc</span></span>
 <span><span class="co"># # 1 with absolute error &lt; 1.1e-14</span></span>
-<span><span class="co"># dev.off()</span></span></code></pre>
+<span><span class="co"># dev.off()</span></span></code></pre></div>
   </main>
 </div>
 

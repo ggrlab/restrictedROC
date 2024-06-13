@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">restrictedROC</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3.6</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -106,8 +106,9 @@
 <span>    predictor <span class="op">=</span> <span class="va">aSAH</span><span class="op">$</span><span class="va">ndka</span>,</span>
 <span>    return_proc <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; Positive label not given, setting to last level of factor: Poor</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="../reference/plot_rROC_part.html">plot_rROC_part</a></span><span class="op">(</span><span class="va">ret_procs</span>, threshold <span class="op">=</span> <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Positive label not given, setting to last level of factor: Poor</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="../reference/plot_rROC_part.html">plot_rROC_part</a></span><span class="op">(</span><span class="va">ret_procs</span>, threshold <span class="op">=</span> <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning in plot_rROC_part_single(x, ...): </span></span>
 <span><span class="co">#&gt; Threshold </span></span>
 <span><span class="co">#&gt;   10</span></span>
@@ -135,7 +136,7 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $patchworked</span></span></code></pre>
 <p><img src="vignette_02_restriction_plots_files/figure-html/unnamed-chunk-2-7.png" width="960"></p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">current_sim</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">dists</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="co"># restrictedROC::sim(dists, do_melt = FALSE, length.out = 2500)</span></span>
 <span>    <span class="fu">restrictedROC</span><span class="fu">::</span><span class="fu"><a href="../reference/sim.html">sim</a></span><span class="op">(</span><span class="va">dists</span>, do_melt <span class="op">=</span> <span class="cn">FALSE</span>, length.out <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
@@ -191,10 +192,10 @@
 <span><span class="co"># pdf("removeme.pdf", width=15)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">rroc_plots</span><span class="op">$</span><span class="va">patchworked</span><span class="op">)</span></span></code></pre></div>
 <p><img src="vignette_02_restriction_plots_files/figure-html/unnamed-chunk-3-1.png" width="960"></p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">rroc_plots_threshold</span><span class="op">$</span><span class="va">patchworked</span><span class="op">)</span></span></code></pre></div>
 <p><img src="vignette_02_restriction_plots_files/figure-html/unnamed-chunk-3-2.png" width="960"></p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># dev.off()</span></span></code></pre></div>
   </main>
 </div>

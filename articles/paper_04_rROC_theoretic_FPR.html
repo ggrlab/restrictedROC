@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">restrictedROC</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3.6</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -93,15 +93,16 @@
 <span><span class="va">main_width</span> <span class="op">&lt;-</span> <span class="fl">20</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.create</a></span><span class="op">(</span><span class="st">"res/paper"</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning in dir.create("res/paper", recursive = TRUE): 'res/paper' already</span></span>
-<span><span class="co">#&gt; exists</span></span>
-<span><span class="va">main_plotname</span> <span class="op">&lt;-</span> <span class="st">"res/paper/rROC_fpr"</span></span></code></pre></div>
+<span><span class="co">#&gt; exists</span></span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">main_plotname</span> <span class="op">&lt;-</span> <span class="st">"res/paper/rROC_fpr"</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="do-not-use-the-code">Do not use the code!<a class="anchor" aria-label="anchor" href="#do-not-use-the-code"></a>
 </h2>
 <p>This code here is not intended to be used but rather to show the
 resulting plots. The usage is somewhat different to what I would
 suggest. Look at the pictures, not at the code.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">plots_including_fpr</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">rroc_theo_result</span>, <span class="va">rroc_ylim</span> <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="va">plot_x_fpr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span></span>
 <span>        <span class="va">rroc_theo_result</span><span class="op">[[</span><span class="st">"rroc"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"single_rROC"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"performances"</span><span class="op">]</span><span class="op">]</span>,</span>
@@ -171,7 +172,7 @@ suggest. Look at the pictures, not at the code.</p>
 <pre><code><span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[5]]</span></span></code></pre>
 <p><img src="paper_04_rROC_theoretic_FPR_files/figure-html/unnamed-chunk-2-5.png" width="480"></p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># dev.off()</span></span>
 <span><span class="co"># sink(paste0(filename, ".txt"))</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">rroc_theo</span><span class="op">)</span></span>
@@ -261,8 +262,9 @@ suggest. Look at the pictures, not at the code.</p>
 <span><span class="co">#&gt; Area under the curve: 0.5</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attr(,"class")</span></span>
-<span><span class="co">#&gt; [1] "restrictedROC" "list"</span></span>
-<span><span class="co"># sink()</span></span>
+<span><span class="co">#&gt; [1] "restrictedROC" "list"</span></span></code></pre>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># sink()</span></span>
 <span></span>
 <span><span class="va">filename</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">main_plotname</span>, <span class="st">"_posGTneg.pdf"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co"># pdf(filename, height = main_height * size_factor, width = main_width * size_factor)</span></span>
@@ -274,7 +276,7 @@ suggest. Look at the pictures, not at the code.</p>
 <span>    return_all <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu">plots_including_fpr</span><span class="op">(</span><span class="va">rroc_theo</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [[1]]</span></span></code></pre>
+<span><span class="co">#&gt; [[1]]</span></span></code></pre></div>
 <p><img src="paper_04_rROC_theoretic_FPR_files/figure-html/unnamed-chunk-2-7.png" width="480"></p>
 <pre><code><span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[2]]</span></span></code></pre>
@@ -288,7 +290,7 @@ suggest. Look at the pictures, not at the code.</p>
 <pre><code><span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[5]]</span></span></code></pre>
 <p><img src="paper_04_rROC_theoretic_FPR_files/figure-html/unnamed-chunk-2-11.png" width="480"></p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># dev.off()</span></span>
 <span><span class="co"># sink(paste0(filename, ".txt"))</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">rroc_theo</span><span class="op">)</span></span>
@@ -378,8 +380,9 @@ suggest. Look at the pictures, not at the code.</p>
 <span><span class="co">#&gt; Area under the curve: 0.7655</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attr(,"class")</span></span>
-<span><span class="co">#&gt; [1] "restrictedROC" "list"</span></span>
-<span><span class="co"># sink()</span></span>
+<span><span class="co">#&gt; [1] "restrictedROC" "list"</span></span></code></pre>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># sink()</span></span>
 <span></span>
 <span></span>
 <span><span class="va">filename</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">main_plotname</span>, <span class="st">"_pos2norm_highdiff.pdf"</span><span class="op">)</span><span class="op">)</span></span>
@@ -402,7 +405,7 @@ suggest. Look at the pictures, not at the code.</p>
 <span>    return_all <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu">plots_including_fpr</span><span class="op">(</span><span class="va">rroc_theo</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [[1]]</span></span></code></pre>
+<span><span class="co">#&gt; [[1]]</span></span></code></pre></div>
 <p><img src="paper_04_rROC_theoretic_FPR_files/figure-html/unnamed-chunk-2-13.png" width="480"></p>
 <pre><code><span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[2]]</span></span></code></pre>
@@ -416,7 +419,7 @@ suggest. Look at the pictures, not at the code.</p>
 <pre><code><span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[5]]</span></span></code></pre>
 <p><img src="paper_04_rROC_theoretic_FPR_files/figure-html/unnamed-chunk-2-17.png" width="480"></p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># dev.off()</span></span>
 <span><span class="co"># sink(paste0(filename, ".txt"))</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">rroc_theo</span><span class="op">)</span></span>
@@ -508,8 +511,9 @@ suggest. Look at the pictures, not at the code.</p>
 <span><span class="co">#&gt; Area under the curve: 0.6212</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attr(,"class")</span></span>
-<span><span class="co">#&gt; [1] "restrictedROC" "list"</span></span>
-<span><span class="co"># sink()</span></span>
+<span><span class="co">#&gt; [1] "restrictedROC" "list"</span></span></code></pre>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># sink()</span></span>
 <span></span>
 <span></span>
 <span><span class="va">filename</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">main_plotname</span>, <span class="st">"_pos2norm_highdiff_v2.pdf"</span><span class="op">)</span><span class="op">)</span></span>
@@ -532,7 +536,7 @@ suggest. Look at the pictures, not at the code.</p>
 <span>    return_all <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu">plots_including_fpr</span><span class="op">(</span><span class="va">rroc_theo</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [[1]]</span></span></code></pre>
+<span><span class="co">#&gt; [[1]]</span></span></code></pre></div>
 <p><img src="paper_04_rROC_theoretic_FPR_files/figure-html/unnamed-chunk-2-19.png" width="480"></p>
 <pre><code><span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[2]]</span></span></code></pre>
@@ -546,7 +550,7 @@ suggest. Look at the pictures, not at the code.</p>
 <pre><code><span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[5]]</span></span></code></pre>
 <p><img src="paper_04_rROC_theoretic_FPR_files/figure-html/unnamed-chunk-2-23.png" width="480"></p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># dev.off()</span></span>
 <span><span class="co"># sink(paste0(filename, ".txt"))</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">rroc_theo</span><span class="op">)</span></span>
@@ -638,8 +642,9 @@ suggest. Look at the pictures, not at the code.</p>
 <span><span class="co">#&gt; Area under the curve: 0.5455</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attr(,"class")</span></span>
-<span><span class="co">#&gt; [1] "restrictedROC" "list"</span></span>
-<span><span class="co"># sink()</span></span>
+<span><span class="co">#&gt; [1] "restrictedROC" "list"</span></span></code></pre>
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># sink()</span></span>
 <span></span>
 <span><span class="co"># 4. Different mean + variance</span></span>
 <span><span class="co"># 4.1 mean: positive &gt; negative, var: positive &gt; negative --&gt; left-skewed</span></span>
@@ -653,7 +658,7 @@ suggest. Look at the pictures, not at the code.</p>
 <span>    return_all <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu">plots_including_fpr</span><span class="op">(</span><span class="va">rroc_theo</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [[1]]</span></span></code></pre>
+<span><span class="co">#&gt; [[1]]</span></span></code></pre></div>
 <p><img src="paper_04_rROC_theoretic_FPR_files/figure-html/unnamed-chunk-2-25.png" width="480"></p>
 <pre><code><span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[2]]</span></span></code></pre>
@@ -667,7 +672,7 @@ suggest. Look at the pictures, not at the code.</p>
 <pre><code><span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[5]]</span></span></code></pre>
 <p><img src="paper_04_rROC_theoretic_FPR_files/figure-html/unnamed-chunk-2-29.png" width="480"></p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># dev.off()</span></span>
 <span><span class="co"># sink(paste0(filename, ".txt"))</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">rroc_theo</span><span class="op">)</span></span>
@@ -759,8 +764,9 @@ suggest. Look at the pictures, not at the code.</p>
 <span><span class="co">#&gt; Area under the curve: 0.6754</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attr(,"class")</span></span>
-<span><span class="co">#&gt; [1] "restrictedROC" "list"</span></span>
-<span><span class="co"># sink()</span></span>
+<span><span class="co">#&gt; [1] "restrictedROC" "list"</span></span></code></pre>
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># sink()</span></span>
 <span></span>
 <span><span class="co"># 4.2 mean: positive &gt; negative, var: positive &lt; negative --&gt; right-skewed</span></span>
 <span><span class="va">filename</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">main_plotname</span>, <span class="st">"_posGTneg_posVARLTneg.pdf"</span><span class="op">)</span><span class="op">)</span></span>
@@ -773,7 +779,7 @@ suggest. Look at the pictures, not at the code.</p>
 <span>    return_all <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu">plots_including_fpr</span><span class="op">(</span><span class="va">rroc_theo</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [[1]]</span></span></code></pre>
+<span><span class="co">#&gt; [[1]]</span></span></code></pre></div>
 <p><img src="paper_04_rROC_theoretic_FPR_files/figure-html/unnamed-chunk-2-31.png" width="480"></p>
 <pre><code><span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[2]]</span></span></code></pre>
@@ -787,7 +793,7 @@ suggest. Look at the pictures, not at the code.</p>
 <pre><code><span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[5]]</span></span></code></pre>
 <p><img src="paper_04_rROC_theoretic_FPR_files/figure-html/unnamed-chunk-2-35.png" width="480"></p>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># dev.off()</span></span>
 <span><span class="co"># sink(paste0(filename, ".txt"))</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">rroc_theo</span><span class="op">)</span></span>
@@ -879,8 +885,9 @@ suggest. Look at the pictures, not at the code.</p>
 <span><span class="co">#&gt; Area under the curve: 0.6754</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attr(,"class")</span></span>
-<span><span class="co">#&gt; [1] "restrictedROC" "list"</span></span>
-<span><span class="co"># sink()</span></span></code></pre>
+<span><span class="co">#&gt; [1] "restrictedROC" "list"</span></span></code></pre>
+<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># sink()</span></span></code></pre></div>
 </div>
   </main>
 </div>
