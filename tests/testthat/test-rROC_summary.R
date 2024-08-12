@@ -79,3 +79,17 @@ test_that("rROC with plot summary", {
     tmp_s <- summary(res_df)
     testthat::expect_true(TRUE) # Just that the test is not skipped as "empty"
 })
+
+test_that("rROC summary without permutations", {
+    data("aSAH", package = "pROC")
+    set.seed(100)
+    res_df <- rROC(
+        aSAH,
+        dependent_vars = "outcome",
+        independent_vars = "ndka",
+        n_permutations = 0,
+        positive_label = "Good"
+    )
+    summary(res_df, searchword = "max_total")
+    testthat::expect_true(TRUE)
+})
