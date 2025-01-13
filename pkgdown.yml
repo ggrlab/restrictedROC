@@ -1,21 +1,20 @@
 pandoc: 3.1.11
-pkgdown: 2.0.9
+pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
-  examples_01_AUROC_TESTS: examples_01_AUROC_TESTS.html
-  paper_01_roccurves: paper_01_roccurves.html
-  paper_02_rROC_theoretic: paper_02_rROC_theoretic.html
-  paper_03_rROC_partROCs: paper_03_rROC_partROCs.html
-  paper_04_rROC_theoretic_FPR: paper_04_rROC_theoretic_FPR.html
-  paper_05_varying_mean_variance: paper_05_varying_mean_variance.html
-  paper_06_rROC_scaling_vs_recalculate: paper_06_rROC_scaling_vs_recalculate.html
-  paper_07_rROC_twoway: paper_07_rROC_twoway.html
-  paper_08_rROC_permutation_bias: paper_08_rROC_permutation_bias.html
-  paper_09_cartoon_fig2: paper_09_cartoon_fig2.html
-  vignette_01_rzAUC_colors: vignette_01_rzAUC_colors.html
-  vignette_02_restriction_plots: vignette_02_restriction_plots.html
-last_built: 2024-06-13T06:31Z
+  articles/examples_01_AUROC_TESTS: examples_01_AUROC_TESTS.html
+  articles/paper_01_roccurves: paper_01_roccurves.html
+  articles/paper_02_rROC_theoretic: paper_02_rROC_theoretic.html
+  articles/paper_03_rROC_partROCs: paper_03_rROC_partROCs.html
+  articles/paper_04_rROC_theoretic_FPR: paper_04_rROC_theoretic_FPR.html
+  articles/paper_05_varying_mean_variance: paper_05_varying_mean_variance.html
+  articles/paper_06_rROC_scaling_vs_recalculate: paper_06_rROC_scaling_vs_recalculate.html
+  articles/paper_07_rROC_twoway: paper_07_rROC_twoway.html
+  articles/paper_08_rROC_permutation_bias: paper_08_rROC_permutation_bias.html
+  articles/paper_09_cartoon_fig2: paper_09_cartoon_fig2.html
+  articles/vignette_01_rzAUC_colors: vignette_01_rzAUC_colors.html
+  articles/vignette_02_restriction_plots: vignette_02_restriction_plots.html
+last_built: 2025-01-13T18:57Z
 urls:
   reference: https://ggrlab.github.io/restrictedROC/reference
   article: https://ggrlab.github.io/restrictedROC/articles
-
