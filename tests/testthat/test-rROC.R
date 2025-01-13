@@ -400,3 +400,21 @@ test_that("rROC with plotting and multiple dependent vars", {
     )
     testthat::expect_true(TRUE) # Just that the test is not skipped as "empty"
 })
+
+
+
+test_that("rROC print, multiple features", {
+    library(restrictedROC)
+    data("aSAH", package = "pROC")
+    set.seed(100)
+    res_df <- rROC(
+        aSAH,
+        dependent_vars = "outcome",
+        independent_vars = c("ndka", "s100b"),
+        n_permutations = 2,
+        positive_label = "Good"
+    )
+    output <- testthat::capture_output(print(res_df))
+    # Test that print(res_df) includes "rROC object" as text:
+    testthat::expect_true(any(grepl("rROC object", output)))
+})

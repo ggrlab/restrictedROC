@@ -289,3 +289,15 @@ rROC.data.frame <- function(x,
     }
     return(reslist)
 }
+
+#' @export
+print.rROC <- function(x, n = 10, ...) {
+    cat("rROC object, first ", n, " variables\n")
+    cat("Dependent variables: ", paste0(names(x)[seq_len(min(n, length(x)))], collapse = ", "), "\n")
+    cat(
+        "Independent variables of first DV: ",
+        paste0(names(x[[1]])[seq_len(min(n, length(x[[1]])))], collapse = ", "),
+        "\n"
+    )
+    invisible(x)
+}
