@@ -27,7 +27,7 @@ summary.rROC <- function(object,
         return(NULL)
     } else if (!searchword %in% names(object)) {
         nontraverse_vars <- which(names(object) %in% c("plots"))
-        if(length(nontraverse_vars) > 0) {
+        if (length(nontraverse_vars) > 0) {
             object <- object[-nontraverse_vars]
         }
         current_level <- current_level + 1
@@ -38,9 +38,13 @@ summary.rROC <- function(object,
             relevant_cols_regex = relevant_cols_regex,
             searchword = searchword
         )
-        return(dplyr::bind_rows(l_results, .id = paste0("level_", current_level)))
+        if (current_level == 0) {
+            return(dplyr::bind_rows(lapply(l_results, tibble::as_tibble)))
+        } else {
+            return(dplyr::bind_rows(l_results, .id = paste0("level_", current_level)))
+        }
     } else {
-        single_summary <- tibble::as_tibble(data.frame(c(
+        single_summary <- (data.frame(c(
             object[["permutation_pval"]],
             "positive_label" = as.character(object[["positive_label"]]),
             object["max_total"],
