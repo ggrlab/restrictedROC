@@ -8,7 +8,7 @@
   object,
   relevant_cols_regex = c("pval.twoside.*", "n_permutations", "positive_label",
     ".*\\\\.auc$", "part", "restriction", "informative_range.*"),
-  searchword = "permutation_pval",
+  searchword = "max_total",
   current_level = 0,
   ...
 )

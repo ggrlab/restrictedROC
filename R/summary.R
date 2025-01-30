@@ -20,7 +20,7 @@ summary.rROC <- function(object,
                              "restriction",
                              "informative_range.*"
                          ),
-                         searchword = "permutation_pval",
+                         searchword = "max_total",
                          current_level = 0,
                          ...) {
     if (all(is.null(object)) || all(is.na(object))) {
