@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">restrictedROC</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3.10</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3.11</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -147,8 +147,10 @@ p-values<a class="anchor" aria-label="anchor" href="#optimizing-rroc-introduces-
 <span></span>
 <span><span class="co"># pdf("rzAUC_permutation_bias_sim.pdf", width = 6, height = 6)</span></span>
 <span><span class="co"># Get the density plot from fig_rzauc_twoway, page 1, OR from here:</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">plots_rroc_way_1</span><span class="op">[[</span><span class="st">"plots"</span><span class="op">]</span><span class="op">]</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="paper_08_rROC_permutation_bias_files/figure-html/unnamed-chunk-2-1.png" width="480"></p>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">plots_rroc_way_1</span><span class="op">[[</span><span class="st">"plots"</span><span class="op">]</span><span class="op">]</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Ignoring unknown labels:</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #00BB00;">colour</span> : <span style="color: #0000BB;">""</span></span></span></code></pre></div>
+<p><img src="paper_08_rROC_permutation_bias_files/figure-html/unnamed-chunk-2-1.png" class="r-plt" alt="" width="480"></p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># dev.off()</span></span>
 <span></span>
@@ -170,7 +172,7 @@ p-values<a class="anchor" aria-label="anchor" href="#optimizing-rroc-introduces-
 <span><span class="co">#&gt; <span style="color: #555555;">generated.</span></span></span>
 <span><span class="co">#&gt; Warning: Removed 750 rows containing missing values or values outside the scale range</span></span>
 <span><span class="co">#&gt; (`geom_point()`).</span></span></code></pre></div>
-<p><img src="paper_08_rROC_permutation_bias_files/figure-html/unnamed-chunk-2-2.png" width="480"></p>
+<p><img src="paper_08_rROC_permutation_bias_files/figure-html/unnamed-chunk-2-2.png" class="r-plt" alt="" width="480"></p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span></span>
 <span>    <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/qplot.html" class="external-link">qplot</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">perm_global_bound</span><span class="op">[[</span><span class="st">"rzAUC"</span><span class="op">]</span><span class="op">]</span>, y <span class="op">=</span> <span class="va">perm_max_bound</span><span class="op">[[</span><span class="st">"rzAUC"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span> <span class="op">+</span></span>
@@ -185,7 +187,7 @@ p-values<a class="anchor" aria-label="anchor" href="#optimizing-rroc-introduces-
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: Removed 750 rows containing missing values or values outside the scale range</span></span>
 <span><span class="co">#&gt; (`geom_point()`).</span></span></code></pre></div>
-<p><img src="paper_08_rROC_permutation_bias_files/figure-html/unnamed-chunk-2-3.png" width="480"></p>
+<p><img src="paper_08_rROC_permutation_bias_files/figure-html/unnamed-chunk-2-3.png" class="r-plt" alt="" width="480"></p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span></span>
 <span>    <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/qplot.html" class="external-link">qplot</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="va">perm_global_bound</span>, <span class="fu"><a href="https://rdrr.io/r/base/sign.html" class="external-link">sign</a></span><span class="op">(</span><span class="va">rzAUC</span><span class="op">)</span> <span class="op">*</span> <span class="va">pval_asym</span><span class="op">)</span>, y <span class="op">=</span> <span class="va">perm_max_bound</span><span class="op">[[</span><span class="st">"pval_asym"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span> <span class="op">+</span></span>
@@ -196,7 +198,7 @@ p-values<a class="anchor" aria-label="anchor" href="#optimizing-rroc-introduces-
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: Removed 750 rows containing missing values or values outside the scale range</span></span>
 <span><span class="co">#&gt; (`geom_point()`).</span></span></code></pre></div>
-<p><img src="paper_08_rROC_permutation_bias_files/figure-html/unnamed-chunk-2-4.png" width="480"></p>
+<p><img src="paper_08_rROC_permutation_bias_files/figure-html/unnamed-chunk-2-4.png" class="r-plt" alt="" width="480"></p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span></span>
 <span>    <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/qplot.html" class="external-link">qplot</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">perm_global_bound</span><span class="op">[[</span><span class="st">"pval_asym"</span><span class="op">]</span><span class="op">]</span>, y <span class="op">=</span> <span class="va">perm_max_bound</span><span class="op">[[</span><span class="st">"pval_asym"</span><span class="op">]</span><span class="op">]</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sign.html" class="external-link">sign</a></span><span class="op">(</span><span class="va">perm_global_bound</span><span class="op">[[</span><span class="st">"rzAUC"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>, geom <span class="op">=</span> <span class="st">"blank"</span><span class="op">)</span> <span class="op">+</span></span>
@@ -208,7 +210,7 @@ p-values<a class="anchor" aria-label="anchor" href="#optimizing-rroc-introduces-
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: Removed 750 rows containing missing values or values outside the scale range</span></span>
 <span><span class="co">#&gt; (`geom_point()`).</span></span></code></pre></div>
-<p><img src="paper_08_rROC_permutation_bias_files/figure-html/unnamed-chunk-2-5.png" width="480"></p>
+<p><img src="paper_08_rROC_permutation_bias_files/figure-html/unnamed-chunk-2-5.png" class="r-plt" alt="" width="480"></p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># dev.off()</span></span></code></pre></div>
 </div>
@@ -222,7 +224,7 @@ p-values<a class="anchor" aria-label="anchor" href="#optimizing-rroc-introduces-
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>

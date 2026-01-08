@@ -15,7 +15,7 @@ D, Bottom-right:	rzAUC plot for markerHIGH and markerLOW restricted parts, the r
 
     <a class="navbar-brand me-2" href="../index.html">restrictedROC</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3.10</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3.11</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -163,6 +163,8 @@ If NA, no points are plotted. To plot all points use Inf.</p></dd>
 <span class="r-in"><span><span class="fu">plot_density_rROC_empirical</span><span class="op">(</span><span class="va">sim_samples</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Positive label not given, setting to max(response): dist_2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $plots</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Ignoring unknown labels:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> <span style="color: #00BB00;">colour</span> : <span style="color: #0000BB;">""</span></span>
 <span class="r-plt img"><img src="plot_density_rROC_empirical-1.png" alt="" width="700" height="433"></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $single_rROC</span>
@@ -170,16 +172,16 @@ If NA, no points are plotted. To plot all points use Inf.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 101 × 21</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    threshold auc_high positives_high negatives_high scaling_high auc_var_H0_high</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>   -<span style="color: #BB0000;">Inf</span>       0.321             50             50         1            0.003<span style="text-decoration: underline;">37</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>     -<span style="color: #BB0000;">2.35</span>    0.328             49             50         1.02         0.003<span style="text-decoration: underline;">40</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>     -<span style="color: #BB0000;">2.05</span>    0.335             48             50         1.04         0.003<span style="text-decoration: underline;">44</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>     -<span style="color: #BB0000;">1.61</span>    0.342             47             50         1.06         0.003<span style="text-decoration: underline;">48</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>     -<span style="color: #BB0000;">1.34</span>    0.349             46             50         1.09         0.003<span style="text-decoration: underline;">51</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>     -<span style="color: #BB0000;">1.31</span>    0.357             45             50         1.11         0.003<span style="text-decoration: underline;">56</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>     -<span style="color: #BB0000;">1.21</span>    0.365             44             50         1.14         0.003<span style="text-decoration: underline;">60</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>     -<span style="color: #BB0000;">1.12</span>    0.373             43             50         1.16         0.003<span style="text-decoration: underline;">64</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>     -<span style="color: #BB0000;">1.07</span>    0.382             42             50         1.19         0.003<span style="text-decoration: underline;">69</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>     -<span style="color: #BB0000;">1.05</span>    0.392             41             50         1.22         0.003<span style="text-decoration: underline;">74</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>   -<span style="color: #BB0000;">Inf</span>       0.258             50             50         1            0.003<span style="text-decoration: underline;">37</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>     -<span style="color: #BB0000;">2.35</span>    0.264             49             50         1.02         0.003<span style="text-decoration: underline;">40</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>     -<span style="color: #BB0000;">2.05</span>    0.269             48             50         1.04         0.003<span style="text-decoration: underline;">44</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>     -<span style="color: #BB0000;">1.61</span>    0.275             47             50         1.06         0.003<span style="text-decoration: underline;">48</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>     -<span style="color: #BB0000;">1.34</span>    0.281             46             50         1.09         0.003<span style="text-decoration: underline;">51</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>     -<span style="color: #BB0000;">1.31</span>    0.287             45             50         1.11         0.003<span style="text-decoration: underline;">56</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>     -<span style="color: #BB0000;">1.21</span>    0.294             44             50         1.14         0.003<span style="text-decoration: underline;">60</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>     -<span style="color: #BB0000;">1.12</span>    0.300             43             50         1.16         0.003<span style="text-decoration: underline;">64</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>     -<span style="color: #BB0000;">1.07</span>    0.308             42             50         1.19         0.003<span style="text-decoration: underline;">69</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>     -<span style="color: #BB0000;">1.05</span>    0.315             41             50         1.22         0.003<span style="text-decoration: underline;">74</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 91 more rows</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 15 more variables: rzAUC_high &lt;dbl&gt;, pval_asym_onesided_high &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   pval_asym_high &lt;dbl&gt;, auc_low &lt;dbl&gt;, positives_low &lt;dbl&gt;,</span></span>
@@ -188,20 +190,20 @@ If NA, no points are plotted. To plot all points use Inf.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   tp &lt;dbl&gt;, fp &lt;dbl&gt;, tpr_global &lt;dbl&gt;, fpr_global &lt;dbl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $global</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      auc auc_var_H0     rzAUC   pval_asym</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.3212     0.3212 -3.081537 0.002059345</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      auc auc_var_H0     rzAUC    pval_asym</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.2584     0.2584 -4.163867 3.129021e-05</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $keep_highs</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      auc  auc_var_H0     rzAUC   pval_asym threshold</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.3212 0.003366667 -3.081537 0.002059345      -Inf</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      auc  auc_var_H0     rzAUC    pval_asym threshold</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.2584 0.003366667 -4.163867 3.129021e-05      -Inf</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $keep_lows</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      auc  auc_var_H0     rzAUC   pval_asym threshold</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.3212 0.003366667 -3.081537 0.002059345       Inf</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      auc  auc_var_H0     rzAUC    pval_asym threshold</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.2584 0.003366667 -4.163867 3.129021e-05       Inf</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $max_total</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      auc  auc_var_H0     rzAUC   pval_asym threshold   part</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.3212 0.003366667 -3.081537 0.002059345      -Inf global</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      auc  auc_var_H0     rzAUC    pval_asym threshold   part</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.2584 0.003366667 -4.163867 3.129021e-05      -Inf global</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $positive_label</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "dist_2"</span>
@@ -212,13 +214,15 @@ If NA, no points are plotted. To plot all points use Inf.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> roc.default(response = true_pred_df[["true"]], predictor = true_pred_df[["pred"]],     levels = c(FALSE, TRUE), direction = direction)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Data: true_pred_df[["pred"]] in 50 controls (true_pred_df[["true"]] FALSE) &lt; 50 cases (true_pred_df[["true"]] TRUE).</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Area under the curve: 0.3212</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Area under the curve: 0.2584</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"class")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "restrictedROC" "list"         </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="fu">plot_density_rROC_empirical</span><span class="op">(</span><span class="va">sim_samples</span>, positive_label <span class="op">=</span> <span class="st">"dist_1"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $plots</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Ignoring unknown labels:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> <span style="color: #00BB00;">colour</span> : <span style="color: #0000BB;">""</span></span>
 <span class="r-plt img"><img src="plot_density_rROC_empirical-2.png" alt="" width="700" height="433"></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $single_rROC</span>
@@ -226,16 +230,16 @@ If NA, no points are plotted. To plot all points use Inf.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 101 × 21</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    threshold auc_high positives_high negatives_high scaling_high auc_var_H0_high</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>   -<span style="color: #BB0000;">Inf</span>       0.679             50             50         1            0.003<span style="text-decoration: underline;">37</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>     -<span style="color: #BB0000;">2.35</span>    0.672             50             49         1.02         0.003<span style="text-decoration: underline;">40</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>     -<span style="color: #BB0000;">2.05</span>    0.665             50             48         1.04         0.003<span style="text-decoration: underline;">44</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>     -<span style="color: #BB0000;">1.61</span>    0.658             50             47         1.06         0.003<span style="text-decoration: underline;">48</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>     -<span style="color: #BB0000;">1.34</span>    0.651             50             46         1.09         0.003<span style="text-decoration: underline;">51</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>     -<span style="color: #BB0000;">1.31</span>    0.643             50             45         1.11         0.003<span style="text-decoration: underline;">56</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>     -<span style="color: #BB0000;">1.21</span>    0.635             50             44         1.14         0.003<span style="text-decoration: underline;">60</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>     -<span style="color: #BB0000;">1.12</span>    0.627             50             43         1.16         0.003<span style="text-decoration: underline;">64</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>     -<span style="color: #BB0000;">1.07</span>    0.618             50             42         1.19         0.003<span style="text-decoration: underline;">69</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>     -<span style="color: #BB0000;">1.05</span>    0.608             50             41         1.22         0.003<span style="text-decoration: underline;">74</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>   -<span style="color: #BB0000;">Inf</span>       0.742             50             50         1            0.003<span style="text-decoration: underline;">37</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>     -<span style="color: #BB0000;">2.35</span>    0.736             50             49         1.02         0.003<span style="text-decoration: underline;">40</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>     -<span style="color: #BB0000;">2.05</span>    0.731             50             48         1.04         0.003<span style="text-decoration: underline;">44</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>     -<span style="color: #BB0000;">1.61</span>    0.725             50             47         1.06         0.003<span style="text-decoration: underline;">48</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>     -<span style="color: #BB0000;">1.34</span>    0.719             50             46         1.09         0.003<span style="text-decoration: underline;">51</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>     -<span style="color: #BB0000;">1.31</span>    0.713             50             45         1.11         0.003<span style="text-decoration: underline;">56</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>     -<span style="color: #BB0000;">1.21</span>    0.706             50             44         1.14         0.003<span style="text-decoration: underline;">60</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>     -<span style="color: #BB0000;">1.12</span>    0.700             50             43         1.16         0.003<span style="text-decoration: underline;">64</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>     -<span style="color: #BB0000;">1.07</span>    0.692             50             42         1.19         0.003<span style="text-decoration: underline;">69</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>     -<span style="color: #BB0000;">1.05</span>    0.685             50             41         1.22         0.003<span style="text-decoration: underline;">74</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 91 more rows</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 15 more variables: rzAUC_high &lt;dbl&gt;, pval_asym_onesided_high &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   pval_asym_high &lt;dbl&gt;, auc_low &lt;dbl&gt;, positives_low &lt;dbl&gt;,</span></span>
@@ -244,20 +248,20 @@ If NA, no points are plotted. To plot all points use Inf.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   tp &lt;dbl&gt;, fp &lt;dbl&gt;, tpr_global &lt;dbl&gt;, fpr_global &lt;dbl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $global</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      auc auc_var_H0    rzAUC   pval_asym</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.6788     0.6788 3.081537 0.002059345</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      auc auc_var_H0    rzAUC    pval_asym</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.7416     0.7416 4.163867 3.129021e-05</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $keep_highs</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      auc  auc_var_H0    rzAUC   pval_asym threshold</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.6788 0.003366667 3.081537 0.002059345      -Inf</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      auc  auc_var_H0    rzAUC    pval_asym threshold</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.7416 0.003366667 4.163867 3.129021e-05      -Inf</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $keep_lows</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      auc  auc_var_H0    rzAUC   pval_asym threshold</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.6788 0.003366667 3.081537 0.002059345       Inf</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      auc  auc_var_H0    rzAUC    pval_asym threshold</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.7416 0.003366667 4.163867 3.129021e-05       Inf</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $max_total</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      auc  auc_var_H0    rzAUC   pval_asym threshold   part</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.6788 0.003366667 3.081537 0.002059345      -Inf global</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      auc  auc_var_H0    rzAUC    pval_asym threshold   part</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.7416 0.003366667 4.163867 3.129021e-05      -Inf global</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $positive_label</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "dist_1"</span>
@@ -268,13 +272,15 @@ If NA, no points are plotted. To plot all points use Inf.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> roc.default(response = true_pred_df[["true"]], predictor = true_pred_df[["pred"]],     levels = c(FALSE, TRUE), direction = direction)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Data: true_pred_df[["pred"]] in 50 controls (true_pred_df[["true"]] FALSE) &lt; 50 cases (true_pred_df[["true"]] TRUE).</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Area under the curve: 0.6788</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Area under the curve: 0.7416</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"class")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "restrictedROC" "list"         </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="fu">plot_density_rROC_empirical</span><span class="op">(</span><span class="va">sim_samples</span>, positive_label <span class="op">=</span> <span class="st">"dist_2"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $plots</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Ignoring unknown labels:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> <span style="color: #00BB00;">colour</span> : <span style="color: #0000BB;">""</span></span>
 <span class="r-plt img"><img src="plot_density_rROC_empirical-3.png" alt="" width="700" height="433"></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $single_rROC</span>
@@ -282,16 +288,16 @@ If NA, no points are plotted. To plot all points use Inf.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 101 × 21</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    threshold auc_high positives_high negatives_high scaling_high auc_var_H0_high</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>   -<span style="color: #BB0000;">Inf</span>       0.321             50             50         1            0.003<span style="text-decoration: underline;">37</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>     -<span style="color: #BB0000;">2.35</span>    0.328             49             50         1.02         0.003<span style="text-decoration: underline;">40</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>     -<span style="color: #BB0000;">2.05</span>    0.335             48             50         1.04         0.003<span style="text-decoration: underline;">44</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>     -<span style="color: #BB0000;">1.61</span>    0.342             47             50         1.06         0.003<span style="text-decoration: underline;">48</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>     -<span style="color: #BB0000;">1.34</span>    0.349             46             50         1.09         0.003<span style="text-decoration: underline;">51</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>     -<span style="color: #BB0000;">1.31</span>    0.357             45             50         1.11         0.003<span style="text-decoration: underline;">56</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>     -<span style="color: #BB0000;">1.21</span>    0.365             44             50         1.14         0.003<span style="text-decoration: underline;">60</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>     -<span style="color: #BB0000;">1.12</span>    0.373             43             50         1.16         0.003<span style="text-decoration: underline;">64</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>     -<span style="color: #BB0000;">1.07</span>    0.382             42             50         1.19         0.003<span style="text-decoration: underline;">69</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>     -<span style="color: #BB0000;">1.05</span>    0.392             41             50         1.22         0.003<span style="text-decoration: underline;">74</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>   -<span style="color: #BB0000;">Inf</span>       0.258             50             50         1            0.003<span style="text-decoration: underline;">37</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>     -<span style="color: #BB0000;">2.35</span>    0.264             49             50         1.02         0.003<span style="text-decoration: underline;">40</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>     -<span style="color: #BB0000;">2.05</span>    0.269             48             50         1.04         0.003<span style="text-decoration: underline;">44</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>     -<span style="color: #BB0000;">1.61</span>    0.275             47             50         1.06         0.003<span style="text-decoration: underline;">48</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>     -<span style="color: #BB0000;">1.34</span>    0.281             46             50         1.09         0.003<span style="text-decoration: underline;">51</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>     -<span style="color: #BB0000;">1.31</span>    0.287             45             50         1.11         0.003<span style="text-decoration: underline;">56</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>     -<span style="color: #BB0000;">1.21</span>    0.294             44             50         1.14         0.003<span style="text-decoration: underline;">60</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>     -<span style="color: #BB0000;">1.12</span>    0.300             43             50         1.16         0.003<span style="text-decoration: underline;">64</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>     -<span style="color: #BB0000;">1.07</span>    0.308             42             50         1.19         0.003<span style="text-decoration: underline;">69</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>     -<span style="color: #BB0000;">1.05</span>    0.315             41             50         1.22         0.003<span style="text-decoration: underline;">74</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 91 more rows</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 15 more variables: rzAUC_high &lt;dbl&gt;, pval_asym_onesided_high &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   pval_asym_high &lt;dbl&gt;, auc_low &lt;dbl&gt;, positives_low &lt;dbl&gt;,</span></span>
@@ -300,20 +306,20 @@ If NA, no points are plotted. To plot all points use Inf.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   tp &lt;dbl&gt;, fp &lt;dbl&gt;, tpr_global &lt;dbl&gt;, fpr_global &lt;dbl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $global</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      auc auc_var_H0     rzAUC   pval_asym</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.3212     0.3212 -3.081537 0.002059345</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      auc auc_var_H0     rzAUC    pval_asym</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.2584     0.2584 -4.163867 3.129021e-05</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $keep_highs</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      auc  auc_var_H0     rzAUC   pval_asym threshold</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.3212 0.003366667 -3.081537 0.002059345      -Inf</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      auc  auc_var_H0     rzAUC    pval_asym threshold</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.2584 0.003366667 -4.163867 3.129021e-05      -Inf</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $keep_lows</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      auc  auc_var_H0     rzAUC   pval_asym threshold</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.3212 0.003366667 -3.081537 0.002059345       Inf</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      auc  auc_var_H0     rzAUC    pval_asym threshold</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.2584 0.003366667 -4.163867 3.129021e-05       Inf</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $max_total</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      auc  auc_var_H0     rzAUC   pval_asym threshold   part</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.3212 0.003366667 -3.081537 0.002059345      -Inf global</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      auc  auc_var_H0     rzAUC    pval_asym threshold   part</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.2584 0.003366667 -4.163867 3.129021e-05      -Inf global</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $positive_label</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "dist_2"</span>
@@ -324,7 +330,7 @@ If NA, no points are plotted. To plot all points use Inf.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> roc.default(response = true_pred_df[["true"]], predictor = true_pred_df[["pred"]],     levels = c(FALSE, TRUE), direction = direction)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Data: true_pred_df[["pred"]] in 50 controls (true_pred_df[["true"]] FALSE) &lt; 50 cases (true_pred_df[["true"]] TRUE).</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Area under the curve: 0.3212</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Area under the curve: 0.2584</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"class")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "restrictedROC" "list"         </span>
@@ -332,6 +338,8 @@ If NA, no points are plotted. To plot all points use Inf.</p></dd>
 <span class="r-in"><span><span class="fu">plot_density_rROC_empirical</span><span class="op">(</span><span class="va">sim_samples</span>, part_colors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"high"</span> <span class="op">=</span> <span class="st">"green"</span>, <span class="st">"low"</span> <span class="op">=</span> <span class="st">"yellow"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Positive label not given, setting to max(response): dist_2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $plots</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Ignoring unknown labels:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> <span style="color: #00BB00;">colour</span> : <span style="color: #0000BB;">""</span></span>
 <span class="r-plt img"><img src="plot_density_rROC_empirical-4.png" alt="" width="700" height="433"></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $single_rROC</span>
@@ -339,16 +347,16 @@ If NA, no points are plotted. To plot all points use Inf.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 101 × 21</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    threshold auc_high positives_high negatives_high scaling_high auc_var_H0_high</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>   -<span style="color: #BB0000;">Inf</span>       0.321             50             50         1            0.003<span style="text-decoration: underline;">37</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>     -<span style="color: #BB0000;">2.35</span>    0.328             49             50         1.02         0.003<span style="text-decoration: underline;">40</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>     -<span style="color: #BB0000;">2.05</span>    0.335             48             50         1.04         0.003<span style="text-decoration: underline;">44</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>     -<span style="color: #BB0000;">1.61</span>    0.342             47             50         1.06         0.003<span style="text-decoration: underline;">48</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>     -<span style="color: #BB0000;">1.34</span>    0.349             46             50         1.09         0.003<span style="text-decoration: underline;">51</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>     -<span style="color: #BB0000;">1.31</span>    0.357             45             50         1.11         0.003<span style="text-decoration: underline;">56</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>     -<span style="color: #BB0000;">1.21</span>    0.365             44             50         1.14         0.003<span style="text-decoration: underline;">60</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>     -<span style="color: #BB0000;">1.12</span>    0.373             43             50         1.16         0.003<span style="text-decoration: underline;">64</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>     -<span style="color: #BB0000;">1.07</span>    0.382             42             50         1.19         0.003<span style="text-decoration: underline;">69</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>     -<span style="color: #BB0000;">1.05</span>    0.392             41             50         1.22         0.003<span style="text-decoration: underline;">74</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>   -<span style="color: #BB0000;">Inf</span>       0.258             50             50         1            0.003<span style="text-decoration: underline;">37</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>     -<span style="color: #BB0000;">2.35</span>    0.264             49             50         1.02         0.003<span style="text-decoration: underline;">40</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>     -<span style="color: #BB0000;">2.05</span>    0.269             48             50         1.04         0.003<span style="text-decoration: underline;">44</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>     -<span style="color: #BB0000;">1.61</span>    0.275             47             50         1.06         0.003<span style="text-decoration: underline;">48</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>     -<span style="color: #BB0000;">1.34</span>    0.281             46             50         1.09         0.003<span style="text-decoration: underline;">51</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>     -<span style="color: #BB0000;">1.31</span>    0.287             45             50         1.11         0.003<span style="text-decoration: underline;">56</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>     -<span style="color: #BB0000;">1.21</span>    0.294             44             50         1.14         0.003<span style="text-decoration: underline;">60</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>     -<span style="color: #BB0000;">1.12</span>    0.300             43             50         1.16         0.003<span style="text-decoration: underline;">64</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>     -<span style="color: #BB0000;">1.07</span>    0.308             42             50         1.19         0.003<span style="text-decoration: underline;">69</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>     -<span style="color: #BB0000;">1.05</span>    0.315             41             50         1.22         0.003<span style="text-decoration: underline;">74</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 91 more rows</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 15 more variables: rzAUC_high &lt;dbl&gt;, pval_asym_onesided_high &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   pval_asym_high &lt;dbl&gt;, auc_low &lt;dbl&gt;, positives_low &lt;dbl&gt;,</span></span>
@@ -357,20 +365,20 @@ If NA, no points are plotted. To plot all points use Inf.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   tp &lt;dbl&gt;, fp &lt;dbl&gt;, tpr_global &lt;dbl&gt;, fpr_global &lt;dbl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $global</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      auc auc_var_H0     rzAUC   pval_asym</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.3212     0.3212 -3.081537 0.002059345</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      auc auc_var_H0     rzAUC    pval_asym</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.2584     0.2584 -4.163867 3.129021e-05</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $keep_highs</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      auc  auc_var_H0     rzAUC   pval_asym threshold</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.3212 0.003366667 -3.081537 0.002059345      -Inf</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      auc  auc_var_H0     rzAUC    pval_asym threshold</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.2584 0.003366667 -4.163867 3.129021e-05      -Inf</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $keep_lows</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      auc  auc_var_H0     rzAUC   pval_asym threshold</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.3212 0.003366667 -3.081537 0.002059345       Inf</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      auc  auc_var_H0     rzAUC    pval_asym threshold</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.2584 0.003366667 -4.163867 3.129021e-05       Inf</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $max_total</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      auc  auc_var_H0     rzAUC   pval_asym threshold   part</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.3212 0.003366667 -3.081537 0.002059345      -Inf global</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      auc  auc_var_H0     rzAUC    pval_asym threshold   part</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.2584 0.003366667 -4.163867 3.129021e-05      -Inf global</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $positive_label</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "dist_2"</span>
@@ -381,7 +389,7 @@ If NA, no points are plotted. To plot all points use Inf.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> roc.default(response = true_pred_df[["true"]], predictor = true_pred_df[["pred"]],     levels = c(FALSE, TRUE), direction = direction)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Data: true_pred_df[["pred"]] in 50 controls (true_pred_df[["true"]] FALSE) &lt; 50 cases (true_pred_df[["true"]] TRUE).</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Area under the curve: 0.3212</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Area under the curve: 0.2584</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"class")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "restrictedROC" "list"         </span>
@@ -389,6 +397,8 @@ If NA, no points are plotted. To plot all points use Inf.</p></dd>
 <span class="r-in"><span><span class="fu">plot_density_rROC_empirical</span><span class="op">(</span><span class="va">sim_samples</span>, plot_thresholds <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Positive label not given, setting to max(response): dist_2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $plots</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Ignoring unknown labels:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> <span style="color: #00BB00;">colour</span> : <span style="color: #0000BB;">""</span></span>
 <span class="r-plt img"><img src="plot_density_rROC_empirical-5.png" alt="" width="700" height="433"></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $single_rROC</span>
@@ -396,16 +406,16 @@ If NA, no points are plotted. To plot all points use Inf.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 101 × 21</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    threshold auc_high positives_high negatives_high scaling_high auc_var_H0_high</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>   -<span style="color: #BB0000;">Inf</span>       0.321             50             50         1            0.003<span style="text-decoration: underline;">37</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>     -<span style="color: #BB0000;">2.35</span>    0.328             49             50         1.02         0.003<span style="text-decoration: underline;">40</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>     -<span style="color: #BB0000;">2.05</span>    0.335             48             50         1.04         0.003<span style="text-decoration: underline;">44</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>     -<span style="color: #BB0000;">1.61</span>    0.342             47             50         1.06         0.003<span style="text-decoration: underline;">48</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>     -<span style="color: #BB0000;">1.34</span>    0.349             46             50         1.09         0.003<span style="text-decoration: underline;">51</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>     -<span style="color: #BB0000;">1.31</span>    0.357             45             50         1.11         0.003<span style="text-decoration: underline;">56</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>     -<span style="color: #BB0000;">1.21</span>    0.365             44             50         1.14         0.003<span style="text-decoration: underline;">60</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>     -<span style="color: #BB0000;">1.12</span>    0.373             43             50         1.16         0.003<span style="text-decoration: underline;">64</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>     -<span style="color: #BB0000;">1.07</span>    0.382             42             50         1.19         0.003<span style="text-decoration: underline;">69</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>     -<span style="color: #BB0000;">1.05</span>    0.392             41             50         1.22         0.003<span style="text-decoration: underline;">74</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>   -<span style="color: #BB0000;">Inf</span>       0.258             50             50         1            0.003<span style="text-decoration: underline;">37</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>     -<span style="color: #BB0000;">2.35</span>    0.264             49             50         1.02         0.003<span style="text-decoration: underline;">40</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>     -<span style="color: #BB0000;">2.05</span>    0.269             48             50         1.04         0.003<span style="text-decoration: underline;">44</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>     -<span style="color: #BB0000;">1.61</span>    0.275             47             50         1.06         0.003<span style="text-decoration: underline;">48</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>     -<span style="color: #BB0000;">1.34</span>    0.281             46             50         1.09         0.003<span style="text-decoration: underline;">51</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>     -<span style="color: #BB0000;">1.31</span>    0.287             45             50         1.11         0.003<span style="text-decoration: underline;">56</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>     -<span style="color: #BB0000;">1.21</span>    0.294             44             50         1.14         0.003<span style="text-decoration: underline;">60</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>     -<span style="color: #BB0000;">1.12</span>    0.300             43             50         1.16         0.003<span style="text-decoration: underline;">64</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>     -<span style="color: #BB0000;">1.07</span>    0.308             42             50         1.19         0.003<span style="text-decoration: underline;">69</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>     -<span style="color: #BB0000;">1.05</span>    0.315             41             50         1.22         0.003<span style="text-decoration: underline;">74</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 91 more rows</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 15 more variables: rzAUC_high &lt;dbl&gt;, pval_asym_onesided_high &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   pval_asym_high &lt;dbl&gt;, auc_low &lt;dbl&gt;, positives_low &lt;dbl&gt;,</span></span>
@@ -414,20 +424,20 @@ If NA, no points are plotted. To plot all points use Inf.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   tp &lt;dbl&gt;, fp &lt;dbl&gt;, tpr_global &lt;dbl&gt;, fpr_global &lt;dbl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $global</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      auc auc_var_H0     rzAUC   pval_asym</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.3212     0.3212 -3.081537 0.002059345</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      auc auc_var_H0     rzAUC    pval_asym</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.2584     0.2584 -4.163867 3.129021e-05</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $keep_highs</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      auc  auc_var_H0     rzAUC   pval_asym threshold</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.3212 0.003366667 -3.081537 0.002059345      -Inf</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      auc  auc_var_H0     rzAUC    pval_asym threshold</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.2584 0.003366667 -4.163867 3.129021e-05      -Inf</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $keep_lows</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      auc  auc_var_H0     rzAUC   pval_asym threshold</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.3212 0.003366667 -3.081537 0.002059345       Inf</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      auc  auc_var_H0     rzAUC    pval_asym threshold</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.2584 0.003366667 -4.163867 3.129021e-05       Inf</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $max_total</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      auc  auc_var_H0     rzAUC   pval_asym threshold   part</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.3212 0.003366667 -3.081537 0.002059345      -Inf global</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      auc  auc_var_H0     rzAUC    pval_asym threshold   part</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.2584 0.003366667 -4.163867 3.129021e-05      -Inf global</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $positive_label</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "dist_2"</span>
@@ -438,7 +448,7 @@ If NA, no points are plotted. To plot all points use Inf.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> roc.default(response = true_pred_df[["true"]], predictor = true_pred_df[["pred"]],     levels = c(FALSE, TRUE), direction = direction)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Data: true_pred_df[["pred"]] in 50 controls (true_pred_df[["true"]] FALSE) &lt; 50 cases (true_pred_df[["true"]] TRUE).</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Area under the curve: 0.3212</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Area under the curve: 0.2584</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"class")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "restrictedROC" "list"         </span>
@@ -446,6 +456,8 @@ If NA, no points are plotted. To plot all points use Inf.</p></dd>
 <span class="r-in"><span><span class="fu">plot_density_rROC_empirical</span><span class="op">(</span><span class="va">sim_samples</span>, plot_thresholds_fpr <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Positive label not given, setting to max(response): dist_2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $plots</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Ignoring unknown labels:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> <span style="color: #00BB00;">colour</span> : <span style="color: #0000BB;">""</span></span>
 <span class="r-plt img"><img src="plot_density_rROC_empirical-6.png" alt="" width="700" height="433"></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $single_rROC</span>
@@ -453,16 +465,16 @@ If NA, no points are plotted. To plot all points use Inf.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 101 × 21</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    threshold auc_high positives_high negatives_high scaling_high auc_var_H0_high</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>   -<span style="color: #BB0000;">Inf</span>       0.321             50             50         1            0.003<span style="text-decoration: underline;">37</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>     -<span style="color: #BB0000;">2.35</span>    0.328             49             50         1.02         0.003<span style="text-decoration: underline;">40</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>     -<span style="color: #BB0000;">2.05</span>    0.335             48             50         1.04         0.003<span style="text-decoration: underline;">44</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>     -<span style="color: #BB0000;">1.61</span>    0.342             47             50         1.06         0.003<span style="text-decoration: underline;">48</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>     -<span style="color: #BB0000;">1.34</span>    0.349             46             50         1.09         0.003<span style="text-decoration: underline;">51</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>     -<span style="color: #BB0000;">1.31</span>    0.357             45             50         1.11         0.003<span style="text-decoration: underline;">56</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>     -<span style="color: #BB0000;">1.21</span>    0.365             44             50         1.14         0.003<span style="text-decoration: underline;">60</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>     -<span style="color: #BB0000;">1.12</span>    0.373             43             50         1.16         0.003<span style="text-decoration: underline;">64</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>     -<span style="color: #BB0000;">1.07</span>    0.382             42             50         1.19         0.003<span style="text-decoration: underline;">69</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>     -<span style="color: #BB0000;">1.05</span>    0.392             41             50         1.22         0.003<span style="text-decoration: underline;">74</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>   -<span style="color: #BB0000;">Inf</span>       0.258             50             50         1            0.003<span style="text-decoration: underline;">37</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>     -<span style="color: #BB0000;">2.35</span>    0.264             49             50         1.02         0.003<span style="text-decoration: underline;">40</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>     -<span style="color: #BB0000;">2.05</span>    0.269             48             50         1.04         0.003<span style="text-decoration: underline;">44</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>     -<span style="color: #BB0000;">1.61</span>    0.275             47             50         1.06         0.003<span style="text-decoration: underline;">48</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>     -<span style="color: #BB0000;">1.34</span>    0.281             46             50         1.09         0.003<span style="text-decoration: underline;">51</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>     -<span style="color: #BB0000;">1.31</span>    0.287             45             50         1.11         0.003<span style="text-decoration: underline;">56</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>     -<span style="color: #BB0000;">1.21</span>    0.294             44             50         1.14         0.003<span style="text-decoration: underline;">60</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>     -<span style="color: #BB0000;">1.12</span>    0.300             43             50         1.16         0.003<span style="text-decoration: underline;">64</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>     -<span style="color: #BB0000;">1.07</span>    0.308             42             50         1.19         0.003<span style="text-decoration: underline;">69</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>     -<span style="color: #BB0000;">1.05</span>    0.315             41             50         1.22         0.003<span style="text-decoration: underline;">74</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 91 more rows</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 15 more variables: rzAUC_high &lt;dbl&gt;, pval_asym_onesided_high &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   pval_asym_high &lt;dbl&gt;, auc_low &lt;dbl&gt;, positives_low &lt;dbl&gt;,</span></span>
@@ -471,20 +483,20 @@ If NA, no points are plotted. To plot all points use Inf.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   tp &lt;dbl&gt;, fp &lt;dbl&gt;, tpr_global &lt;dbl&gt;, fpr_global &lt;dbl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $global</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      auc auc_var_H0     rzAUC   pval_asym</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.3212     0.3212 -3.081537 0.002059345</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      auc auc_var_H0     rzAUC    pval_asym</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.2584     0.2584 -4.163867 3.129021e-05</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $keep_highs</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      auc  auc_var_H0     rzAUC   pval_asym threshold</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.3212 0.003366667 -3.081537 0.002059345      -Inf</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      auc  auc_var_H0     rzAUC    pval_asym threshold</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.2584 0.003366667 -4.163867 3.129021e-05      -Inf</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $keep_lows</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      auc  auc_var_H0     rzAUC   pval_asym threshold</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.3212 0.003366667 -3.081537 0.002059345       Inf</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      auc  auc_var_H0     rzAUC    pval_asym threshold</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.2584 0.003366667 -4.163867 3.129021e-05       Inf</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $max_total</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      auc  auc_var_H0     rzAUC   pval_asym threshold   part</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.3212 0.003366667 -3.081537 0.002059345      -Inf global</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      auc  auc_var_H0     rzAUC    pval_asym threshold   part</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.2584 0.003366667 -4.163867 3.129021e-05      -Inf global</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $positive_label</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "dist_2"</span>
@@ -495,7 +507,7 @@ If NA, no points are plotted. To plot all points use Inf.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> roc.default(response = true_pred_df[["true"]], predictor = true_pred_df[["pred"]],     levels = c(FALSE, TRUE), direction = direction)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Data: true_pred_df[["pred"]] in 50 controls (true_pred_df[["true"]] FALSE) &lt; 50 cases (true_pred_df[["true"]] TRUE).</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Area under the curve: 0.3212</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Area under the curve: 0.2584</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"class")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "restrictedROC" "list"         </span>
@@ -513,6 +525,8 @@ If NA, no points are plotted. To plot all points use Inf.</p></dd>
 <span class="r-in"><span><span class="va">single_rROC</span> <span class="op">&lt;-</span> <span class="fu"><a href="simple_rROC_interpret.html">simple_rROC_interpret</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">plot_density_rROC_empirical</span><span class="op">(</span><span class="va">sim_samples</span>, single_rROC <span class="op">=</span> <span class="va">single_rROC</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $plots</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Ignoring unknown labels:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> <span style="color: #00BB00;">colour</span> : <span style="color: #0000BB;">""</span></span>
 <span class="r-plt img"><img src="plot_density_rROC_empirical-7.png" alt="" width="700" height="433"></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $single_rROC</span>
@@ -520,16 +534,16 @@ If NA, no points are plotted. To plot all points use Inf.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 101 × 21</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    threshold auc_high positives_high negatives_high scaling_high auc_var_H0_high</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>   -<span style="color: #BB0000;">Inf</span>       0.679             50             50         1            0.003<span style="text-decoration: underline;">37</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>     -<span style="color: #BB0000;">2.35</span>    0.672             50             49         1.02         0.003<span style="text-decoration: underline;">40</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>     -<span style="color: #BB0000;">2.05</span>    0.665             50             48         1.04         0.003<span style="text-decoration: underline;">44</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>     -<span style="color: #BB0000;">1.61</span>    0.658             50             47         1.06         0.003<span style="text-decoration: underline;">48</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>     -<span style="color: #BB0000;">1.34</span>    0.651             50             46         1.09         0.003<span style="text-decoration: underline;">51</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>     -<span style="color: #BB0000;">1.31</span>    0.643             50             45         1.11         0.003<span style="text-decoration: underline;">56</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>     -<span style="color: #BB0000;">1.21</span>    0.635             50             44         1.14         0.003<span style="text-decoration: underline;">60</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>     -<span style="color: #BB0000;">1.12</span>    0.627             50             43         1.16         0.003<span style="text-decoration: underline;">64</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>     -<span style="color: #BB0000;">1.07</span>    0.618             50             42         1.19         0.003<span style="text-decoration: underline;">69</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>     -<span style="color: #BB0000;">1.05</span>    0.608             50             41         1.22         0.003<span style="text-decoration: underline;">74</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>   -<span style="color: #BB0000;">Inf</span>       0.742             50             50         1            0.003<span style="text-decoration: underline;">37</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>     -<span style="color: #BB0000;">2.35</span>    0.736             50             49         1.02         0.003<span style="text-decoration: underline;">40</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>     -<span style="color: #BB0000;">2.05</span>    0.731             50             48         1.04         0.003<span style="text-decoration: underline;">44</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>     -<span style="color: #BB0000;">1.61</span>    0.725             50             47         1.06         0.003<span style="text-decoration: underline;">48</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>     -<span style="color: #BB0000;">1.34</span>    0.719             50             46         1.09         0.003<span style="text-decoration: underline;">51</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>     -<span style="color: #BB0000;">1.31</span>    0.713             50             45         1.11         0.003<span style="text-decoration: underline;">56</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>     -<span style="color: #BB0000;">1.21</span>    0.706             50             44         1.14         0.003<span style="text-decoration: underline;">60</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>     -<span style="color: #BB0000;">1.12</span>    0.700             50             43         1.16         0.003<span style="text-decoration: underline;">64</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>     -<span style="color: #BB0000;">1.07</span>    0.692             50             42         1.19         0.003<span style="text-decoration: underline;">69</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>     -<span style="color: #BB0000;">1.05</span>    0.685             50             41         1.22         0.003<span style="text-decoration: underline;">74</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 91 more rows</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 15 more variables: rzAUC_high &lt;dbl&gt;, pval_asym_onesided_high &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   pval_asym_high &lt;dbl&gt;, auc_low &lt;dbl&gt;, positives_low &lt;dbl&gt;,</span></span>
@@ -538,20 +552,20 @@ If NA, no points are plotted. To plot all points use Inf.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   tp &lt;dbl&gt;, fp &lt;dbl&gt;, tpr_global &lt;dbl&gt;, fpr_global &lt;dbl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $global</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      auc auc_var_H0    rzAUC   pval_asym</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.6788     0.6788 3.081537 0.002059345</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      auc auc_var_H0    rzAUC    pval_asym</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.7416     0.7416 4.163867 3.129021e-05</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $keep_highs</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      auc  auc_var_H0    rzAUC   pval_asym threshold</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.6788 0.003366667 3.081537 0.002059345      -Inf</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      auc  auc_var_H0    rzAUC    pval_asym threshold</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.7416 0.003366667 4.163867 3.129021e-05      -Inf</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $keep_lows</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      auc  auc_var_H0    rzAUC   pval_asym threshold</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.6788 0.003366667 3.081537 0.002059345       Inf</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      auc  auc_var_H0    rzAUC    pval_asym threshold</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.7416 0.003366667 4.163867 3.129021e-05       Inf</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $max_total</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      auc  auc_var_H0    rzAUC   pval_asym threshold   part</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.6788 0.003366667 3.081537 0.002059345      -Inf global</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      auc  auc_var_H0    rzAUC    pval_asym threshold   part</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.7416 0.003366667 4.163867 3.129021e-05      -Inf global</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $positive_label</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "dist_1"</span>
@@ -562,7 +576,7 @@ If NA, no points are plotted. To plot all points use Inf.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> roc.default(response = true_pred_df[["true"]], predictor = true_pred_df[["pred"]],     levels = c(FALSE, TRUE), direction = direction)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Data: true_pred_df[["pred"]] in 50 controls (true_pred_df[["true"]] FALSE) &lt; 50 cases (true_pred_df[["true"]] TRUE).</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Area under the curve: 0.6788</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Area under the curve: 0.7416</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"class")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "restrictedROC" "list"         </span>
@@ -579,7 +593,7 @@ If NA, no points are plotted. To plot all points use Inf.</p></dd>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer></div>
