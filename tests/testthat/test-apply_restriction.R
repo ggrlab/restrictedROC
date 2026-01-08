@@ -64,3 +64,28 @@ test_that("rROC apply different imputation", {
     applied_2 <- apply_restriction(res_df, aSAH, removed_impute = 159)
     testthat::expect_true(applied_1[[1]][[1]][["thresholds"]][["imputed"]] != applied_2[[1]][[1]][["thresholds"]][["imputed"]])
 })
+
+test_that("rROC apply restriction twosided", {
+    library(restrictedROC)
+    data("aSAH", package = "pROC")
+    set.seed(100)
+    res_df <- rROC(
+        aSAH,
+        dependent_vars = "outcome",
+        independent_vars = "ndka",
+        n_permutations = 2,
+        positive_label = "Good"
+    )
+    applied_1 <- apply_restriction(res_df, aSAH)
+    single_rroc <- applied_1[[1]][[1]]
+    testthat::expect_true(
+        # All values outside the informative range are imputed by the restriction value (single_rroc$thresholds$threshold) +/- removed_impute (=-1)
+        all(single_rroc$predictions |> dplyr::filter(!keep) |> dplyr::pull(bounded_twoside) |> unique() == single_rroc$thresholds$threshold - 1)
+    )
+
+    applied_2 <- apply_restriction(res_df, aSAH, removed_impute = 1)
+    testthat::expect_equal(
+        applied_2[[1]][[1]]$predictions[, -which(names(applied_2[[1]][[1]]$predictions) == "bounded")],
+        applied_1[[1]][[1]]$predictions[, -which(names(applied_1[[1]][[1]]$predictions) == "bounded")]
+    )
+})

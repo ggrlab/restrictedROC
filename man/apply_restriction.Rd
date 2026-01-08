@@ -29,6 +29,9 @@ imputed values. It has three columns:
 \item{\code{keep}}{is a logical vector that indicates whether the sample is inside the
 informative range.}
 \item{\code{bounded}}{is the imputed value.}
+\item{\code{bounded_twoside}}{
+is the imputed value for two-sided restriction: RestrictionValue + or - \code{removed_impute}
+}
 }
 \item \code{thresholds}: A data frame with the feature, threshold, the part of the
 predictor that was used and the imputed value for predictor values outside the

@@ -22,6 +22,9 @@
 #'          \item{\code{keep}}{is a logical vector that indicates whether the sample is inside the
 #'          informative range.}
 #'          \item{\code{bounded}}{is the imputed value.}
+#'          \item{\code{bounded_twoside}}{
+#'              is the imputed value for two-sided restriction: RestrictionValue + or - \code{removed_impute}
+#'           }
 #'      }
 #'      \item \code{thresholds}: A data frame with the feature, threshold, the part of the
 #'      predictor that was used and the imputed value for predictor values outside the
@@ -75,17 +78,20 @@ apply_restriction <- function(object, newdata, feature = NA, removed_impute = -1
     restriction <- single_rroc_result[["max_total"]][["threshold"]]
     restriction_part <- single_rroc_result[["max_total"]][["part"]]
 
+    pred_df[["bounded"]] <- pred_df[["predictor"]]
+    pred_df[["bounded_twoside"]] <- pred_df[["predictor"]]
     if (restriction_part == "low") {
         pred_df$keep <- pred_df$predictor <= restriction
         informative_range <- c(-Inf, restriction)
+        pred_df[["bounded_twoside"]][!pred_df[["keep"]]] <- restriction + abs(removed_impute)
     } else if (restriction_part == "high") {
         pred_df$keep <- pred_df$predictor > restriction
         informative_range <- c(restriction, Inf)
+        pred_df[["bounded_twoside"]][!pred_df[["keep"]]] <- restriction - abs(removed_impute)
     } else {
         pred_df$keep <- TRUE
         informative_range <- c(-Inf, Inf)
     }
-    pred_df[["bounded"]] <- pred_df[["predictor"]]
     pred_df[["bounded"]][!pred_df[["keep"]]] <- removed_impute
     reslist <- list(
         "predictions" = tibble::as_tibble(pred_df),

@@ -30,7 +30,7 @@ plot_rROC_part(
 \item{include_part_auc_text}{Should the text-annotations be added or not?}
 }
 \value{
-\link{patchwork}ed plots, see the description.
+\link[patchwork:patchwork-package]{patchwork::patchwork}ed plots, see the description.
 }
 \description{
 Plot for every tpr/fpr combination:
