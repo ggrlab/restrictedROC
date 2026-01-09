@@ -8,12 +8,12 @@
 ## Citation
 
 Glehr G (2026). *restrictedROC: Calculate restricted ROC curves*. R
-package version 3.3.11, <https://ggrlab.github.io/restrictedROC/>.
+package version 3.3.12, <https://ggrlab.github.io/restrictedROC/>.
 
     @Manual{,
       title = {restrictedROC: Calculate restricted ROC curves},
       author = {Gunther Glehr},
       year = {2026},
-      note = {R package version 3.3.11},
+      note = {R package version 3.3.12},
       url = {https://ggrlab.github.io/restrictedROC/},
     }

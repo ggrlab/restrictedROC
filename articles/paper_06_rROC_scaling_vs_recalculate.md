@@ -71,7 +71,7 @@ rroc <- restrictedROC::rROC(
     dependent_vars = "response",
     n_permutations = 0
 )[["response"]][["predictions"]][["permutation"]]
-#> Thu Jan  8 12:37:31 2026      response predictions ( 1 )
+#> Fri Jan  9 14:51:57 2026      response predictions ( 1 )
 
 include_part_auc_text <- TRUE
 plot_scale <- 1.5

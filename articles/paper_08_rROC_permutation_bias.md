@@ -95,7 +95,7 @@ print(
         geom_hline(yintercept = .5, linetype = "dashed")
 )
 #> Warning: `qplot()` was deprecated in ggplot2 3.4.0.
-#> This warning is displayed once every 8 hours.
+#> This warning is displayed once per session.
 #> Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
 #> generated.
 #> Warning: Removed 750 rows containing missing values or values outside the scale range

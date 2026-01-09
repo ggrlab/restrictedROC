@@ -315,6 +315,12 @@ effectively:
 - [`prepare_modeldata(`*`<data.frame>`*`)`](https://ggrlab.github.io/restrictedROC/reference/prepare_modeldata.data.frame.md)
   : Prepare model data
 
+- [`prune()`](https://ggrlab.github.io/restrictedROC/reference/prune.md)
+  : Restriction for multiple dependent and independent variables
+
+- [`prune(`*`<rROC>`*`)`](https://ggrlab.github.io/restrictedROC/reference/prune.rROC.md)
+  : Prune a rROC result
+
 - [`rROC()`](https://ggrlab.github.io/restrictedROC/reference/rROC.md) :
   Restriction for multiple dependent and independent variables
 

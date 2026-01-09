@@ -451,7 +451,7 @@ rroc_perm_2 <- restrictedROC::rROC(
     direction = "<",
     return_proc = TRUE
 )
-#> Thu Jan  8 12:36:04 2026      y x ( 1 )
+#> Fri Jan  9 14:50:24 2026      y x ( 1 )
 rroc_perfs <- rroc_perm_2[[1]][[1]][["permutation"]][["performances"]]
 
 data_df <- tibble::tibble(
