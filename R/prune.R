@@ -40,7 +40,6 @@ prune.rROC <- function(x,
     prune_rROC(x, ...)
 }
 
-#' @export
 prune_rROC <- function(x, ...) {
     lapply(x, function(results_dv) {
         lapply(results_dv, function(results_dv_iv) {
